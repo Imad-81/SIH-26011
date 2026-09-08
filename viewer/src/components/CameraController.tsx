@@ -14,7 +14,7 @@ export interface CameraPreset {
 export const CAMERA_PRESETS: Record<string, CameraPreset> = {
   default: {
     name: 'Overview',
-    camPos: [800, 600, 800],
+    camPos: [800, 420, 800],
     target: [0, 0, 0],
   },
   lake: {

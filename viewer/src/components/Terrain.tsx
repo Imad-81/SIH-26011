@@ -2,16 +2,31 @@
 
 import { useMemo } from 'react';
 import * as THREE from 'three';
-import { TerrainData } from '@/lib/types';
+import { TerrainData, TimeOfDay } from '@/lib/types';
 import { SCALE } from '@/lib/geo';
 
 interface TerrainProps {
   terrain: TerrainData | null;
   areaSize: number; // in km
+  timeOfDay?: TimeOfDay;
 }
 
-export default function Terrain({ terrain, areaSize }: TerrainProps) {
+export default function Terrain({ terrain, areaSize, timeOfDay = 'night' }: TerrainProps) {
   const halfSize = (areaSize * 1000 * SCALE) / 2;
+
+  const terrainColor = useMemo(() => {
+    switch (timeOfDay) {
+      case 'day':
+        return '#1b2a3d';
+      case 'dawn':
+        return '#21182c';
+      case 'dusk':
+        return '#201427';
+      case 'night':
+      default:
+        return '#0d1527';
+    }
+  }, [timeOfDay]);
 
   // Create terrain mesh from elevation data
   const terrainGeometry = useMemo(() => {
@@ -53,7 +68,7 @@ export default function Terrain({ terrain, areaSize }: TerrainProps) {
       >
         <primitive object={terrainGeometry} attach="geometry" />
         <meshStandardMaterial
-          color="#0d1527"
+          color={terrainColor}
           roughness={0.92}
           metalness={0.08}
         />

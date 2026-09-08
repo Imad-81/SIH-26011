@@ -119,3 +119,40 @@ body {
   font-family: 'JetBrains Mono', monospace;
   pointer-events: none;
 }
+
+/* Sky Parallax Animations & GPU Acceleration */
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+.animate-twinkle {
+  animation: twinkle ease-in-out infinite alternate;
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.08);
+    opacity: 1;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 8s ease-in-out infinite;
+}
+
+#sky-parallax-container * {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+

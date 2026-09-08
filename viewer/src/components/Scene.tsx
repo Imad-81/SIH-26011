@@ -11,6 +11,8 @@ import Bridge from './Bridge';
 import Landmarks from './Landmarks';
 import SunSky from './SunSky';
 import CameraController from './CameraController';
+import ParallaxSky from './ParallaxSky';
+import SkyParallaxTracker from './SkyParallaxTracker';
 import {
   BuildingData,
   BuildingsDataset,
@@ -68,7 +70,10 @@ function SceneContent({
 
   return (
     <>
-      <PerspectiveCamera makeDefault position={[800, 600, 800]} fov={48} near={1} far={50000} />
+      <PerspectiveCamera makeDefault position={[800, 420, 800]} fov={48} near={1} far={50000} />
+
+      {/* Real-time 2D Parallax Camera Tracker */}
+      <SkyParallaxTracker />
 
       {/* Camera Controller & Autopilot Tour */}
       <CameraController
@@ -83,7 +88,7 @@ function SceneContent({
       <SunSky timeOfDay={timeOfDay} />
 
       {/* Topography Terrain */}
-      <Terrain terrain={terrain} areaSize={areaSize} />
+      <Terrain terrain={terrain} areaSize={areaSize} timeOfDay={timeOfDay} />
 
       {/* Durgam Cheruvu Animated Water Surface & Dynamic Flood Plane */}
       <Water
@@ -116,27 +121,34 @@ function SceneContent({
 }
 
 export default function Scene(props: SceneProps) {
-  const bgColor =
-    props.timeOfDay === 'day'
-      ? '#14213d'
-      : props.timeOfDay === 'dawn'
-      ? '#1d152b'
-      : props.timeOfDay === 'dusk'
-      ? '#1c1226'
-      : '#0a0a1a';
-
   return (
-    <Canvas
-      shadows
-      gl={{
-        antialias: true,
-        toneMapping: THREE.ACESFilmicToneMapping,
-        toneMappingExposure: props.timeOfDay === 'day' ? 1.4 : 1.1,
-      }}
-      style={{ background: bgColor }}
-      onPointerMissed={() => props.onBuildingSelect(null)}
-    >
-      <SceneContent {...props} />
-    </Canvas>
+    <div className="relative w-full h-full">
+      {/* 2D Multi-Tiered Parallax Sky Engine */}
+      <ParallaxSky timeOfDay={props.timeOfDay} />
+
+      {/* Transparent 3D Canvas Layer */}
+      <Canvas
+        shadows
+        gl={{
+          antialias: true,
+          alpha: true,
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: props.timeOfDay === 'day' ? 1.35 : 1.1,
+        }}
+        onCreated={({ gl }) => {
+          gl.setClearColor(0x000000, 0);
+        }}
+        style={{
+          background: 'transparent',
+          position: 'relative',
+          zIndex: 1,
+          width: '100%',
+          height: '100%',
+        }}
+        onPointerMissed={() => props.onBuildingSelect(null)}
+      >
+        <SceneContent {...props} />
+      </Canvas>
+    </div>
   );
 }
