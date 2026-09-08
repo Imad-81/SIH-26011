@@ -22,7 +22,7 @@
       "source": "OpenStreetMap",
       "api": "Overpass API (https://overpass-api.de/api/interpreter)",
       "license": "ODbL 1.0 (https://opendatacommons.org/licenses/odbl/1-0/)",
-      "download_date": "2026-09-08T13:42:36.469343+00:00"
+      "download_date": "2026-09-08T19:44:28.772881+00:00"
     },
     "dsm": {
       "source": "Copernicus DEM GLO-30",
@@ -32,13 +32,13 @@
       "crs": "EPSG:4326",
       "download_url": "https://copernicus-dem-30m.s3.amazonaws.com/",
       "license": "Copernicus licence (https://spacedata.copernicus.eu/en/web/guest/collections/copernicus-digital-elevation-model)",
-      "download_date": "2026-09-08T13:42:36.469349+00:00"
+      "download_date": "2026-09-08T19:44:28.772887+00:00"
     },
     "dem": {
       "source": "SRTM GL1 via OpenTopography",
       "description": "Used as bare-earth approximation",
       "api": "OpenTopography GlobalDEM API",
-      "download_date": "2026-09-08T13:42:36.469351+00:00",
+      "download_date": "2026-09-08T19:44:28.772888+00:00",
       "note": "SRTM is technically a DSM but older data (2000) serves as ground approximation"
     }
   },
@@ -59,11 +59,11 @@
       "morphological_small": 1458,
       "morphological_midrise": 423,
       "morphological_office": 267,
-      "osm_levels": 128,
-      "landmark_registry": 41,
+      "osm_levels": 127,
+      "landmark_registry": 43,
       "morphological_retail": 8,
       "morphological_large": 7,
-      "osm_tag": 7,
+      "osm_tag": 6,
       "raster_annular": 4,
       "morphological_civic": 4
     },

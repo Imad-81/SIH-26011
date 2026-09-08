@@ -13,6 +13,7 @@ import SunSky from './SunSky';
 import CameraController from './CameraController';
 import ParallaxSky from './ParallaxSky';
 import SkyParallaxTracker from './SkyParallaxTracker';
+import PerformanceHUD, { PerformanceTracker } from './PerformanceMonitor';
 import {
   BuildingData,
   BuildingsDataset,
@@ -70,7 +71,10 @@ function SceneContent({
 
   return (
     <>
-      <PerspectiveCamera makeDefault position={[800, 420, 800]} fov={48} near={1} far={50000} />
+      <PerspectiveCamera makeDefault position={[1100, 650, 1100]} fov={48} near={2} far={12000} />
+
+      {/* Real-time WebGL Telemetry Tracker */}
+      <PerformanceTracker />
 
       {/* Real-time 2D Parallax Camera Tracker */}
       <SkyParallaxTracker />
@@ -100,7 +104,7 @@ function SceneContent({
       {/* Durgam Cheruvu Cable-Stayed Bridge */}
       <Bridge centerElevation={centerElev} />
 
-      {/* 3D Extruded Buildings with Multi-Mode Materials & Shadows */}
+      {/* 🚀 Ultra-Optimized Batched 3D Buildings (Single Draw Call) */}
       <Buildings
         buildings={data.buildings}
         centerElevation={centerElev}
@@ -126,12 +130,16 @@ export default function Scene(props: SceneProps) {
       {/* 2D Multi-Tiered Parallax Sky Engine */}
       <ParallaxSky timeOfDay={props.timeOfDay} />
 
-      {/* Transparent 3D Canvas Layer */}
+      {/* Live WebGL Performance Telemetry HUD */}
+      <PerformanceHUD />
+
+      {/* High-Performance 3D Canvas Layer */}
       <Canvas
         shadows
         gl={{
           antialias: true,
           alpha: true,
+          powerPreference: 'high-performance',
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: props.timeOfDay === 'day' ? 1.35 : 1.1,
         }}

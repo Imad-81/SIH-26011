@@ -3,6 +3,26 @@
   "version": "1.0",
   "updated_at": "2026-09-08T18:47:00Z",
   "by_osm_id": {
+    "68883448": {
+      "name": "Cyber Towers",
+      "campus": "HITEC City Phase 1",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 45.0,
+      "floors": 10,
+      "category": "Iconic IT Landmark",
+      "confidence": "high",
+      "source": "L&T Infocity / APIIC Architectural Records"
+    },
+    "1133460476": {
+      "name": "Qualcomm Commerzone",
+      "campus": "Commerzone Raidurg",
+      "location": "Raidurg, Hyderabad",
+      "height_m": 100.0,
+      "floors": 22,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "K Raheja Corp Commerzone Specifications"
+    },
     "1299545984": {
       "name": "Wells Fargo Tower 4",
       "campus": "DivyaSree Orion",

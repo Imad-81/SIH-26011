@@ -763,6 +763,7 @@ def estimate_building_heights(aoi, buildings_path, dem_path, dsm_path, dem_same_
     estimated_heights = []
     estimated_floors_list = []
     height_sources = []
+    assigned_names = []
 
     for idx, row in tqdm(gdf_utm.iterrows(), total=len(gdf_utm), desc="Estimating heights (5-Tier)"):
         geom = row.geometry
@@ -793,6 +794,8 @@ def estimate_building_heights(aoi, buildings_path, dem_path, dsm_path, dem_same_
             h = float(entry["height_m"])
             fl = int(entry.get("floors", max(1, round(h / 3.5))))
             src = "landmark_registry"
+            if entry.get("name"):
+                name = entry["name"]
 
         # -------------------------------------------------------------
         # TIER 1b: Authoritative Landmark Registry by Name Pattern
@@ -803,6 +806,8 @@ def estimate_building_heights(aoi, buildings_path, dem_path, dsm_path, dem_same_
                     h = float(pat["height_m"])
                     fl = int(pat.get("floors", max(1, round(h / 3.5))))
                     src = "landmark_registry"
+                    if pat.get("name"):
+                        name = pat["name"]
                     break
 
         # -------------------------------------------------------------
@@ -948,6 +953,7 @@ def estimate_building_heights(aoi, buildings_path, dem_path, dsm_path, dem_same_
         estimated_heights.append(round(float(h), 2))
         estimated_floors_list.append(int(fl))
         height_sources.append(src)
+        assigned_names.append(name if name else None)
 
     if dsm_src is not None:
         dsm_src.close()
@@ -956,6 +962,7 @@ def estimate_building_heights(aoi, buildings_path, dem_path, dsm_path, dem_same_
     gdf["estimated_height"] = estimated_heights
     gdf["estimated_floors"] = estimated_floors_list
     gdf["height_source"] = height_sources
+    gdf["name"] = assigned_names
 
     # Assign building IDs
     gdf["building_id"] = [f"b_{i}" for i in range(len(gdf))]
