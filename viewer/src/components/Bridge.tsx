@@ -30,8 +30,8 @@ export default function Bridge({ centerElevation }: BridgeProps) {
     const primaryBridge = waterData.bridges[0];
     const pts = primaryBridge.coordinates.map(([x, y]) => new THREE.Vector3(x * SCALE, deckY, -y * SCALE));
 
-    // Sample the lake crossing span
-    const lakeSpanPts = pts.filter((p) => p.x > 350 && p.x < 620 && p.z < -300 && p.z > -450);
+    // Sample the lake crossing span across Durgam Cheruvu
+    const lakeSpanPts = pts.filter((p) => p.x >= 800 && p.x <= 1650 && p.z >= 200 && p.z <= 700);
     const spanPts = lakeSpanPts.length >= 4 ? lakeSpanPts : pts.slice(0, 15);
 
     if (spanPts.length < 2) return null;

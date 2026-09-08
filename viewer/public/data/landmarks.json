@@ -1,23 +1,161 @@
 [
   {
+    "id": "cyber_towers",
+    "name": "Cyber Towers",
+    "category": "Iconic IT Landmark",
+    "description": "Iconic 10-storey circular landmark inaugurated in 1998, the historic epicenter of Hyderabad's IT revolution.",
+    "pos": [
+      116.0,
+      45.0,
+      -1471.0
+    ],
+    "cameraPos": [
+      116.0,
+      110.0,
+      -1320.0
+    ],
+    "target": [
+      116.0,
+      40.0,
+      -1471.0
+    ],
+    "height": 45.0,
+    "badge": "🏢 45m Cyber Towers"
+  },
+  {
+    "id": "mindspace",
+    "name": "Raheja Mindspace IT Park",
+    "category": "IT Mega-Campus",
+    "description": "110-acre mega-SEZ featuring grade-A high-rise commercial towers housing major Fortune 500 tech companies.",
+    "pos": [
+      -155.0,
+      78.0,
+      -323.0
+    ],
+    "cameraPos": [
+      -155.0,
+      140.0,
+      -170.0
+    ],
+    "target": [
+      -155.0,
+      60.0,
+      -323.0
+    ],
+    "height": 78.0,
+    "badge": "🏙️ 78m Mindspace Hub"
+  },
+  {
+    "id": "phoenix_avance",
+    "name": "Phoenix Avance Business Hub",
+    "category": "Corporate High-Rise",
+    "description": "24-storey high-rise enterprise IT campus in Madhapur hosting global tech delivery centers.",
+    "pos": [
+      -516.0,
+      85.0,
+      -1115.0
+    ],
+    "cameraPos": [
+      -516.0,
+      150.0,
+      -960.0
+    ],
+    "target": [
+      -516.0,
+      70.0,
+      -1115.0
+    ],
+    "height": 85.0,
+    "badge": "🏙️ 85m Phoenix Avance"
+  },
+  {
+    "id": "my_home_bhooja",
+    "name": "My Home Bhooja",
+    "category": "Residential Skyscraper",
+    "description": "Iconic 36-storey luxury high-rise skyscraper cluster (115m), among the tallest residential towers in Hyderabad.",
+    "pos": [
+      -647.0,
+      115.0,
+      656.0
+    ],
+    "cameraPos": [
+      -647.0,
+      180.0,
+      820.0
+    ],
+    "target": [
+      -647.0,
+      100.0,
+      656.0
+    ],
+    "height": 115.0,
+    "badge": "🌆 115m My Home Bhooja"
+  },
+  {
+    "id": "cyber_gateway",
+    "name": "Cyber Gateway",
+    "category": "IT Technology Park",
+    "description": "8-storey premier glass-facade tech park adjacent to Cyber Towers with landscaped central atrium.",
+    "pos": [
+      16.0,
+      35.0,
+      -1163.0
+    ],
+    "cameraPos": [
+      16.0,
+      80.0,
+      -1020.0
+    ],
+    "target": [
+      16.0,
+      30.0,
+      -1163.0
+    ],
+    "height": 35.0,
+    "badge": "🏢 35m Cyber Gateway"
+  },
+  {
+    "id": "ikea_hyd",
+    "name": "IKEA Hyderabad",
+    "category": "Flagship Retail",
+    "description": "400,000 sq ft Swedish retail mega-store and commercial anchor of the HITEC City retail belt.",
+    "pos": [
+      -795.0,
+      24.0,
+      -177.0
+    ],
+    "cameraPos": [
+      -795.0,
+      75.0,
+      -20.0
+    ],
+    "target": [
+      -795.0,
+      15.0,
+      -177.0
+    ],
+    "height": 24.0,
+    "badge": "🛍️ IKEA Flagship"
+  },
+  {
     "id": "wells_fargo_t4",
     "name": "Wells Fargo Tower 4",
     "category": "Corporate Skyscraper",
     "description": "80.5m tall, 23-storey LEED v4.1 Platinum corporate IT tower in DivyaSree Orion, Raidurg.",
     "pos": [
-      -389.0,
-      45.0,
-      -113.0
+      109.0,
+      80.5,
+      1364.0
     ],
     "cameraPos": [
-      -389.0,
-      120.0,
-      40.0
+      109.0,
+      150.0,
+      1520.0
     ],
     "target": [
-      -389.0,
-      40.0,
-      -113.0
+      109.0,
+      65.0,
+      1364.0
     ],
     "height": 80.5,
     "badge": "🏢 80.5m Wells Fargo"
@@ -26,24 +164,24 @@
     "id": "qualcomm",
     "name": "Qualcomm Commerzone",
     "category": "Skyscraper",
-    "description": "100m tall tier-1 tech headquarters tower with 33 floors, the tallest building in this sector.",
+    "description": "100m tall tier-1 tech headquarters tower with 33 floors, a premier skyscraper in the Knowledge City corridor.",
     "pos": [
-      -52.0,
-      50.0,
-      -296.0
+      59.0,
+      100.0,
+      1164.0
     ],
     "cameraPos": [
-      -52.0,
-      90.0,
-      -180.0
+      59.0,
+      160.0,
+      1310.0
     ],
     "target": [
-      -52.0,
-      30.0,
-      -296.0
+      59.0,
+      80.0,
+      1164.0
     ],
     "height": 100.0,
-    "badge": "🏢 100m Tallest"
+    "badge": "🏢 100m Qualcomm"
   },
   {
     "id": "sattva_knowledge_city",
@@ -51,68 +189,22 @@
     "category": "IT Mega-Campus",
     "description": "77m Grade-A tech hub hosting Novartis, Microsoft, and premier enterprise development centres.",
     "pos": [
-      12.0,
-      40.0,
-      -956.0
+      131.0,
+      77.0,
+      500.0
     ],
     "cameraPos": [
-      12.0,
-      110.0,
-      -820.0
+      131.0,
+      140.0,
+      650.0
     ],
     "target": [
-      12.0,
-      38.0,
-      -956.0
+      131.0,
+      60.0,
+      500.0
     ],
     "height": 77.0,
     "badge": "🏙️ 77m Knowledge City"
-  },
-  {
-    "id": "durgam_bridge",
-    "name": "Durgam Cheruvu Cable Bridge",
-    "category": "Infrastructure",
-    "description": "Iconic 435m extradosed cable-stayed bridge with suspended deck and dynamic illumination.",
-    "pos": [
-      420.0,
-      15.0,
-      -380.0
-    ],
-    "cameraPos": [
-      420.0,
-      45.0,
-      -260.0
-    ],
-    "target": [
-      420.0,
-      5.0,
-      -380.0
-    ],
-    "height": 45.0,
-    "badge": "🌉 Landmark Bridge"
-  },
-  {
-    "id": "durgam_lake",
-    "name": "Durgam Cheruvu (Secret Lake)",
-    "category": "Nature & Water",
-    "description": "Ancient freshwater reservoir dating back to the Qutb Shahi era (1518–1687), surrounded by heritage granite rocks.",
-    "pos": [
-      488.0,
-      2.0,
-      -346.0
-    ],
-    "cameraPos": [
-      488.0,
-      80.0,
-      -180.0
-    ],
-    "target": [
-      488.0,
-      0.0,
-      -346.0
-    ],
-    "height": 0.0,
-    "badge": "💧 Water Basin"
   },
   {
     "id": "inorbit_mall",
@@ -120,22 +212,45 @@
     "category": "Retail & Commerce",
     "description": "Major 26m retail mega-complex overlooking the lake with 800,000+ sq ft of commercial space.",
     "pos": [
-      592.0,
-      15.0,
-      -1110.0
+      686.0,
+      26.0,
+      364.0
     ],
     "cameraPos": [
-      592.0,
-      60.0,
-      -980.0
+      686.0,
+      75.0,
+      510.0
     ],
     "target": [
-      592.0,
-      10.0,
-      -1110.0
+      686.0,
+      15.0,
+      364.0
     ],
     "height": 26.0,
-    "badge": "🛍️ Retail Mega-Hub"
+    "badge": "🛍️ Inorbit Mall"
+  },
+  {
+    "id": "durgam_bridge",
+    "name": "Durgam Cheruvu Cable Bridge",
+    "category": "Infrastructure",
+    "description": "Iconic 435m extradosed cable-stayed bridge with suspended deck and dynamic illumination.",
+    "pos": [
+      925.0,
+      45.0,
+      788.0
+    ],
+    "cameraPos": [
+      925.0,
+      85.0,
+      930.0
+    ],
+    "target": [
+      925.0,
+      20.0,
+      788.0
+    ],
+    "height": 45.0,
+    "badge": "🌉 Cable Bridge"
   },
   {
     "id": "ilabs_tech",
@@ -143,44 +258,21 @@
     "category": "Tech Campus",
     "description": "35m tech park campus and iconic Oval Office building perched on the lakeside bluff.",
     "pos": [
-      324.0,
-      15.0,
-      -471.0
+      433.0,
+      35.0,
+      1003.0
     ],
     "cameraPos": [
-      324.0,
-      60.0,
-      -350.0
+      433.0,
+      80.0,
+      1150.0
     ],
     "target": [
-      324.0,
-      10.0,
-      -471.0
+      433.0,
+      25.0,
+      1003.0
     ],
     "height": 35.0,
-    "badge": "💻 Tech Park"
-  },
-  {
-    "id": "imax_tower",
-    "name": "Kishan Sir IMAX Entertainment",
-    "category": "Entertainment",
-    "description": "60m entertainment and cinema complex situated in the southern sector.",
-    "pos": [
-      -195.0,
-      30.0,
-      22.0
-    ],
-    "cameraPos": [
-      -195.0,
-      70.0,
-      120.0
-    ],
-    "target": [
-      -195.0,
-      15.0,
-      22.0
-    ],
-    "height": 60.0,
-    "badge": "🎭 60m Tower"
+    "badge": "💻 iLabs Tech Park"
   }
 ]

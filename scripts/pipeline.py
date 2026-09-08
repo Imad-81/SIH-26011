@@ -61,12 +61,12 @@ warnings.filterwarnings('ignore', category=FutureWarning)
 # CONFIGURATION
 # ═══════════════════════════════════════════════════════════════════
 
-# Durgam Cheruvu / HITEC City center
-CENTER_LAT = 17.4239
-CENTER_LON = 78.3812
+# HITEC City expanded center (encompassing Cyber Towers, Mindspace, IKEA, Knowledge City)
+CENTER_LAT = 17.4370
+CENTER_LON = 78.3800
 
-# 3 km × 3 km bounding box (~9 km²)
-HALF_SIZE_KM = 1.5
+# 4.0 km × 4.0 km bounding box (~16 km²)
+HALF_SIZE_KM = 2.0
 
 # CRS
 CRS_WGS84 = "EPSG:4326"
@@ -190,7 +190,20 @@ def download_osm_buildings(aoi):
     banner("STAGE 2: OSM Building Download")
 
     output_path = RAW_DIR / "osm_buildings.geojson"
-    if output_path.exists() and output_path.stat().st_size > 50000:
+    meta_path = RAW_DIR / "aoi_cache_meta.json"
+    
+    # Check if cache matches current AOI bbox
+    cache_valid = False
+    if meta_path.exists() and output_path.exists() and output_path.stat().st_size > 50000:
+        try:
+            with open(meta_path) as mf:
+                m = json.load(mf)
+            if m.get("bbox") == aoi["bbox"]:
+                cache_valid = True
+        except Exception:
+            pass
+
+    if cache_valid:
         info(f"Using cached OSM buildings: {output_path.name} ({output_path.stat().st_size / 1024:.1f} KB)")
         return output_path
 
@@ -210,8 +223,8 @@ out skel qt;
 
     # Try multiple Overpass API mirrors
     mirrors = [
-        ("maps.mail.ru", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"),
         ("overpass-api.de", "https://overpass-api.de/api/interpreter"),
+        ("maps.mail.ru", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"),
         ("overpass.kumi.systems", "https://overpass.kumi.systems/api/interpreter"),
     ]
 
@@ -270,6 +283,10 @@ out skel qt;
             if not poly.is_valid:
                 poly = poly.buffer(0)
             if poly.is_empty or not poly.is_valid:
+                continue
+            # Filter out tiny sub-sheds / utility boxes (< 15 m2) for visual cleanliness & performance
+            approx_area_m2 = poly.area * 111320.0 * 106000.0
+            if approx_area_m2 < 15.0:
                 continue
         except Exception:
             continue
@@ -383,6 +400,10 @@ out skel qt;
 
     with open(output_path, "w") as f:
         json.dump(geojson, f)
+
+    # Save cache metadata for AOI validation
+    with open(meta_path, "w") as mf:
+        json.dump({"bbox": aoi["bbox"], "center": aoi["center"], "size_km": aoi["size_km"]}, mf)
 
     info(f"Downloaded {len(features)} buildings → {output_path.name}")
 
@@ -826,10 +847,9 @@ def estimate_building_heights(aoi, buildings_path, dem_path, dsm_path, dem_same_
         # -------------------------------------------------------------
         is_in_tech_corridor = False
         if centroid is not None:
-            # Check if inside Raidurg/Knowledge City or Mindspace bounding envelopes
-            in_raidurg = (220500 <= centroid.x <= 222200 and 1927400 <= centroid.y <= 1929600)
-            in_mindspace = (221800 <= centroid.x <= 223300 and 1928400 <= centroid.y <= 1929900)
-            is_in_tech_corridor = in_raidurg or in_mindspace
+            # Encompasses the entire continuous HITEC City IT Corridor:
+            # Raidurg, Knowledge City, Mindspace, Cyber Towers, Phoenix Avance, Cyber Gateway
+            is_in_tech_corridor = (220400 <= centroid.x <= 223600 and 1927400 <= centroid.y <= 1932200)
 
         # -------------------------------------------------------------
         # TIER 4: Morphological & Typological Regression / Rules Engine
@@ -1351,6 +1371,61 @@ def generate_terrain_data(aoi, dem_path):
         warn(f"Terrain data generation failed: {e}")
 
 
+def generate_water_data(aoi):
+    """Synchronize water bodies and bridge deck alignment to AOI center for the viewer."""
+    banner("STAGE 8b: Water & Bridge Synchronization")
+
+    water_raw = RAW_DIR / "water_features.json"
+    if not water_raw.exists():
+        warn("No raw water features found, skipping water data generation")
+        return
+
+    transformer = pyproj.Transformer.from_crs(CRS_WGS84, CRS_UTM, always_xy=True)
+    center_x, center_y = transformer.transform(aoi["center"]["lon"], aoi["center"]["lat"])
+
+    with open(water_raw) as f:
+        raw = json.load(f)
+
+    elements = raw.get("elements", [])
+    nodes = {e["id"]: (e["lon"], e["lat"]) for e in elements if e["type"] == "node"}
+
+    water_items = []
+    bridge_items = []
+
+    for e in elements:
+        tags = e.get("tags", {})
+        name = tags.get("name", "")
+        is_water = tags.get("natural") == "water" or tags.get("water") in ["lake", "reservoir", "pond"]
+        is_bridge = tags.get("bridge") == "yes" and "durgam" in name.lower()
+
+        if e.get("type") == "way" and (is_water or is_bridge):
+            way_nodes = [nodes[nid] for nid in e.get("nodes", []) if nid in nodes]
+            if len(way_nodes) >= 3:
+                rel_coords = []
+                for lon, lat in way_nodes:
+                    ux, uy = transformer.transform(lon, lat)
+                    rel_coords.append([round(ux - center_x, 2), round(uy - center_y, 2)])
+
+                item = {
+                    "id": str(e["id"]),
+                    "name": name or ("Durgam Cheruvu" if is_water else "Durgam Cheruvu Bridge"),
+                    "coordinates": rel_coords,
+                }
+                if is_water and len(rel_coords) >= 4:
+                    water_items.append(item)
+                elif is_bridge:
+                    bridge_items.append(item)
+
+    water_data = {
+        "water": water_items,
+        "bridges": bridge_items,
+    }
+    water_out = VIEWER_DATA_DIR / "water.json"
+    with open(water_out, "w") as f:
+        json.dump(water_data, f, indent=2)
+    info(f"Water & bridge data synchronized → {water_out.name} ({len(water_items)} water, {len(bridge_items)} bridges)")
+
+
 # ═══════════════════════════════════════════════════════════════════
 # STAGE 9: VISUALIZATION
 # ═══════════════════════════════════════════════════════════════════
@@ -1633,6 +1708,9 @@ def main():
 
     # Stage 8: Terrain Data
     generate_terrain_data(aoi, dem_clipped)
+
+    # Stage 8b: Water & Bridge Data
+    generate_water_data(aoi)
 
     # Stage 9: Preview
     generate_preview(gdf, aoi)

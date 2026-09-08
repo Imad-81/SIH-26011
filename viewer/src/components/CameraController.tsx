@@ -14,27 +14,32 @@ export interface CameraPreset {
 export const CAMERA_PRESETS: Record<string, CameraPreset> = {
   default: {
     name: 'Overview',
-    camPos: [800, 420, 800],
+    camPos: [1100, 650, 1100],
     target: [0, 0, 0],
   },
-  lake: {
-    name: 'Durgam Cheruvu Lake',
-    camPos: [450, 90, -180],
-    target: [488, 0, -346],
+  skyscrapers: {
+    name: 'Mindspace Skyline',
+    camPos: [-155, 160, -150],
+    target: [-155, 60, -323],
+  },
+  cybertowers: {
+    name: 'Cyber Towers',
+    camPos: [116, 120, -1300],
+    target: [116, 40, -1471],
   },
   bridge: {
     name: 'Cable Bridge',
-    camPos: [420, 50, -250],
-    target: [420, 10, -380],
+    camPos: [925, 90, 950],
+    target: [925, 20, 788],
   },
-  skyscrapers: {
-    name: 'HITEC Skyline',
-    camPos: [-52, 110, -160],
-    target: [-80, 35, -296],
+  lake: {
+    name: 'Durgam Cheruvu Lake',
+    camPos: [800, 100, 900],
+    target: [800, 0, 650],
   },
   ortho: {
     name: 'Top-Down GIS',
-    camPos: [0, 1900, 1],
+    camPos: [0, 2600, 1],
     target: [0, 0, 0],
   },
 };
@@ -42,27 +47,32 @@ export const CAMERA_PRESETS: Record<string, CameraPreset> = {
 // 5-waypoint Cinematic Drone Flythrough Tour
 const TOUR_WAYPOINTS = [
   {
-    camPos: new THREE.Vector3(700, 140, -150),
-    target: new THREE.Vector3(488, 5, -346),
+    // Waypoint 1: Cyber Towers
+    camPos: new THREE.Vector3(116, 110, -1320),
+    target: new THREE.Vector3(116, 40, -1471),
     duration: 6.0,
   },
   {
-    camPos: new THREE.Vector3(410, 40, -260),
-    target: new THREE.Vector3(420, 15, -380),
+    // Waypoint 2: Mindspace High-Rise Cluster
+    camPos: new THREE.Vector3(-155, 140, -170),
+    target: new THREE.Vector3(-155, 60, -323),
     duration: 6.0,
   },
   {
-    camPos: new THREE.Vector3(80, 80, -220),
-    target: new THREE.Vector3(-52, 45, -296),
+    // Waypoint 3: Durgam Cable Bridge
+    camPos: new THREE.Vector3(925, 85, 930),
+    target: new THREE.Vector3(925, 20, 788),
     duration: 6.5,
   },
   {
-    camPos: new THREE.Vector3(200, 100, -420),
-    target: new THREE.Vector3(296, 15, -555),
+    // Waypoint 4: Wells Fargo & Knowledge City
+    camPos: new THREE.Vector3(109, 150, 1520),
+    target: new THREE.Vector3(109, 65, 1364),
     duration: 6.0,
   },
   {
-    camPos: new THREE.Vector3(850, 650, 850),
+    // Waypoint 5: Panoramic Overview
+    camPos: new THREE.Vector3(1200, 750, 1200),
     target: new THREE.Vector3(0, 0, 0),
     duration: 7.0,
   },

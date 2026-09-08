@@ -3,17 +3,17 @@
   "area_of_interest": {
     "name": "Durgam Cheruvu / HITEC City, Hyderabad, Telangana, India",
     "center_wgs84": {
-      "lat": 17.4239,
-      "lon": 78.3812
+      "lat": 17.437,
+      "lon": 78.38
     },
     "bbox_wgs84": {
-      "south": 17.410425,
-      "north": 17.437375,
-      "west": 78.367077,
-      "east": 78.395323
+      "south": 17.419034,
+      "north": 17.454966,
+      "west": 78.361168,
+      "east": 78.398832
     },
-    "size_km": "3.0 \u00d7 3.0",
-    "approximate_area_km2": 9.0,
+    "size_km": "4.0 \u00d7 4.0",
+    "approximate_area_km2": 16.0,
     "crs_geographic": "EPSG:4326",
     "crs_projected": "EPSG:32644"
   },
@@ -22,7 +22,7 @@
       "source": "OpenStreetMap",
       "api": "Overpass API (https://overpass-api.de/api/interpreter)",
       "license": "ODbL 1.0 (https://opendatacommons.org/licenses/odbl/1-0/)",
-      "download_date": "2026-09-08T13:29:44.026621+00:00"
+      "download_date": "2026-09-08T13:42:36.469343+00:00"
     },
     "dsm": {
       "source": "Copernicus DEM GLO-30",
@@ -32,13 +32,13 @@
       "crs": "EPSG:4326",
       "download_url": "https://copernicus-dem-30m.s3.amazonaws.com/",
       "license": "Copernicus licence (https://spacedata.copernicus.eu/en/web/guest/collections/copernicus-digital-elevation-model)",
-      "download_date": "2026-09-08T13:29:44.026628+00:00"
+      "download_date": "2026-09-08T13:42:36.469349+00:00"
     },
     "dem": {
       "source": "SRTM GL1 via OpenTopography",
       "description": "Used as bare-earth approximation",
       "api": "OpenTopography GlobalDEM API",
-      "download_date": "2026-09-08T13:29:44.026629+00:00",
+      "download_date": "2026-09-08T13:42:36.469351+00:00",
       "note": "SRTM is technically a DSM but older data (2000) serves as ground approximation"
     }
   },
@@ -53,25 +53,25 @@
     "3d_extrusion": "Prismatic extrusion with terrain base elevations"
   },
   "statistics": {
-    "total_buildings": 2707,
+    "total_buildings": 8655,
     "height_sources": {
-      "morphological_residential": 2118,
-      "morphological_midrise": 211,
-      "morphological_small": 198,
-      "morphological_office": 89,
-      "osm_levels": 45,
-      "landmark_registry": 31,
-      "morphological_large": 5,
-      "morphological_civic": 5,
-      "morphological_retail": 2,
-      "osm_tag": 2,
-      "raster_annular": 1
+      "morphological_residential": 6308,
+      "morphological_small": 1458,
+      "morphological_midrise": 423,
+      "morphological_office": 267,
+      "osm_levels": 128,
+      "landmark_registry": 41,
+      "morphological_retail": 8,
+      "morphological_large": 7,
+      "osm_tag": 7,
+      "raster_annular": 4,
+      "morphological_civic": 4
     },
     "height_range_m": {
       "min": 3.5,
       "max": 122.5,
-      "mean": 12.74,
-      "median": 11.8
+      "mean": 11.16,
+      "median": 11.7
     }
   },
   "disclaimer": "The generated building heights and 3D geometries are prototype estimates and are not authoritative cadastral or survey data."

@@ -377,6 +377,97 @@
       "height_m": 50.0,
       "floors": 14,
       "category": "Luxury Hotel"
+    },
+    {
+      "regex": "cyber\\s*towers?",
+      "name": "Cyber Towers",
+      "height_m": 45.0,
+      "floors": 10,
+      "category": "Iconic IT Landmark"
+    },
+    {
+      "regex": "cyber\\s*gateway",
+      "name": "Cyber Gateway",
+      "height_m": 35.0,
+      "floors": 8,
+      "category": "IT Technology Park"
+    },
+    {
+      "regex": "cyber\\s*pearl",
+      "name": "Cyber Pearl",
+      "height_m": 35.0,
+      "floors": 8,
+      "category": "IT Technology Park"
+    },
+    {
+      "regex": "ikea",
+      "name": "IKEA Hyderabad",
+      "height_m": 24.0,
+      "floors": 4,
+      "category": "Flagship Retail Store"
+    },
+    {
+      "regex": "mindspace.*building|raheja.*mindspace|mindspace.*tower",
+      "name": "Raheja Mindspace IT Tower",
+      "height_m": 78.0,
+      "floors": 22,
+      "category": "Grade-A IT Skyscraper"
+    },
+    {
+      "regex": "phoenix.*avance|phoenix.*trivium|phoenix.*h09|phoenix.*tech",
+      "name": "Phoenix Avance Business Hub",
+      "height_m": 85.0,
+      "floors": 24,
+      "category": "Corporate High-Rise Tower"
+    },
+    {
+      "regex": "my\\s*home\\s*bhooja",
+      "name": "My Home Bhooja",
+      "height_m": 115.0,
+      "floors": 36,
+      "category": "Luxury Residential Skyscraper"
+    },
+    {
+      "regex": "my\\s*home\\s*twitza",
+      "name": "My Home Twitza",
+      "height_m": 80.0,
+      "floors": 22,
+      "category": "Corporate IT High-Rise"
+    },
+    {
+      "regex": "ascendas|the\\s*v\\b|v\\s*park",
+      "name": "The V IT Park (Ascendas)",
+      "height_m": 55.0,
+      "floors": 15,
+      "category": "IT Technology Campus"
+    },
+    {
+      "regex": "meenakshi.*tech|deloitte",
+      "name": "Meenakshi Tech Park (Deloitte)",
+      "height_m": 72.0,
+      "floors": 20,
+      "category": "Enterprise IT Tower"
+    },
+    {
+      "regex": "jayabheri",
+      "name": "Jayabheri Silicon County",
+      "height_m": 60.0,
+      "floors": 18,
+      "category": "High-Rise Residential"
+    },
+    {
+      "regex": "shilparamam",
+      "name": "Shilparamam Arts & Crafts Village",
+      "height_m": 14.0,
+      "floors": 3,
+      "category": "Cultural Heritage Complex"
+    },
+    {
+      "regex": "aig\\s*hospital",
+      "name": "AIG Hospitals",
+      "height_m": 56.0,
+      "floors": 15,
+      "category": "Super-Specialty Medical Center"
     }
   ]
 }
