@@ -1,32 +1,32 @@
 [
   {
-    "id": "durgam_bridge",
-    "name": "Durgam Cheruvu Cable Bridge",
-    "category": "Infrastructure",
-    "description": "Iconic 435m extradosed cable-stayed bridge with suspended deck and dynamic night illumination.",
+    "id": "wells_fargo_t4",
+    "name": "Wells Fargo Tower 4",
+    "category": "Corporate Skyscraper",
+    "description": "80.5m tall, 23-storey LEED v4.1 Platinum corporate IT tower in DivyaSree Orion, Raidurg.",
     "pos": [
-      420.0,
-      15.0,
-      -380.0
+      -389.0,
+      45.0,
+      -113.0
     ],
     "cameraPos": [
-      420.0,
-      45.0,
-      -260.0
+      -389.0,
+      120.0,
+      40.0
     ],
     "target": [
-      420.0,
-      5.0,
-      -380.0
+      -389.0,
+      40.0,
+      -113.0
     ],
-    "height": 45.0,
-    "badge": "\ud83c\udf09 Landmark"
+    "height": 80.5,
+    "badge": "🏢 80.5m Wells Fargo"
   },
   {
     "id": "qualcomm",
     "name": "Qualcomm Commerzone",
     "category": "Skyscraper",
-    "description": "100m tall tier-1 tech headquarters tower with 33 floors, the tallest building in this 3 km\u00b2 sector.",
+    "description": "100m tall tier-1 tech headquarters tower with 33 floors, the tallest building in this sector.",
     "pos": [
       -52.0,
       50.0,
@@ -43,13 +43,59 @@
       -296.0
     ],
     "height": 100.0,
-    "badge": "\ud83c\udfe2 100m Tallest"
+    "badge": "🏢 100m Tallest"
+  },
+  {
+    "id": "sattva_knowledge_city",
+    "name": "Salarpuria Sattva Knowledge City",
+    "category": "IT Mega-Campus",
+    "description": "77m Grade-A tech hub hosting Novartis, Microsoft, and premier enterprise development centres.",
+    "pos": [
+      12.0,
+      40.0,
+      -956.0
+    ],
+    "cameraPos": [
+      12.0,
+      110.0,
+      -820.0
+    ],
+    "target": [
+      12.0,
+      38.0,
+      -956.0
+    ],
+    "height": 77.0,
+    "badge": "🏙️ 77m Knowledge City"
+  },
+  {
+    "id": "durgam_bridge",
+    "name": "Durgam Cheruvu Cable Bridge",
+    "category": "Infrastructure",
+    "description": "Iconic 435m extradosed cable-stayed bridge with suspended deck and dynamic illumination.",
+    "pos": [
+      420.0,
+      15.0,
+      -380.0
+    ],
+    "cameraPos": [
+      420.0,
+      45.0,
+      -260.0
+    ],
+    "target": [
+      420.0,
+      5.0,
+      -380.0
+    ],
+    "height": 45.0,
+    "badge": "🌉 Landmark Bridge"
   },
   {
     "id": "durgam_lake",
     "name": "Durgam Cheruvu (Secret Lake)",
     "category": "Nature & Water",
-    "description": "Ancient freshwater reservoir dating back to the Qutb Shahi era (1518\u20131687), surrounded by heritage granite rocks.",
+    "description": "Ancient freshwater reservoir dating back to the Qutb Shahi era (1518–1687), surrounded by heritage granite rocks.",
     "pos": [
       488.0,
       2.0,
@@ -66,36 +112,36 @@
       -346.0
     ],
     "height": 0.0,
-    "badge": "\ud83d\udca7 Water Basin"
+    "badge": "💧 Water Basin"
   },
   {
     "id": "inorbit_mall",
     "name": "Inorbit Mall Cyberabad",
     "category": "Retail & Commerce",
-    "description": "Major retail mega-complex overlooking the lake with 800,000+ sq ft of commercial space.",
+    "description": "Major 26m retail mega-complex overlooking the lake with 800,000+ sq ft of commercial space.",
     "pos": [
-      296.0,
-      10.0,
-      -555.0
+      592.0,
+      15.0,
+      -1110.0
     ],
     "cameraPos": [
-      296.0,
-      50.0,
-      -420.0
+      592.0,
+      60.0,
+      -980.0
     ],
     "target": [
-      296.0,
-      5.0,
-      -555.0
+      592.0,
+      10.0,
+      -1110.0
     ],
-    "height": 24.0,
-    "badge": "\ud83d\udecd\ufe0f Retail Hub"
+    "height": 26.0,
+    "badge": "🛍️ Retail Mega-Hub"
   },
   {
     "id": "ilabs_tech",
     "name": "iLabs Technology Park",
     "category": "Tech Campus",
-    "description": "30m tech park campus and iconic Oval Office building perched on the lakeside bluff.",
+    "description": "35m tech park campus and iconic Oval Office building perched on the lakeside bluff.",
     "pos": [
       324.0,
       15.0,
@@ -111,8 +157,8 @@
       10.0,
       -471.0
     ],
-    "height": 30.0,
-    "badge": "\ud83d\udcbb Tech Park"
+    "height": 35.0,
+    "badge": "💻 Tech Park"
   },
   {
     "id": "imax_tower",
@@ -135,6 +181,6 @@
       22.0
     ],
     "height": 60.0,
-    "badge": "\ud83c\udfac 60m Tower"
+    "badge": "🎭 60m Tower"
   }
 ]

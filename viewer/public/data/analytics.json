@@ -1,14 +1,14 @@
 {
   "totalBuildings": 2707,
-  "totalFootprintAreaM2": 1024863.4,
-  "totalBuiltVolumeM3": 9897167.2,
-  "grossFloorAreaM2": 3101052.2,
+  "totalFootprintAreaM2": 1024861.2,
+  "totalBuiltVolumeM3": 33344976.1,
+  "grossFloorAreaM2": 9848440.8,
   "heightBuckets": {
-    "0-5m": 2645,
-    "5-15m": 28,
-    "15-30m": 13,
-    "30-60m": 7,
-    "60m+": 14
+    "0-5m": 204,
+    "5-15m": 2213,
+    "15-30m": 162,
+    "30-60m": 98,
+    "60m+": 30
   },
   "typeBreakdown": {
     "commercial": 40,
@@ -24,10 +24,10 @@
     "shed": 1
   },
   "solar": {
-    "usableRooftopAreaM2": 768647.5,
-    "dailyGenerationKwh": 760961.1,
-    "annualGenerationMwh": 277750.8,
-    "annualCo2OffsetTons": 227755.6,
+    "usableRooftopAreaM2": 768645.9,
+    "dailyGenerationKwh": 760959.5,
+    "annualGenerationMwh": 277750.2,
+    "annualCo2OffsetTons": 227755.2,
     "ghiAverage": 5.5
   }
 }

@@ -28,10 +28,13 @@ export interface AOIData {
 
 export interface DataStats {
   total: number;
-  withRasterHeight: number;
-  withOsmHeight: number;
-  withOsmLevels: number;
-  withDefault: number;
+  withRasterHeight?: number;
+  withRasterAnnular?: number;
+  withOsmHeight?: number;
+  withOsmLevels?: number;
+  withLandmarkRegistry?: number;
+  withMorphological?: number;
+  withDefault?: number;
 }
 
 export interface TerrainData {

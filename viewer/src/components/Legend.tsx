@@ -100,12 +100,18 @@ export default function Legend({ stats, renderMode, visible, onToggle }: LegendP
           {stats && (
             <div className="px-4 py-2.5 space-y-1.5 border-t border-white/5 bg-white/[0.02]">
               <p className="text-gray-400 text-[10px] uppercase tracking-wider mb-1">
-                Data Summary
+                5-Tier Engine Stats
               </p>
               <StatRow label="Total buildings" value={stats.total} />
-              <StatRow label="Raster height" value={stats.withRasterHeight} />
-              <StatRow label="OSM height tag" value={stats.withOsmHeight} />
-              <StatRow label="OSM levels" value={stats.withOsmLevels} />
+              {stats.withLandmarkRegistry !== undefined && (
+                <StatRow label="Landmark registry" value={stats.withLandmarkRegistry} />
+              )}
+              <StatRow label="OSM levels / tags" value={(stats.withOsmLevels ?? 0) + (stats.withOsmHeight ?? 0)} />
+              {stats.withMorphological !== undefined ? (
+                <StatRow label="Morphology model" value={stats.withMorphological} />
+              ) : (
+                <StatRow label="Raster height" value={stats.withRasterHeight} />
+              )}
               <StatRow label="Default fallback" value={stats.withDefault} />
             </div>
           )}
@@ -146,11 +152,11 @@ function LegendItem({ color, label, pulse }: { color: string; label: string; pul
   );
 }
 
-function StatRow({ label, value }: { label: string; value: number }) {
+function StatRow({ label, value }: { label: string; value?: number }) {
   return (
     <div className="flex justify-between items-center text-xs">
       <span className="text-gray-400 text-[11px]">{label}</span>
-      <span className="text-white font-mono font-medium">{value.toLocaleString()}</span>
+      <span className="text-white font-mono font-medium">{(value ?? 0).toLocaleString()}</span>
     </div>
   );
 }

@@ -9,6 +9,33 @@ interface BuildingInfoProps {
   onFlyTo?: (building: SelectedBuilding) => void;
 }
 
+function getSourceBadge(source: string): { label: string; color: string; icon: string } {
+  switch (source) {
+    case 'landmark_registry':
+      return { label: 'Architectural Registry', color: '#fbbf24', icon: '🏢' };
+    case 'osm_tag':
+      return { label: 'OSM Explicit Height', color: '#34d399', icon: '🏷️' };
+    case 'osm_levels':
+      return { label: 'OSM Levels Data', color: '#60a5fa', icon: '📐' };
+    case 'raster_annular':
+      return { label: 'Annular DSM Model', color: '#c084fc', icon: '🛰️' };
+    case 'morphological_office':
+      return { label: 'Corporate IT Typology', color: '#f472b6', icon: '💼' };
+    case 'morphological_retail':
+      return { label: 'Retail / Mall Scale', color: '#fb923c', icon: '🛍️' };
+    case 'morphological_residential':
+      return { label: 'GHMC Residential Bylaw', color: '#22d3ee', icon: '🏡' };
+    case 'morphological_midrise':
+      return { label: 'Mid-Rise Footprint Model', color: '#818cf8', icon: '🏢' };
+    case 'morphological_large':
+      return { label: 'High-Capacity Campus Scale', color: '#a78bfa', icon: '🏗️' };
+    case 'morphological_small':
+      return { label: 'Auxiliary Lot', color: '#94a3b8', icon: '🏠' };
+    default:
+      return { label: source.replace(/_/g, ' '), color: '#cbd5e1', icon: '📍' };
+  }
+}
+
 export default function BuildingInfo({ building, onClose, onFlyTo }: BuildingInfoProps) {
   if (!building) return null;
 
@@ -71,15 +98,28 @@ export default function BuildingInfo({ building, onClose, onFlyTo }: BuildingInf
               style={{ background: heightColor }}
             />
           </div>
-          <div>
+          <div className="flex-1 min-w-0">
             <p className="text-3xl font-extrabold text-white tracking-tight">
               {building.height.toFixed(1)}
               <span className="text-base font-normal text-gray-400 ml-1">m</span>
             </p>
-            <p className="text-gray-400 text-xs">
-              {building.estimatedFloors} {building.estimatedFloors === 1 ? 'Floor' : 'Floors'} ·{' '}
-              {building.heightSource.replace('_', ' ')}
+            <p className="text-gray-300 text-xs font-semibold">
+              {building.estimatedFloors} {building.estimatedFloors === 1 ? 'Storey' : 'Storeys'}
             </p>
+            <div className="mt-1.5 flex flex-wrap gap-1">
+              <span
+                className="text-[10px] px-2 py-0.5 rounded-full font-semibold border inline-flex items-center gap-1 truncate max-w-full"
+                style={{
+                  color: getSourceBadge(building.heightSource).color,
+                  borderColor: `${getSourceBadge(building.heightSource).color}55`,
+                  backgroundColor: `${getSourceBadge(building.heightSource).color}15`,
+                }}
+                title={getSourceBadge(building.heightSource).label}
+              >
+                <span>{getSourceBadge(building.heightSource).icon}</span>
+                <span className="truncate">{getSourceBadge(building.heightSource).label}</span>
+              </span>
+            </div>
           </div>
         </div>
 

@@ -1,0 +1,382 @@
+{
+  "description": "Authoritative architectural registry for iconic commercial, IT, and residential towers in HITEC City / Knowledge City / Raidurg / Durgam Cheruvu, Hyderabad",
+  "version": "1.0",
+  "updated_at": "2026-09-08T18:47:00Z",
+  "by_osm_id": {
+    "1299545984": {
+      "name": "Wells Fargo Tower 4",
+      "campus": "DivyaSree Orion",
+      "location": "Raidurg, Hyderabad",
+      "height_m": 80.5,
+      "floors": 23,
+      "category": "Corporate IT Skyscraper",
+      "confidence": "high",
+      "source": "Architectural Records & LEED v4.1 Platinum Filing"
+    },
+    "68871414": {
+      "name": "Inorbit Mall Cyberabad",
+      "campus": "Inorbit",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 26.0,
+      "floors": 6,
+      "category": "Retail & Entertainment Complex",
+      "confidence": "high",
+      "source": "Mall Specifications (6 levels + multiplex)"
+    },
+    "558276571": {
+      "name": "Salarpuria Sattva Knowledge City (Tower 1)",
+      "campus": "Knowledge City",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 77.0,
+      "floors": 22,
+      "category": "Grade-A IT Park",
+      "confidence": "high",
+      "source": "Salarpuria Sattva Specifications"
+    },
+    "852979201": {
+      "name": "Salarpuria Sattva Knowledge City (Tower 2)",
+      "campus": "Knowledge City",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 77.0,
+      "floors": 22,
+      "category": "Grade-A IT Park",
+      "confidence": "high",
+      "source": "Salarpuria Sattva Specifications"
+    },
+    "852979202": {
+      "name": "Salarpuria Sattva Knowledge City (Tower 3)",
+      "campus": "Knowledge City",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 70.0,
+      "floors": 20,
+      "category": "Grade-A IT Park",
+      "confidence": "high",
+      "source": "Salarpuria Sattva Specifications"
+    },
+    "1133269186": {
+      "name": "Salarpuria Sattva Knowledge Park Tower 1",
+      "campus": "Knowledge City",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 70.0,
+      "floors": 20,
+      "category": "Grade-A IT Park",
+      "confidence": "high",
+      "source": "Salarpuria Sattva Specifications"
+    },
+    "1133460475": {
+      "name": "Salarpuria Sattva Knowledge Park Tower 2",
+      "campus": "Knowledge City",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 77.0,
+      "floors": 22,
+      "category": "Grade-A IT Park",
+      "confidence": "high",
+      "source": "Salarpuria Sattva Specifications"
+    },
+    "558351785": {
+      "name": "Novartis",
+      "campus": "Knowledge City",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 56.0,
+      "floors": 16,
+      "category": "Global Delivery Centre",
+      "confidence": "high",
+      "source": "Corporate Architecture Records"
+    },
+    "5320443": {
+      "name": "Mariner Building",
+      "campus": "The V / International Tech Park",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 49.0,
+      "floors": 14,
+      "category": "IT Park Commercial Tower",
+      "confidence": "high",
+      "source": "Ascendas / CapitaLand Specifications"
+    },
+    "68875332": {
+      "name": "Capella Block",
+      "campus": "The V / International Tech Park",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 42.0,
+      "floors": 12,
+      "category": "IT Park Commercial Tower",
+      "confidence": "high",
+      "source": "Ascendas / CapitaLand Specifications"
+    },
+    "68875336": {
+      "name": "Vega Block",
+      "campus": "The V / International Tech Park",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 42.0,
+      "floors": 12,
+      "category": "IT Park Commercial Tower",
+      "confidence": "high",
+      "source": "Ascendas / CapitaLand Specifications"
+    },
+    "68879527": {
+      "name": "Orion",
+      "campus": "DivyaSree Orion",
+      "location": "Raidurg, Hyderabad",
+      "height_m": 70.0,
+      "floors": 20,
+      "category": "IT Tech Park",
+      "confidence": "high",
+      "source": "DivyaSree Campus Master Plan"
+    },
+    "292769248": {
+      "name": "Divyasree Solitaire",
+      "campus": "DivyaSree NSL",
+      "location": "Raidurg, Hyderabad",
+      "height_m": 42.0,
+      "floors": 12,
+      "category": "Commercial IT Tower",
+      "confidence": "high",
+      "source": "DivyaSree Specifications"
+    },
+    "296969037": {
+      "name": "Pioneer Towers",
+      "campus": "HITEC City",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Commercial Office",
+      "confidence": "high",
+      "source": "Commercial Real Estate Listing"
+    },
+    "292750667": {
+      "name": "Building 14",
+      "campus": "Mindspace Madhapur",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 49.0,
+      "floors": 14,
+      "category": "Mindspace IT Tower",
+      "confidence": "high",
+      "source": "Mindspace REIT Filing"
+    },
+    "292755261": {
+      "name": "Building 20",
+      "campus": "Mindspace Madhapur",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 42.0,
+      "floors": 12,
+      "category": "Mindspace IT Tower",
+      "confidence": "high",
+      "source": "Mindspace REIT Filing"
+    },
+    "502048933": {
+      "name": "Building 12C",
+      "campus": "Mindspace Madhapur",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 49.0,
+      "floors": 14,
+      "category": "Mindspace IT Tower",
+      "confidence": "high",
+      "source": "Mindspace REIT Filing"
+    },
+    "754163951": {
+      "name": "Building 12D",
+      "campus": "Mindspace Madhapur",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 52.5,
+      "floors": 15,
+      "category": "Mindspace IT Tower",
+      "confidence": "high",
+      "source": "Mindspace REIT Filing"
+    },
+    "626560784": {
+      "name": "Ace Atlantis",
+      "campus": "Ace Urban",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 88.0,
+      "floors": 28,
+      "category": "High-Rise Luxury Residential",
+      "confidence": "high",
+      "source": "Telangana RERA Registration"
+    },
+    "68907571": {
+      "name": "Cyient",
+      "campus": "Cyient Headquarters",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 25.0,
+      "floors": 7,
+      "category": "Corporate HQ",
+      "confidence": "high",
+      "source": "Corporate Architecture Records"
+    },
+    "68907601": {
+      "name": "NCC House",
+      "campus": "NCC Headquarters",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 28.0,
+      "floors": 8,
+      "category": "Corporate Headquarters",
+      "confidence": "high",
+      "source": "NCC Urban Filing"
+    },
+    "356223408": {
+      "name": "Commissioner of Police, Cyberabad",
+      "campus": "Cyberabad Police HQ",
+      "location": "Gachibowli, Hyderabad",
+      "height_m": 24.0,
+      "floors": 6,
+      "category": "Government Headquarters",
+      "confidence": "high",
+      "source": "Government Building Project Records"
+    },
+    "1122214529": {
+      "name": "T-hub 2.0",
+      "campus": "T-Hub Innovation Campus",
+      "location": "Raidurg, Hyderabad",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Innovation Hub",
+      "confidence": "high",
+      "source": "T-Hub Specifications"
+    },
+    "1133460477": {
+      "name": "T-Works",
+      "campus": "T-Works Prototyping Centre",
+      "location": "Raidurg, Hyderabad",
+      "height_m": 24.0,
+      "floors": 6,
+      "category": "Prototyping Facility",
+      "confidence": "high",
+      "source": "Government of Telangana IT Dept"
+    },
+    "51327327": {
+      "name": "iLabs Centre",
+      "campus": "iLabs Technology Park",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Technology Park",
+      "confidence": "high",
+      "source": "iLabs Specifications"
+    },
+    "292730757": {
+      "name": "iLabs Oval Office",
+      "campus": "iLabs Technology Park",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 22.0,
+      "floors": 6,
+      "category": "Signature Architecture",
+      "confidence": "high",
+      "source": "iLabs Specifications"
+    },
+    "793742632": {
+      "name": "NCC Urban Gardenia Tower 1",
+      "campus": "NCC Gardenia",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 46.0,
+      "floors": 14,
+      "category": "Residential High-Rise",
+      "confidence": "high",
+      "source": "Telangana RERA Filing"
+    },
+    "924837529": {
+      "name": "NCC Urban Gardenia Tower 2",
+      "campus": "NCC Gardenia",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 46.0,
+      "floors": 14,
+      "category": "Residential High-Rise",
+      "confidence": "high",
+      "source": "Telangana RERA Filing"
+    },
+    "924837530": {
+      "name": "NCC Urban Gardenia Tower 3",
+      "campus": "NCC Gardenia",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 46.0,
+      "floors": 14,
+      "category": "Residential High-Rise",
+      "confidence": "high",
+      "source": "Telangana RERA Filing"
+    },
+    "924837531": {
+      "name": "NCC Urban Gardenia Tower 4",
+      "campus": "NCC Gardenia",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 46.0,
+      "floors": 14,
+      "category": "Residential High-Rise",
+      "confidence": "high",
+      "source": "Telangana RERA Filing"
+    },
+    "543748698": {
+      "name": "Vaishnavi Cynosure",
+      "campus": "Gachibowli",
+      "location": "Gachibowli, Hyderabad",
+      "height_m": 30.0,
+      "floors": 9,
+      "category": "Commercial Office",
+      "confidence": "high",
+      "source": "Commercial Real Estate Filing"
+    }
+  },
+  "by_name_pattern": [
+    {
+      "regex": "wells\\s*fargo.*tower\\s*4",
+      "name": "Wells Fargo Tower 4",
+      "height_m": 80.5,
+      "floors": 23,
+      "category": "Corporate IT Skyscraper"
+    },
+    {
+      "regex": "inorbit\\s*mall",
+      "name": "Inorbit Mall Cyberabad",
+      "height_m": 26.0,
+      "floors": 6,
+      "category": "Retail & Entertainment Complex"
+    },
+    {
+      "regex": "salarpuria|sattva\\s*knowledge",
+      "name": "Salarpuria Sattva Knowledge City",
+      "height_m": 75.0,
+      "floors": 21,
+      "category": "Grade-A IT Park"
+    },
+    {
+      "regex": "novartis",
+      "name": "Novartis",
+      "height_m": 56.0,
+      "floors": 16,
+      "category": "Global Delivery Centre"
+    },
+    {
+      "regex": "mariner\\s*building",
+      "name": "Mariner Building",
+      "height_m": 49.0,
+      "floors": 14,
+      "category": "IT Park Commercial Tower"
+    },
+    {
+      "regex": "capella\\s*block",
+      "name": "Capella Block",
+      "height_m": 42.0,
+      "floors": 12,
+      "category": "IT Park Commercial Tower"
+    },
+    {
+      "regex": "vega\\s*block",
+      "name": "Vega Block",
+      "height_m": 42.0,
+      "floors": 12,
+      "category": "IT Park Commercial Tower"
+    },
+    {
+      "regex": "ace\\s*atlantis",
+      "name": "Ace Atlantis",
+      "height_m": 88.0,
+      "floors": 28,
+      "category": "High-Rise Luxury Residential"
+    },
+    {
+      "regex": "itc\\s*kohenur",
+      "name": "ITC Kohenur",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Luxury Hotel"
+    }
+  ]
+}

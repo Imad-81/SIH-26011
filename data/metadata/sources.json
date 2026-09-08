@@ -22,7 +22,7 @@
       "source": "OpenStreetMap",
       "api": "Overpass API (https://overpass-api.de/api/interpreter)",
       "license": "ODbL 1.0 (https://opendatacommons.org/licenses/odbl/1-0/)",
-      "download_date": "2026-09-08T12:08:51.122206+00:00"
+      "download_date": "2026-09-08T13:29:44.026621+00:00"
     },
     "dsm": {
       "source": "Copernicus DEM GLO-30",
@@ -32,35 +32,46 @@
       "crs": "EPSG:4326",
       "download_url": "https://copernicus-dem-30m.s3.amazonaws.com/",
       "license": "Copernicus licence (https://spacedata.copernicus.eu/en/web/guest/collections/copernicus-digital-elevation-model)",
-      "download_date": "2026-09-08T12:08:51.122212+00:00"
+      "download_date": "2026-09-08T13:29:44.026628+00:00"
     },
     "dem": {
       "source": "SRTM GL1 via OpenTopography",
       "description": "Used as bare-earth approximation",
       "api": "OpenTopography GlobalDEM API",
-      "download_date": "2026-09-08T12:08:51.122214+00:00",
+      "download_date": "2026-09-08T13:29:44.026629+00:00",
       "note": "SRTM is technically a DSM but older data (2000) serves as ground approximation"
     }
   },
   "processing": {
-    "height_estimation": "median(DSM pixels in footprint) - median(DEM pixels in footprint)",
-    "floor_height_assumption": "3.0m per floor (prototype estimate only)",
-    "3d_extrusion": "Prismatic extrusion of building footprints",
-    "default_height": "4.0m for buildings without any height data"
+    "height_estimation_engine": "5-Tier Hierarchical Fusion Engine",
+    "tier_1": "Authoritative Landmark Registry & Verified OSM tags (height, building:levels)",
+    "tier_2": "Annular Buffer Local Morphological Ground Filter on Copernicus DSM",
+    "tier_3": "Spatial Tech Corridor Propagation (Raidurg, Knowledge City, Mindspace)",
+    "tier_4": "Morphological & Typological Regression (Footprint Area Law)",
+    "tier_5": "Hyderabad GHMC Urban Lot-Size Baseline Defaults",
+    "floor_height_assumption": "3.5m for commercial/office/IT; 3.0m for residential",
+    "3d_extrusion": "Prismatic extrusion with terrain base elevations"
   },
   "statistics": {
     "total_buildings": 2707,
     "height_sources": {
-      "default": 2422,
-      "raster": 238,
-      "osm_levels": 44,
-      "osm_tag": 3
+      "morphological_residential": 2118,
+      "morphological_midrise": 211,
+      "morphological_small": 198,
+      "morphological_office": 89,
+      "osm_levels": 45,
+      "landmark_registry": 31,
+      "morphological_large": 5,
+      "morphological_civic": 5,
+      "morphological_retail": 2,
+      "osm_tag": 2,
+      "raster_annular": 1
     },
     "height_range_m": {
-      "min": 0.01,
-      "max": 105.02,
-      "mean": 4.42,
-      "median": 4.0
+      "min": 3.5,
+      "max": 122.5,
+      "mean": 12.74,
+      "median": 11.8
     }
   },
   "disclaimer": "The generated building heights and 3D geometries are prototype estimates and are not authoritative cadastral or survey data."
