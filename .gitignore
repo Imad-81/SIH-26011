@@ -1,0 +1,29 @@
+# Dependencies
+venv/
+node_modules/
+__pycache__/
+*.pyc
+
+# Data (large files)
+data/raw/*.tif
+data/raw/*.tiff
+data/processed/*.tif
+data/processed/*.tiff
+outputs/*.glb
+*.tif
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Next.js
+viewer/.next/
+viewer/out/

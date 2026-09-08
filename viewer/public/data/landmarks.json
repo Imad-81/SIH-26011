@@ -1,0 +1,140 @@
+[
+  {
+    "id": "durgam_bridge",
+    "name": "Durgam Cheruvu Cable Bridge",
+    "category": "Infrastructure",
+    "description": "Iconic 435m extradosed cable-stayed bridge with suspended deck and dynamic night illumination.",
+    "pos": [
+      420.0,
+      15.0,
+      -380.0
+    ],
+    "cameraPos": [
+      420.0,
+      45.0,
+      -260.0
+    ],
+    "target": [
+      420.0,
+      5.0,
+      -380.0
+    ],
+    "height": 45.0,
+    "badge": "\ud83c\udf09 Landmark"
+  },
+  {
+    "id": "qualcomm",
+    "name": "Qualcomm Commerzone",
+    "category": "Skyscraper",
+    "description": "100m tall tier-1 tech headquarters tower with 33 floors, the tallest building in this 3 km\u00b2 sector.",
+    "pos": [
+      -52.0,
+      50.0,
+      -296.0
+    ],
+    "cameraPos": [
+      -52.0,
+      90.0,
+      -180.0
+    ],
+    "target": [
+      -52.0,
+      30.0,
+      -296.0
+    ],
+    "height": 100.0,
+    "badge": "\ud83c\udfe2 100m Tallest"
+  },
+  {
+    "id": "durgam_lake",
+    "name": "Durgam Cheruvu (Secret Lake)",
+    "category": "Nature & Water",
+    "description": "Ancient freshwater reservoir dating back to the Qutb Shahi era (1518\u20131687), surrounded by heritage granite rocks.",
+    "pos": [
+      488.0,
+      2.0,
+      -346.0
+    ],
+    "cameraPos": [
+      488.0,
+      80.0,
+      -180.0
+    ],
+    "target": [
+      488.0,
+      0.0,
+      -346.0
+    ],
+    "height": 0.0,
+    "badge": "\ud83d\udca7 Water Basin"
+  },
+  {
+    "id": "inorbit_mall",
+    "name": "Inorbit Mall Cyberabad",
+    "category": "Retail & Commerce",
+    "description": "Major retail mega-complex overlooking the lake with 800,000+ sq ft of commercial space.",
+    "pos": [
+      296.0,
+      10.0,
+      -555.0
+    ],
+    "cameraPos": [
+      296.0,
+      50.0,
+      -420.0
+    ],
+    "target": [
+      296.0,
+      5.0,
+      -555.0
+    ],
+    "height": 24.0,
+    "badge": "\ud83d\udecd\ufe0f Retail Hub"
+  },
+  {
+    "id": "ilabs_tech",
+    "name": "iLabs Technology Park",
+    "category": "Tech Campus",
+    "description": "30m tech park campus and iconic Oval Office building perched on the lakeside bluff.",
+    "pos": [
+      324.0,
+      15.0,
+      -471.0
+    ],
+    "cameraPos": [
+      324.0,
+      60.0,
+      -350.0
+    ],
+    "target": [
+      324.0,
+      10.0,
+      -471.0
+    ],
+    "height": 30.0,
+    "badge": "\ud83d\udcbb Tech Park"
+  },
+  {
+    "id": "imax_tower",
+    "name": "Kishan Sir IMAX Entertainment",
+    "category": "Entertainment",
+    "description": "60m entertainment and cinema complex situated in the southern sector.",
+    "pos": [
+      -195.0,
+      30.0,
+      22.0
+    ],
+    "cameraPos": [
+      -195.0,
+      70.0,
+      120.0
+    ],
+    "target": [
+      -195.0,
+      15.0,
+      22.0
+    ],
+    "height": 60.0,
+    "badge": "\ud83c\udfac 60m Tower"
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "totalBuildings": 2707,
+  "totalFootprintAreaM2": 1024863.4,
+  "totalBuiltVolumeM3": 9897167.2,
+  "grossFloorAreaM2": 3101052.2,
+  "heightBuckets": {
+    "0-5m": 2645,
+    "5-15m": 28,
+    "15-30m": 13,
+    "30-60m": 7,
+    "60m+": 14
+  },
+  "typeBreakdown": {
+    "commercial": 40,
+    "retail": 4,
+    "yes": 2433,
+    "apartments": 76,
+    "residential": 139,
+    "hospital": 3,
+    "office": 6,
+    "roof": 3,
+    "construction": 1,
+    "school": 1,
+    "shed": 1
+  },
+  "solar": {
+    "usableRooftopAreaM2": 768647.5,
+    "dailyGenerationKwh": 760961.1,
+    "annualGenerationMwh": 277750.8,
+    "annualCo2OffsetTons": 227755.6,
+    "ghiAverage": 5.5
+  }
+}
