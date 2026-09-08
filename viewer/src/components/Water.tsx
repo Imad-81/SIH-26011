@@ -4,7 +4,7 @@ import { useMemo, useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { WaterDataset } from '@/lib/types';
-import { SCALE } from '@/lib/geo';
+import { SCALE, getTerrainY } from '@/lib/geo';
 
 interface WaterProps {
   centerElevation: number;
@@ -27,7 +27,7 @@ export default function Water({ centerElevation, floodLevelMeters, timeOfDay = '
   // Calculate 3D water surface Y level
   // Base lake surface elevation is ~533m
   const waterElevation = Math.max(533, floodLevelMeters);
-  const waterY = (waterElevation - centerElevation) * SCALE * 0.3;
+  const waterY = getTerrainY(waterElevation, centerElevation) + 0.3;
 
   // Build 3D lake polygon geometries
   const lakeGeometries = useMemo(() => {

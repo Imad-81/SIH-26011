@@ -17,25 +17,30 @@ export const CAMERA_PRESETS: Record<string, CameraPreset> = {
     camPos: [1100, 650, 1100],
     target: [0, 0, 0],
   },
-  skyscrapers: {
-    name: 'Mindspace Skyline',
-    camPos: [-155, 160, -150],
-    target: [-155, 60, -323],
+  qualcomm: {
+    name: 'Qualcomm Commerzone',
+    camPos: [0.5, 170, 1000],
+    target: [0.5, 50, 852],
   },
   cybertowers: {
     name: 'Cyber Towers',
-    camPos: [116, 120, -1300],
-    target: [116, 40, -1471],
+    camPos: [139, 110, -1350],
+    target: [139, 41, -1491],
+  },
+  wellsfargo: {
+    name: 'Wells Fargo Tower 4',
+    camPos: [-287, 140, 1480],
+    target: [-287, 50, 1328],
   },
   bridge: {
     name: 'Cable Bridge',
-    camPos: [925, 90, 950],
-    target: [925, 20, 788],
+    camPos: [1148, 70, 680],
+    target: [1148, -10, 493],
   },
   lake: {
     name: 'Durgam Cheruvu Lake',
-    camPos: [800, 100, 900],
-    target: [800, 0, 650],
+    camPos: [1084, 80, 960],
+    target: [1084, -73, 760],
   },
   ortho: {
     name: 'Top-Down GIS',
@@ -48,30 +53,30 @@ export const CAMERA_PRESETS: Record<string, CameraPreset> = {
 const TOUR_WAYPOINTS = [
   {
     // Waypoint 1: Cyber Towers
-    camPos: new THREE.Vector3(116, 110, -1320),
-    target: new THREE.Vector3(116, 40, -1471),
+    camPos: new THREE.Vector3(139, 110, -1350),
+    target: new THREE.Vector3(139, 41, -1491),
     duration: 6.0,
   },
   {
-    // Waypoint 2: Mindspace High-Rise Cluster
-    camPos: new THREE.Vector3(-155, 140, -170),
-    target: new THREE.Vector3(-155, 60, -323),
+    // Waypoint 2: Qualcomm Commerzone Skyscraper
+    camPos: new THREE.Vector3(0.5, 170, 1000),
+    target: new THREE.Vector3(0.5, 50, 852),
     duration: 6.0,
   },
   {
     // Waypoint 3: Durgam Cable Bridge
-    camPos: new THREE.Vector3(925, 85, 930),
-    target: new THREE.Vector3(925, 20, 788),
+    camPos: new THREE.Vector3(1148, 70, 680),
+    target: new THREE.Vector3(1148, -10, 493),
     duration: 6.5,
   },
   {
     // Waypoint 4: Wells Fargo & Knowledge City
-    camPos: new THREE.Vector3(109, 150, 1520),
-    target: new THREE.Vector3(109, 65, 1364),
+    camPos: new THREE.Vector3(-287, 140, 1480),
+    target: new THREE.Vector3(-287, 50, 1328),
     duration: 6.0,
   },
   {
-    // Waypoint 5: Panoramic Overview
+    // Waypoint 5: Panoramic 3D Topography Overview
     camPos: new THREE.Vector3(1200, 750, 1200),
     target: new THREE.Vector3(0, 0, 0),
     duration: 7.0,

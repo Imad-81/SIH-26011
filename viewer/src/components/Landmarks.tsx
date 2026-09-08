@@ -28,11 +28,13 @@ export default function Landmarks({ onSelectLandmark, selectedLandmarkId }: Land
         const isSelected = selectedLandmarkId === landmark.id;
         const isHovered = hoveredId === landmark.id;
 
+        const beamHeight = Math.max(12, landmark.height);
+
         return (
           <group key={landmark.id} position={landmark.pos}>
-            {/* Vertical Laser Beacon Beam from ground up to the badge */}
-            <mesh position={[0, -landmark.pos[1] / 2, 0]}>
-              <cylinderGeometry args={[0.2, 0.2, landmark.pos[1], 8]} />
+            {/* Vertical Laser Beacon Beam from building base up to the badge */}
+            <mesh position={[0, -beamHeight / 2, 0]}>
+              <cylinderGeometry args={[0.25, 0.25, beamHeight, 8]} />
               <meshBasicMaterial
                 color={isSelected ? '#ff007f' : '#00f5ff'}
                 transparent
@@ -41,7 +43,7 @@ export default function Landmarks({ onSelectLandmark, selectedLandmarkId }: Land
             </mesh>
 
             {/* Glowing Base Target Ring on Ground */}
-            <mesh position={[0, -landmark.pos[1] + 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <mesh position={[0, -beamHeight + 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
               <ringGeometry args={[4, 5, 24]} />
               <meshBasicMaterial
                 color={isSelected ? '#ff007f' : '#00f5ff'}

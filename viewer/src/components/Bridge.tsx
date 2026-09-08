@@ -3,7 +3,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { WaterDataset } from '@/lib/types';
-import { SCALE } from '@/lib/geo';
+import { SCALE, getTerrainY } from '@/lib/geo';
 
 interface BridgeProps {
   centerElevation: number;
@@ -22,8 +22,8 @@ export default function Bridge({ centerElevation }: BridgeProps) {
   const bridgeModel = useMemo(() => {
     if (!waterData || !waterData.bridges || waterData.bridges.length === 0) return null;
 
-    // Base elevation for bridge deck (water is at ~533m, bridge deck is at ~545m, ~12m clearance)
-    const deckY = (546 - centerElevation) * SCALE * 0.3 + 4.0;
+    // Base elevation for bridge deck (water is at ~533m, bridge deck clears at ~548m)
+    const deckY = getTerrainY(548, centerElevation) + 6.0;
 
     // Collect bridge coordinate points
     // Filter to the section across Durgam Cheruvu (rel x ~ 700 to 1250, rel y ~ 700 to 900)

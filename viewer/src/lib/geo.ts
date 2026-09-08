@@ -7,6 +7,17 @@ import { BuildingData } from './types';
 // 1 Three.js unit = 1 meter (keeps things intuitive)
 export const SCALE = 1;
 
+// Topographical vertical elevation scale factor
+// 1.25 provides true-scale vertical relief with subtle GIS contrast for ridges and lake valleys
+export const ELEVATION_SCALE = 1.25;
+
+/**
+ * Compute 3D vertical Y position from real-world ground elevation
+ */
+export function getTerrainY(elevationMeters: number, centerElevation: number): number {
+  return (elevationMeters - centerElevation) * SCALE * ELEVATION_SCALE;
+}
+
 /**
  * Convert building 2D coordinates (UTM relative to center) into a THREE.Shape
  */

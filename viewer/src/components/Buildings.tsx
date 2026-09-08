@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { ThreeEvent, useFrame } from '@react-three/fiber';
 import { BuildingData, RenderMode } from '@/lib/types';
 import { getBuildingColor } from '@/lib/colors';
-import { SCALE } from '@/lib/geo';
+import { SCALE, getTerrainY } from '@/lib/geo';
 
 interface BuildingsProps {
   buildings: BuildingData[];
@@ -70,7 +70,7 @@ export default function Buildings({
 
         // Ground elevation offset relative to center elevation
         const baseElev = building.baseElevation ?? centerElevation;
-        const baseY = (baseElev - centerElevation) * SCALE * 0.3;
+        const baseY = getTerrainY(baseElev, centerElevation);
 
         // Centroid calculation
         let cx = 0,
