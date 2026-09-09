@@ -136,9 +136,9 @@ def main(aoi=None, dem_path=None):
         if is_underpass:
             underpass_count += 1
 
-        # Extract 2D UTM & ground DEM elevations for each node
+        # Extract 2D UTM coordinates for each node
         node_ids = w.get("nodes", [])
-        way_pts = []
+        raw_pts = []
         for nid in node_ids:
             if nid not in nodes:
                 continue
@@ -146,14 +146,44 @@ def main(aoi=None, dem_path=None):
             ux, uy = transformer.transform(lon, lat)
             rx = ux - center_x
             ry = uy - center_y
-            g_elev = sample_dem(ux, uy)
-            way_pts.append({
-                "ux": ux,
-                "uy": uy,
-                "rx": rx,
-                "ry": ry,
-                "ground_elev": g_elev,
-            })
+            raw_pts.append((ux, uy, rx, ry))
+
+        if len(raw_pts) < 2:
+            continue
+
+        # Subdivide segments longer than MAX_SEG_LEN so roads conform faithfully to 3D DEM relief
+        MAX_SEG_LEN = 20.0
+        way_pts = []
+        for i in range(len(raw_pts) - 1):
+            p0 = raw_pts[i]
+            p1 = raw_pts[i + 1]
+            seg_len = math.hypot(p1[2] - p0[2], p1[3] - p0[3])
+            steps = max(1, math.ceil(seg_len / MAX_SEG_LEN))
+            
+            for s in range(steps):
+                t = s / steps
+                ux = p0[0] + t * (p1[0] - p0[0])
+                uy = p0[1] + t * (p1[1] - p0[1])
+                rx = p0[2] + t * (p1[2] - p0[2])
+                ry = p0[3] + t * (p1[3] - p0[3])
+                g_elev = sample_dem(ux, uy)
+                way_pts.append({
+                    "ux": ux,
+                    "uy": uy,
+                    "rx": rx,
+                    "ry": ry,
+                    "ground_elev": g_elev,
+                })
+
+        # Append final point
+        p_last = raw_pts[-1]
+        way_pts.append({
+            "ux": p_last[0],
+            "uy": p_last[1],
+            "rx": p_last[2],
+            "ry": p_last[3],
+            "ground_elev": sample_dem(p_last[0], p_last[1]),
+        })
 
         if len(way_pts) < 2:
             continue
