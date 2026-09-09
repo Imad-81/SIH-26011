@@ -57,21 +57,28 @@ def smoothstep(edge0: float, edge1: float, x: float) -> float:
     t = max(0.0, min(1.0, (x - edge0) / (edge1 - edge0)))
     return t * t * (3.0 - 2.0 * t)
 
-def main():
+def main(aoi=None, dem_path=None):
     print("🛣️  Processing 3D Road Network & Flyovers...")
     
     if not RAW_HIGHWAYS.exists():
         raise FileNotFoundError(f"Missing {RAW_HIGHWAYS}")
-    if not DEM_PATH.exists():
-        raise FileNotFoundError(f"Missing {DEM_PATH}")
+    
+    actual_dem = Path(dem_path) if dem_path else DEM_PATH
+    if not actual_dem.exists():
+        raise FileNotFoundError(f"Missing {actual_dem}")
 
-    # Coordinate transformer WGS84 -> UTM 44N
-    transformer = pyproj.Transformer.from_crs("EPSG:4326", "EPSG:32644", always_xy=True)
-    center_x, center_y = transformer.transform(CENTER_LON, CENTER_LAT)
+    # Center and CRS
+    center_lon = aoi["center"]["lon"] if aoi else CENTER_LON
+    center_lat = aoi["center"]["lat"] if aoi else CENTER_LAT
+    crs_utm = aoi.get("crs_projected", "EPSG:32644") if aoi else "EPSG:32644"
+
+    # Coordinate transformer WGS84 -> UTM
+    transformer = pyproj.Transformer.from_crs("EPSG:4326", crs_utm, always_xy=True)
+    center_x, center_y = transformer.transform(center_lon, center_lat)
     print(f"Center UTM: ({center_x:.2f}, {center_y:.2f})")
 
     # Load DEM
-    with rasterio.open(DEM_PATH) as src:
+    with rasterio.open(actual_dem) as src:
         dem_data = src.read(1)
         nodata = src.nodata
 

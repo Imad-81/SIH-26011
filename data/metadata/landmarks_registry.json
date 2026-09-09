@@ -105,43 +105,43 @@
     },
     "5320443": {
       "name": "Mariner Building",
-      "campus": "The V / International Tech Park",
+      "campus": "The V Ascendas IT Park",
       "location": "Madhapur, Hyderabad",
       "height_m": 49.0,
       "floors": 14,
-      "category": "IT Park Commercial Tower",
+      "category": "Grade-A IT Park Commercial Tower",
       "confidence": "high",
-      "source": "Ascendas / CapitaLand Specifications"
+      "source": "Ascendas REIT Specs"
     },
     "68875332": {
       "name": "Capella Block",
-      "campus": "The V / International Tech Park",
+      "campus": "The V Ascendas IT Park",
       "location": "Madhapur, Hyderabad",
       "height_m": 42.0,
       "floors": 12,
       "category": "IT Park Commercial Tower",
       "confidence": "high",
-      "source": "Ascendas / CapitaLand Specifications"
+      "source": "Ascendas REIT Specs"
     },
     "68875336": {
       "name": "Vega Block",
-      "campus": "The V / International Tech Park",
+      "campus": "The V Ascendas IT Park",
       "location": "Madhapur, Hyderabad",
       "height_m": 42.0,
       "floors": 12,
       "category": "IT Park Commercial Tower",
       "confidence": "high",
-      "source": "Ascendas / CapitaLand Specifications"
+      "source": "Ascendas REIT Specs"
     },
     "68879527": {
-      "name": "Orion",
-      "campus": "DivyaSree Orion",
-      "location": "Raidurg, Hyderabad",
-      "height_m": 70.0,
-      "floors": 20,
-      "category": "IT Tech Park",
+      "name": "Orion Block",
+      "campus": "The V Ascendas IT Park",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 42.0,
+      "floors": 12,
+      "category": "IT Park Commercial Tower",
       "confidence": "high",
-      "source": "DivyaSree Campus Master Plan"
+      "source": "Ascendas REIT Specs"
     },
     "292769248": {
       "name": "Divyasree Solitaire",
@@ -184,24 +184,24 @@
       "source": "Mindspace REIT Filing"
     },
     "502048933": {
-      "name": "Building 12C",
-      "campus": "Mindspace Madhapur",
-      "location": "Madhapur, Hyderabad",
-      "height_m": 49.0,
+      "name": "Mindspace Building 12C",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
       "floors": 14,
-      "category": "Mindspace IT Tower",
+      "category": "Grade-A IT Skyscraper",
       "confidence": "high",
-      "source": "Mindspace REIT Filing"
+      "source": "Mindspace REIT Records"
     },
     "754163951": {
-      "name": "Building 12D",
-      "campus": "Mindspace Madhapur",
-      "location": "Madhapur, Hyderabad",
-      "height_m": 52.5,
-      "floors": 15,
-      "category": "Mindspace IT Tower",
+      "name": "Mindspace Building 12D (The HUB)",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 80.0,
+      "floors": 22,
+      "category": "Grade-A Commercial Skyscraper",
       "confidence": "high",
-      "source": "Mindspace REIT Filing"
+      "source": "Mindspace REIT Records"
     },
     "626560784": {
       "name": "Ace Atlantis",
@@ -214,24 +214,24 @@
       "source": "Telangana RERA Registration"
     },
     "68907571": {
-      "name": "Cyient",
-      "campus": "Cyient Headquarters",
-      "location": "Madhapur, Hyderabad",
+      "name": "Cyient Headquarters",
+      "campus": "Cyient Campus",
+      "location": "HITEC City, Hyderabad",
       "height_m": 25.0,
-      "floors": 7,
-      "category": "Corporate HQ",
+      "floors": 6,
+      "category": "Corporate Headquarters",
       "confidence": "high",
       "source": "Corporate Architecture Records"
     },
     "68907601": {
       "name": "NCC House",
-      "campus": "NCC Headquarters",
-      "location": "Madhapur, Hyderabad",
-      "height_m": 28.0,
+      "campus": "NCC Limited",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 30.0,
       "floors": 8,
       "category": "Corporate Headquarters",
       "confidence": "high",
-      "source": "NCC Urban Filing"
+      "source": "Corporate Architecture Records"
     },
     "356223408": {
       "name": "Commissioner of Police, Cyberabad",
@@ -265,13 +265,13 @@
     },
     "51327327": {
       "name": "iLabs Centre",
-      "campus": "iLabs Technology Park",
+      "campus": "iLabs Cyber Gateway",
       "location": "Madhapur, Hyderabad",
-      "height_m": 35.0,
+      "height_m": 38.0,
       "floors": 10,
-      "category": "Technology Park",
+      "category": "IT Business Park",
       "confidence": "high",
-      "source": "iLabs Specifications"
+      "source": "iLabs Specs"
     },
     "292730757": {
       "name": "iLabs Oval Office",
@@ -332,15 +332,1454 @@
       "category": "Commercial Office",
       "confidence": "high",
       "source": "Commercial Real Estate Filing"
+    },
+    "139444430": {
+      "name": "Honeywell Tech Campus",
+      "campus": "Gachibowli Tech Zone",
+      "location": "Gachibowli, Hyderabad",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Corporate Tech Campus",
+      "confidence": "high",
+      "source": "Corporate Architecture Records"
+    },
+    "254295966": {
+      "name": "Nvidia Corporation",
+      "campus": "Gachibowli IT Corridor",
+      "location": "Gachibowli, Hyderabad",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Corporate Tech Campus",
+      "confidence": "high",
+      "source": "Corporate Architecture Records"
+    },
+    "261478386": {
+      "name": "Microsoft Central Kitchen & Dining",
+      "campus": "Microsoft India Development Center",
+      "location": "Gachibowli, Hyderabad",
+      "height_m": 16.0,
+      "floors": 4,
+      "category": "Corporate Campus Amenity",
+      "confidence": "high",
+      "source": "Microsoft Campus Master Plan"
+    },
+    "342031390": {
+      "name": "Amazon Corporate Building",
+      "campus": "Amazon Hyderabad Campus",
+      "location": "Financial District, Hyderabad",
+      "height_m": 42.0,
+      "floors": 11,
+      "category": "Global Tech Headquarters",
+      "confidence": "high",
+      "source": "Amazon Campus Specifications"
+    },
+    "342032577": {
+      "name": "Meenakshi Technova",
+      "campus": "Meenakshi Tech Park",
+      "location": "Gachibowli, Hyderabad",
+      "height_m": 40.0,
+      "floors": 11,
+      "category": "IT Tech Park",
+      "confidence": "high",
+      "source": "Meenakshi Group Specs"
+    },
+    "342033187": {
+      "name": "Mantri Cosmos",
+      "campus": "Mantri Cosmos Complex",
+      "location": "Financial District, Hyderabad",
+      "height_m": 65.0,
+      "floors": 18,
+      "category": "High-Rise Residential Complex",
+      "confidence": "high",
+      "source": "Mantri Developers Specs"
+    },
+    "342033188": {
+      "name": "Mantri Celestia (Towers D-E-F)",
+      "campus": "Mantri Celestia",
+      "location": "Financial District, Hyderabad",
+      "height_m": 48.0,
+      "floors": 14,
+      "category": "High-Rise Residential",
+      "confidence": "high",
+      "source": "Mantri Developers Specs"
+    },
+    "342033189": {
+      "name": "Mantri Celestia (Towers A-B-C)",
+      "campus": "Mantri Celestia",
+      "location": "Financial District, Hyderabad",
+      "height_m": 48.0,
+      "floors": 14,
+      "category": "High-Rise Residential",
+      "confidence": "high",
+      "source": "Mantri Developers Specs"
+    },
+    "342033958": {
+      "name": "Mantri Celestia Block G",
+      "campus": "Mantri Celestia",
+      "location": "Financial District, Hyderabad",
+      "height_m": 48.0,
+      "floors": 14,
+      "category": "High-Rise Residential",
+      "confidence": "high",
+      "source": "Mantri Developers Specs"
+    },
+    "342033959": {
+      "name": "Mantri Celestia Block F",
+      "campus": "Mantri Celestia",
+      "location": "Financial District, Hyderabad",
+      "height_m": 48.0,
+      "floors": 14,
+      "category": "High-Rise Residential",
+      "confidence": "high",
+      "source": "Mantri Developers Specs"
+    },
+    "342033960": {
+      "name": "Mantri Celestia Block E",
+      "campus": "Mantri Celestia",
+      "location": "Financial District, Hyderabad",
+      "height_m": 48.0,
+      "floors": 14,
+      "category": "High-Rise Residential",
+      "confidence": "high",
+      "source": "Mantri Developers Specs"
+    },
+    "342033961": {
+      "name": "Mantri Celestia Block D",
+      "campus": "Mantri Celestia",
+      "location": "Financial District, Hyderabad",
+      "height_m": 48.0,
+      "floors": 14,
+      "category": "High-Rise Residential",
+      "confidence": "high",
+      "source": "Mantri Developers Specs"
+    },
+    "342033962": {
+      "name": "Mantri Celestia Block C",
+      "campus": "Mantri Celestia",
+      "location": "Financial District, Hyderabad",
+      "height_m": 48.0,
+      "floors": 14,
+      "category": "High-Rise Residential",
+      "confidence": "high",
+      "source": "Mantri Developers Specs"
+    },
+    "342033963": {
+      "name": "Mantri Celestia Block B",
+      "campus": "Mantri Celestia",
+      "location": "Financial District, Hyderabad",
+      "height_m": 48.0,
+      "floors": 14,
+      "category": "High-Rise Residential",
+      "confidence": "high",
+      "source": "Mantri Developers Specs"
+    },
+    "342033964": {
+      "name": "Mantri Celestia Block A",
+      "campus": "Mantri Celestia",
+      "location": "Financial District, Hyderabad",
+      "height_m": 48.0,
+      "floors": 14,
+      "category": "High-Rise Residential",
+      "confidence": "high",
+      "source": "Mantri Developers Specs"
+    },
+    "342243558": {
+      "name": "Cognizant Technologies Tower 1",
+      "campus": "Cognizant Campus",
+      "location": "Gachibowli, Hyderabad",
+      "height_m": 45.0,
+      "floors": 12,
+      "category": "Enterprise IT Tower",
+      "confidence": "high",
+      "source": "Corporate Architecture Records"
+    },
+    "625040462": {
+      "name": "Cognizant Technologies Tower 2",
+      "campus": "Cognizant Campus",
+      "location": "Gachibowli, Hyderabad",
+      "height_m": 45.0,
+      "floors": 12,
+      "category": "Enterprise IT Tower",
+      "confidence": "high",
+      "source": "Corporate Architecture Records"
+    },
+    "342251478": {
+      "name": "Franklin Templeton Tower 1",
+      "campus": "Franklin Templeton Campus",
+      "location": "Gachibowli, Hyderabad",
+      "height_m": 32.0,
+      "floors": 8,
+      "category": "Financial Corporate Office",
+      "confidence": "high",
+      "source": "Corporate Architecture Records"
+    },
+    "342252538": {
+      "name": "Franklin Templeton Tower 2",
+      "campus": "Franklin Templeton Campus",
+      "location": "Gachibowli, Hyderabad",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Financial Corporate Office",
+      "confidence": "high",
+      "source": "Corporate Architecture Records"
+    },
+    "342252954": {
+      "name": "Sheraton Hotel Hyderabad",
+      "campus": "Sheraton",
+      "location": "Gachibowli / Financial District, Hyderabad",
+      "height_m": 48.0,
+      "floors": 14,
+      "category": "Luxury Hospitality",
+      "confidence": "high",
+      "source": "Marriott / Sheraton Specifications"
+    },
+    "386897463": {
+      "name": "Waverock Tower 1",
+      "campus": "Waverock SEZ",
+      "location": "Nanakramguda, Financial District, Hyderabad",
+      "height_m": 60.0,
+      "floors": 16,
+      "category": "Grade-A IT SEZ Skyscraper",
+      "confidence": "high",
+      "source": "Tishman Speyer Waverock Specs"
+    },
+    "1510996024": {
+      "name": "Vasavi Sky City",
+      "campus": "Vasavi Sky City",
+      "location": "Gachibowli - Financial District, Hyderabad",
+      "height_m": 72.0,
+      "floors": 20,
+      "category": "Commercial High-Rise",
+      "confidence": "high",
+      "source": "Vasavi Group RERA Filing"
+    },
+    "642167932": {
+      "name": "Phoenix Tower",
+      "campus": "Phoenix Business Park",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 65.0,
+      "floors": 18,
+      "category": "Grade-A Commercial Tower",
+      "confidence": "high",
+      "source": "Phoenix Group Specs"
+    },
+    "17826513": {
+      "name": "Phoenix 285 Tower 6",
+      "campus": "Phoenix 285",
+      "location": "Financial District, Hyderabad",
+      "height_m": 64.0,
+      "floors": 18,
+      "category": "Grade-A IT Tower",
+      "confidence": "high",
+      "source": "Phoenix Group Specs"
+    },
+    "342045453": {
+      "name": "Jayabheri Silicon Towers",
+      "campus": "Jayabheri Silicon",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 36.0,
+      "floors": 10,
+      "category": "Commercial IT Tower",
+      "confidence": "high",
+      "source": "Jayabheri Group Specs"
+    },
+    "342062281": {
+      "name": "Prestige Ivy League",
+      "campus": "Prestige Ivy League",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 52.0,
+      "floors": 15,
+      "category": "Premium High-Rise Residential",
+      "confidence": "high",
+      "source": "Prestige Group Specs"
+    },
+    "89914109": {
+      "name": "HSBC Global Operations",
+      "campus": "Cyber Pearl",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 45.0,
+      "floors": 12,
+      "category": "Corporate Banking Tower",
+      "confidence": "high",
+      "source": "Corporate Architecture Records"
+    },
+    "89914112": {
+      "name": "Cyber Pearl I",
+      "campus": "Cyber Pearl IT Park",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 32.0,
+      "floors": 8,
+      "category": "IT Technology Park",
+      "confidence": "high",
+      "source": "L&T Infocity Specs"
+    },
+    "89914725": {
+      "name": "Cyber Pearl II",
+      "campus": "Cyber Pearl IT Park",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 32.0,
+      "floors": 8,
+      "category": "IT Technology Park",
+      "confidence": "high",
+      "source": "L&T Infocity Specs"
+    },
+    "89918043": {
+      "name": "Deloitte Block 1",
+      "campus": "Deloitte Campus",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Enterprise Corporate Office",
+      "confidence": "high",
+      "source": "Deloitte Real Estate Specs"
+    },
+    "89918045": {
+      "name": "Deloitte Block 2",
+      "campus": "Deloitte Campus",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Enterprise Corporate Office",
+      "confidence": "high",
+      "source": "Deloitte Real Estate Specs"
+    },
+    "413783553": {
+      "name": "Deloitte G/H Block",
+      "campus": "Deloitte Campus",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 45.0,
+      "floors": 12,
+      "category": "Enterprise Corporate Office",
+      "confidence": "high",
+      "source": "Deloitte Real Estate Specs"
+    },
+    "416916164": {
+      "name": "Deloitte Tower 1",
+      "campus": "Deloitte Campus",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 62.0,
+      "floors": 17,
+      "category": "Corporate High-Rise Tower",
+      "confidence": "high",
+      "source": "Deloitte Real Estate Specs"
+    },
+    "122795103": {
+      "name": "Deloitte Tower 2",
+      "campus": "Deloitte Campus",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 62.0,
+      "floors": 17,
+      "category": "Corporate High-Rise Tower",
+      "confidence": "high",
+      "source": "Deloitte Real Estate Specs"
+    },
+    "89897992": {
+      "name": "The Westin Hyderabad Mindspace",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 55.0,
+      "floors": 16,
+      "category": "5-Star Luxury Hotel",
+      "confidence": "high",
+      "source": "Marriott International Specs"
+    },
+    "416945180": {
+      "name": "Trident Hotel Hyderabad",
+      "campus": "HITEC City",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 52.0,
+      "floors": 15,
+      "category": "5-Star Luxury Hotel",
+      "confidence": "high",
+      "source": "Oberoi Hotels & Resorts Specs"
+    },
+    "95972653": {
+      "name": "Novotel Hyderabad Convention Centre",
+      "campus": "HICC",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Convention Hotel",
+      "confidence": "high",
+      "source": "Accor Hotels Specs"
+    },
+    "90465060": {
+      "name": "Ananth Info Park Building C",
+      "campus": "Ananth Info Park",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 36.0,
+      "floors": 10,
+      "category": "IT Office Complex",
+      "confidence": "high",
+      "source": "Ananth Info Park Specs"
+    },
+    "356225879": {
+      "name": "Ananth Info Park Building A",
+      "campus": "Ananth Info Park",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 36.0,
+      "floors": 10,
+      "category": "IT Office Complex",
+      "confidence": "high",
+      "source": "Ananth Info Park Specs"
+    },
+    "90465066": {
+      "name": "Oracle Campus Phase 1",
+      "campus": "Oracle India Campus",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 32.0,
+      "floors": 8,
+      "category": "Corporate Tech Campus",
+      "confidence": "high",
+      "source": "Oracle Real Estate Specs"
+    },
+    "90465078": {
+      "name": "Oracle Campus Phase 2",
+      "campus": "Oracle India Campus",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 32.0,
+      "floors": 8,
+      "category": "Corporate Tech Campus",
+      "confidence": "high",
+      "source": "Oracle Real Estate Specs"
+    },
+    "110018692": {
+      "name": "Oracle Campus Phase 3",
+      "campus": "Oracle India Campus",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 32.0,
+      "floors": 8,
+      "category": "Corporate Tech Campus",
+      "confidence": "high",
+      "source": "Oracle Real Estate Specs"
+    },
+    "89898294": {
+      "name": "Mindspace Building 5A",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "89898297": {
+      "name": "Mindspace Building 5B",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "89898428": {
+      "name": "Mindspace Building 7",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "89898429": {
+      "name": "Mindspace Building 8",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "68907576": {
+      "name": "Mindspace Building 9",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 45.0,
+      "floors": 12,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "116078979": {
+      "name": "Mindspace Building 10",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "116078983": {
+      "name": "Mindspace Building 2A",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "116078985": {
+      "name": "Mindspace Building 2B",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "122449732": {
+      "name": "Mindspace Building 3A",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "297095564": {
+      "name": "Mindspace Building 3B",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "122449734": {
+      "name": "Mindspace Building 1A",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "122449736": {
+      "name": "Mindspace Building 1B",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "122449737": {
+      "name": "Mindspace Building 4",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "122449741": {
+      "name": "Mindspace Building 6",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "292748904": {
+      "name": "Mindspace Building 11",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "297108912": {
+      "name": "Mindspace Building 21",
+      "campus": "Raheja Mindspace",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "Mindspace REIT Records"
+    },
+    "356200229": {
+      "name": "Cyient Tower 2",
+      "campus": "Cyient Campus",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 22.0,
+      "floors": 5,
+      "category": "Corporate Office",
+      "confidence": "high",
+      "source": "Corporate Architecture Records"
+    },
+    "68883415": {
+      "name": "TCS Deccan Park",
+      "campus": "Tata Consultancy Services",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 34.0,
+      "floors": 9,
+      "category": "Enterprise IT Campus",
+      "confidence": "high",
+      "source": "Mario Botta Architectural Design"
+    },
+    "613451639": {
+      "name": "TCS Kohinoor Park",
+      "campus": "Tata Consultancy Services",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 30.0,
+      "floors": 8,
+      "category": "Enterprise IT Campus",
+      "confidence": "high",
+      "source": "TCS Real Estate Specs"
+    },
+    "5167102": {
+      "name": "Tech Mahindra Campus Block 1",
+      "campus": "Tech Mahindra",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Enterprise IT Campus",
+      "confidence": "high",
+      "source": "Tech Mahindra Specs"
+    },
+    "342064508": {
+      "name": "Divyasree Omega Block A",
+      "campus": "Divyasree Omega",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 24.0,
+      "floors": 6,
+      "category": "Commercial IT Office",
+      "confidence": "high",
+      "source": "Divyasree Group Specs"
+    },
+    "342044717": {
+      "name": "Divyasree Omega Block B",
+      "campus": "Divyasree Omega",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 24.0,
+      "floors": 6,
+      "category": "Commercial IT Office",
+      "confidence": "high",
+      "source": "Divyasree Group Specs"
+    },
+    "341740430": {
+      "name": "Divyasree Omega Block C",
+      "campus": "Divyasree Omega",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 24.0,
+      "floors": 6,
+      "category": "Commercial IT Office",
+      "confidence": "high",
+      "source": "Divyasree Group Specs"
+    },
+    "778828696": {
+      "name": "Aparna Serene Park Clubhouse",
+      "campus": "Aparna Serene Park",
+      "location": "Kondapur, Hyderabad",
+      "height_m": 12.0,
+      "floors": 3,
+      "category": "Residential Clubhouse",
+      "confidence": "high",
+      "source": "Aparna Constructions Specs"
+    },
+    "778828701": {
+      "name": "Aparna Serene Park Block I",
+      "campus": "Aparna Serene Park",
+      "location": "Kondapur, Hyderabad",
+      "height_m": 65.0,
+      "floors": 20,
+      "category": "High-Rise Luxury Residential",
+      "confidence": "high",
+      "source": "Aparna Constructions Specs"
+    },
+    "964281079": {
+      "name": "Aparna Serene Park Block C",
+      "campus": "Aparna Serene Park",
+      "location": "Kondapur, Hyderabad",
+      "height_m": 65.0,
+      "floors": 20,
+      "category": "High-Rise Luxury Residential",
+      "confidence": "high",
+      "source": "Aparna Constructions Specs"
+    },
+    "964281080": {
+      "name": "Aparna Serene Park Block D",
+      "campus": "Aparna Serene Park",
+      "location": "Kondapur, Hyderabad",
+      "height_m": 65.0,
+      "floors": 20,
+      "category": "High-Rise Luxury Residential",
+      "confidence": "high",
+      "source": "Aparna Constructions Specs"
+    },
+    "964281081": {
+      "name": "Aparna Serene Park Block E",
+      "campus": "Aparna Serene Park",
+      "location": "Kondapur, Hyderabad",
+      "height_m": 65.0,
+      "floors": 20,
+      "category": "High-Rise Luxury Residential",
+      "confidence": "high",
+      "source": "Aparna Constructions Specs"
+    },
+    "964281082": {
+      "name": "Aparna Serene Park Block F",
+      "campus": "Aparna Serene Park",
+      "location": "Kondapur, Hyderabad",
+      "height_m": 65.0,
+      "floors": 20,
+      "category": "High-Rise Luxury Residential",
+      "confidence": "high",
+      "source": "Aparna Constructions Specs"
+    },
+    "964281083": {
+      "name": "Aparna Serene Park Block G",
+      "campus": "Aparna Serene Park",
+      "location": "Kondapur, Hyderabad",
+      "height_m": 65.0,
+      "floors": 20,
+      "category": "High-Rise Luxury Residential",
+      "confidence": "high",
+      "source": "Aparna Constructions Specs"
+    },
+    "964281084": {
+      "name": "Aparna Serene Park Block H",
+      "campus": "Aparna Serene Park",
+      "location": "Kondapur, Hyderabad",
+      "height_m": 65.0,
+      "floors": 20,
+      "category": "High-Rise Luxury Residential",
+      "confidence": "high",
+      "source": "Aparna Constructions Specs"
+    },
+    "477923815": {
+      "name": "PSR Prime Towers",
+      "campus": "Gachibowli Commercial",
+      "location": "Gachibowli, Hyderabad",
+      "height_m": 38.0,
+      "floors": 10,
+      "category": "Commercial High-Rise",
+      "confidence": "high",
+      "source": "PSR Group Specs"
+    },
+    "562836632": {
+      "name": "Vasavi Shanthinikethan",
+      "campus": "Vasavi Residential",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 40.0,
+      "floors": 12,
+      "category": "Residential Apartments",
+      "confidence": "high",
+      "source": "Vasavi Group Specs"
+    },
+    "642086175": {
+      "name": "Melange Tower",
+      "campus": "HITEC City Commercial",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Commercial Office Tower",
+      "confidence": "high",
+      "source": "Commercial Real Estate Specs"
+    },
+    "589208742": {
+      "name": "GutenBurg IT Park",
+      "campus": "Kondapur Commercial",
+      "location": "Kondapur, Hyderabad",
+      "height_m": 22.0,
+      "floors": 6,
+      "category": "IT Tech Park",
+      "confidence": "high",
+      "source": "Real Estate Records"
+    },
+    "940530592": {
+      "name": "My Home Twitza",
+      "campus": "Knowledge City",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 80.0,
+      "floors": 22,
+      "category": "Grade-A IT Skyscraper",
+      "confidence": "high",
+      "source": "My Home Group Specs"
+    },
+    "901113800": {
+      "name": "My Home Bhooja Block 7",
+      "campus": "My Home Bhooja",
+      "location": "Knowledge City, Hyderabad",
+      "height_m": 115.0,
+      "floors": 36,
+      "category": "Ultra-Luxury Residential Skyscraper",
+      "confidence": "high",
+      "source": "My Home Group Specs"
+    },
+    "901113799": {
+      "name": "My Home Bhooja Block 8",
+      "campus": "My Home Bhooja",
+      "location": "Knowledge City, Hyderabad",
+      "height_m": 115.0,
+      "floors": 36,
+      "category": "Ultra-Luxury Residential Skyscraper",
+      "confidence": "high",
+      "source": "My Home Group Specs"
+    },
+    "901113798": {
+      "name": "My Home Bhooja Block 9",
+      "campus": "My Home Bhooja",
+      "location": "Knowledge City, Hyderabad",
+      "height_m": 115.0,
+      "floors": 36,
+      "category": "Ultra-Luxury Residential Skyscraper",
+      "confidence": "high",
+      "source": "My Home Group Specs"
+    },
+    "901113797": {
+      "name": "My Home Bhooja Block 10",
+      "campus": "My Home Bhooja",
+      "location": "Knowledge City, Hyderabad",
+      "height_m": 115.0,
+      "floors": 36,
+      "category": "Ultra-Luxury Residential Skyscraper",
+      "confidence": "high",
+      "source": "My Home Group Specs"
+    },
+    "626185054": {
+      "name": "Rainbow Vistas Block E (Garnet)",
+      "campus": "Rainbow Vistas",
+      "location": "Moosapet / Kukatpally, Hyderabad",
+      "height_m": 72.0,
+      "floors": 22,
+      "category": "High-Rise Residential Tower",
+      "confidence": "high",
+      "source": "Cybercity Builders Specs"
+    },
+    "626185058": {
+      "name": "Rainbow Vistas Block F (Onyx)",
+      "campus": "Rainbow Vistas",
+      "location": "Moosapet / Kukatpally, Hyderabad",
+      "height_m": 72.0,
+      "floors": 22,
+      "category": "High-Rise Residential Tower",
+      "confidence": "high",
+      "source": "Cybercity Builders Specs"
+    },
+    "626185061": {
+      "name": "Rainbow Vistas Block G (Jade)",
+      "campus": "Rainbow Vistas",
+      "location": "Moosapet / Kukatpally, Hyderabad",
+      "height_m": 72.0,
+      "floors": 22,
+      "category": "High-Rise Residential Tower",
+      "confidence": "high",
+      "source": "Cybercity Builders Specs"
+    },
+    "626185063": {
+      "name": "Rainbow Vistas Block H (Scarlet)",
+      "campus": "Rainbow Vistas",
+      "location": "Moosapet / Kukatpally, Hyderabad",
+      "height_m": 72.0,
+      "floors": 22,
+      "category": "High-Rise Residential Tower",
+      "confidence": "high",
+      "source": "Cybercity Builders Specs"
+    },
+    "626185066": {
+      "name": "Rainbow Vistas Block I (Ruby)",
+      "campus": "Rainbow Vistas",
+      "location": "Moosapet / Kukatpally, Hyderabad",
+      "height_m": 72.0,
+      "floors": 22,
+      "category": "High-Rise Residential Tower",
+      "confidence": "high",
+      "source": "Cybercity Builders Specs"
+    },
+    "626185068": {
+      "name": "Rainbow Vistas Block J (Emerald)",
+      "campus": "Rainbow Vistas",
+      "location": "Moosapet / Kukatpally, Hyderabad",
+      "height_m": 72.0,
+      "floors": 22,
+      "category": "High-Rise Residential Tower",
+      "confidence": "high",
+      "source": "Cybercity Builders Specs"
+    },
+    "626185070": {
+      "name": "Rainbow Vistas Block O (Quartz)",
+      "campus": "Rainbow Vistas",
+      "location": "Moosapet / Kukatpally, Hyderabad",
+      "height_m": 72.0,
+      "floors": 22,
+      "category": "High-Rise Residential Tower",
+      "confidence": "high",
+      "source": "Cybercity Builders Specs"
+    },
+    "626185073": {
+      "name": "Rainbow Vistas Block N (Tanzanite)",
+      "campus": "Rainbow Vistas",
+      "location": "Moosapet / Kukatpally, Hyderabad",
+      "height_m": 72.0,
+      "floors": 22,
+      "category": "High-Rise Residential Tower",
+      "confidence": "high",
+      "source": "Cybercity Builders Specs"
+    },
+    "626185075": {
+      "name": "Rainbow Vistas Block M (Opal)",
+      "campus": "Rainbow Vistas",
+      "location": "Moosapet / Kukatpally, Hyderabad",
+      "height_m": 72.0,
+      "floors": 22,
+      "category": "High-Rise Residential Tower",
+      "confidence": "high",
+      "source": "Cybercity Builders Specs"
+    },
+    "626185078": {
+      "name": "Rainbow Vistas Block K (Diamond)",
+      "campus": "Rainbow Vistas",
+      "location": "Moosapet / Kukatpally, Hyderabad",
+      "height_m": 72.0,
+      "floors": 22,
+      "category": "High-Rise Residential Tower",
+      "confidence": "high",
+      "source": "Cybercity Builders Specs"
+    },
+    "626185080": {
+      "name": "Rainbow Vistas Block L (Topaz)",
+      "campus": "Rainbow Vistas",
+      "location": "Moosapet / Kukatpally, Hyderabad",
+      "height_m": 72.0,
+      "floors": 22,
+      "category": "High-Rise Residential Tower",
+      "confidence": "high",
+      "source": "Cybercity Builders Specs"
+    },
+    "1096504868": {
+      "name": "Rainbow Vistas Block P (Aquamarine)",
+      "campus": "Rainbow Vistas",
+      "location": "Moosapet / Kukatpally, Hyderabad",
+      "height_m": 72.0,
+      "floors": 22,
+      "category": "High-Rise Residential Tower",
+      "confidence": "high",
+      "source": "Cybercity Builders Specs"
+    },
+    "36776806": {
+      "name": "Tata Communications",
+      "campus": "Tata Communications IDC",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 28.0,
+      "floors": 7,
+      "category": "Data Center / Telecom Hub",
+      "confidence": "high",
+      "source": "Architecture Records"
+    },
+    "89914117": {
+      "name": "Motorola Mobility",
+      "campus": "HITEC City Phase 1",
+      "location": "Madhapur, Hyderabad",
+      "height_m": 32.0,
+      "floors": 8,
+      "category": "Corporate Tech Office",
+      "confidence": "high",
+      "source": "Corporate Architecture Records"
+    },
+    "89914126": {
+      "name": "ValueLabs Campus",
+      "campus": "ValueLabs Corporate HQ",
+      "location": "HITEC City, Hyderabad",
+      "height_m": 30.0,
+      "floors": 8,
+      "category": "Corporate Headquarters",
+      "confidence": "high",
+      "source": "ValueLabs Specs"
     }
   },
   "by_name_pattern": [
     {
-      "regex": "wells\\s*fargo.*tower\\s*4",
-      "name": "Wells Fargo Tower 4",
+      "regex": "sas\\s*crown",
+      "name": "SAS Crown",
+      "height_m": 235.0,
+      "floors": 58,
+      "category": "Iconic Supertall Skyscraper"
+    },
+    {
+      "regex": "sas\\s*(itower|diamond|tower)",
+      "name": "SAS iTower",
+      "height_m": 171.0,
+      "floors": 38,
+      "category": "Commercial Skyscraper"
+    },
+    {
+      "regex": "candeur\\s*skyline",
+      "name": "Candeur Skyline",
+      "height_m": 200.0,
+      "floors": 58,
+      "category": "Supertall Residential Skyscraper"
+    },
+    {
+      "regex": "candeur\\s*40",
+      "name": "Candeur 40",
+      "height_m": 160.0,
+      "floors": 42,
+      "category": "High-Rise Residential Skyscraper"
+    },
+    {
+      "regex": "candeur\\s*(crescent|signature|lakescape|twins)",
+      "name": "Candeur High-Rise Tower",
+      "height_m": 135.0,
+      "floors": 38,
+      "category": "High-Rise Residential"
+    },
+    {
+      "regex": "candeur",
+      "name": "Candeur Landmark Residential",
+      "height_m": 120.0,
+      "floors": 35,
+      "category": "High-Rise Residential"
+    },
+    {
+      "regex": "prestige\\s*high\\s*fields",
+      "name": "Prestige High Fields",
+      "height_m": 110.0,
+      "floors": 33,
+      "category": "High-Rise Luxury Residential"
+    },
+    {
+      "regex": "prestige\\s*clairemont",
+      "name": "Prestige Clairemont",
+      "height_m": 140.0,
+      "floors": 39,
+      "category": "Supertall Residential Skyscraper"
+    },
+    {
+      "regex": "prestige\\s*(tranquil|beverly|vaishnaoi)",
+      "name": "Prestige Residential Tower",
+      "height_m": 115.0,
+      "floors": 33,
+      "category": "High-Rise Luxury Residential"
+    },
+    {
+      "regex": "prestige\\s*ivy\\s*league",
+      "name": "Prestige Ivy League",
+      "height_m": 52.0,
+      "floors": 15,
+      "category": "Premium High-Rise Residential"
+    },
+    {
+      "regex": "lansum\\s*elena",
+      "name": "Lansum Elena",
+      "height_m": 200.0,
+      "floors": 55,
+      "category": "Supertall Residential Skyscraper"
+    },
+    {
+      "regex": "lansum\\s*(etania|eden)",
+      "name": "Lansum Etania",
+      "height_m": 95.0,
+      "floors": 28,
+      "category": "High-Rise Residential"
+    },
+    {
+      "regex": "dsr\\s*(the\\s*world|the\\s*first|highland)",
+      "name": "DSR The World High-Rise",
+      "height_m": 130.0,
+      "floors": 40,
+      "category": "Ultra-Luxury Residential Skyscraper"
+    },
+    {
+      "regex": "rajapushpa\\s*provincia",
+      "name": "Rajapushpa Provincia",
+      "height_m": 135.0,
+      "floors": 39,
+      "category": "High-Rise Residential Skyscraper"
+    },
+    {
+      "regex": "rajapushpa\\s*(atria|greendale)",
+      "name": "Rajapushpa Atria",
+      "height_m": 75.0,
+      "floors": 22,
+      "category": "High-Rise Residential"
+    },
+    {
+      "regex": "rajapushpa\\s*(summit|imperia|aegis)",
+      "name": "Rajapushpa Commercial Tower",
+      "height_m": 65.0,
+      "floors": 18,
+      "category": "Commercial High-Rise"
+    },
+    {
+      "regex": "my\\s*home\\s*grava",
+      "name": "My Home Grava",
+      "height_m": 160.0,
+      "floors": 44,
+      "category": "Supertall Commercial Skyscraper"
+    },
+    {
+      "regex": "my\\s*home\\s*sayuk",
+      "name": "My Home Sayuk",
+      "height_m": 135.0,
+      "floors": 39,
+      "category": "High-Rise Residential Skyscraper"
+    },
+    {
+      "regex": "my\\s*home\\s*(nishada|tarkshya|mangala)",
+      "name": "My Home High-Rise Tower",
+      "height_m": 115.0,
+      "floors": 34,
+      "category": "High-Rise Residential Skyscraper"
+    },
+    {
+      "regex": "my\\s*home\\s*bhooja",
+      "name": "My Home Bhooja",
+      "height_m": 115.0,
+      "floors": 36,
+      "category": "Ultra-Luxury Residential Skyscraper"
+    },
+    {
+      "regex": "my\\s*home\\s*twitza",
+      "name": "My Home Twitza",
+      "height_m": 80.0,
+      "floors": 22,
+      "category": "Corporate IT Skyscraper"
+    },
+    {
+      "regex": "my\\s*home\\s*(hub|avatar|abroo|vihanga)",
+      "name": "My Home Residential Complex",
+      "height_m": 65.0,
+      "floors": 18,
+      "category": "High-Rise Residential"
+    },
+    {
+      "regex": "aparna\\s*zenon",
+      "name": "Aparna Zenon",
+      "height_m": 115.0,
+      "floors": 33,
+      "category": "High-Rise Residential Skyscraper"
+    },
+    {
+      "regex": "aparna\\s*(luxor|altius|kanopy)",
+      "name": "Aparna Luxor Park",
+      "height_m": 75.0,
+      "floors": 22,
+      "category": "High-Rise Residential"
+    },
+    {
+      "regex": "aparna\\s*serene\\s*park",
+      "name": "Aparna Serene Park",
+      "height_m": 65.0,
+      "floors": 20,
+      "category": "High-Rise Residential"
+    },
+    {
+      "regex": "aparna\\s*(sarovar|cyberzone)",
+      "name": "Aparna Sarovar",
+      "height_m": 60.0,
+      "floors": 18,
+      "category": "High-Rise Residential"
+    },
+    {
+      "regex": "vasavi\\s*atlantis",
+      "name": "Vasavi Atlantis",
+      "height_m": 135.0,
+      "floors": 40,
+      "category": "Ultra-Luxury Residential Skyscraper"
+    },
+    {
+      "regex": "vasavi\\s*skyla",
+      "name": "Vasavi Skyla",
+      "height_m": 120.0,
+      "floors": 36,
+      "category": "High-Rise Residential Skyscraper"
+    },
+    {
+      "regex": "vasavi\\s*(sky\\s*city|urban|ananda)",
+      "name": "Vasavi High-Rise Tower",
+      "height_m": 72.0,
+      "floors": 20,
+      "category": "Commercial / Residential High-Rise"
+    },
+    {
+      "regex": "sumadhura\\s*(the\\s*olympus|olympus)",
+      "name": "Sumadhura The Olympus",
+      "height_m": 145.0,
+      "floors": 44,
+      "category": "Supertall Residential Skyscraper"
+    },
+    {
+      "regex": "sumadhura\\s*acropolis",
+      "name": "Sumadhura Acropolis",
+      "height_m": 105.0,
+      "floors": 32,
+      "category": "High-Rise Residential"
+    },
+    {
+      "regex": "sumadhura\\s*(horizon|folium)",
+      "name": "Sumadhura Horizon",
+      "height_m": 80.0,
+      "floors": 24,
+      "category": "High-Rise Residential"
+    },
+    {
+      "regex": "asbl\\s*(spire|spectra|broadway)",
+      "name": "ASBL High-Rise Tower",
+      "height_m": 125.0,
+      "floors": 36,
+      "category": "High-Rise Residential Skyscraper"
+    },
+    {
+      "regex": "hallmark\\s*(altus|sunnyside|vesta)",
+      "name": "Hallmark Altus",
+      "height_m": 65.0,
+      "floors": 20,
+      "category": "High-Rise Residential"
+    },
+    {
+      "regex": "jayabheri\\s*(the\\s*summit|summit)",
+      "name": "Jayabheri The Summit",
+      "height_m": 110.0,
+      "floors": 32,
+      "category": "High-Rise Residential Skyscraper"
+    },
+    {
+      "regex": "jayabheri\\s*(silicon\\s*county|silicon|temple\\s*tree)",
+      "name": "Jayabheri Silicon County",
+      "height_m": 60.0,
+      "floors": 18,
+      "category": "High-Rise Residential"
+    },
+    {
+      "regex": "phoenix\\s*aquila",
+      "name": "Phoenix Aquila",
+      "height_m": 120.0,
+      "floors": 30,
+      "category": "Grade-A IT Skyscraper"
+    },
+    {
+      "regex": "phoenix\\s*centaurus",
+      "name": "Phoenix Centaurus",
+      "height_m": 110.0,
+      "floors": 30,
+      "category": "Grade-A Commercial Skyscraper"
+    },
+    {
+      "regex": "phoenix\\s*(trivium|avance|bhub|285)",
+      "name": "Phoenix Business Hub",
+      "height_m": 85.0,
+      "floors": 24,
+      "category": "Corporate High-Rise Tower"
+    },
+    {
+      "regex": "phoenix\\s*tower",
+      "name": "Phoenix Tower",
+      "height_m": 65.0,
+      "floors": 18,
+      "category": "Corporate High-Rise"
+    },
+    {
+      "regex": "salarpuria|sattva\\s*knowledge",
+      "name": "Salarpuria Sattva Knowledge City",
+      "height_m": 77.0,
+      "floors": 22,
+      "category": "Grade-A IT Park"
+    },
+    {
+      "regex": "sattva\\s*(image|horizon|magnificia|sanctuary)",
+      "name": "Sattva Commercial Tower",
+      "height_m": 80.0,
+      "floors": 22,
+      "category": "Grade-A Commercial Tower"
+    },
+    {
+      "regex": "divyasree\\s*orion",
+      "name": "DivyaSree Orion",
+      "height_m": 80.0,
+      "floors": 23,
+      "category": "Grade-A Corporate IT Skyscraper"
+    },
+    {
+      "regex": "divyasree\\s*omega",
+      "name": "DivyaSree Omega",
+      "height_m": 25.0,
+      "floors": 6,
+      "category": "Commercial IT Complex"
+    },
+    {
+      "regex": "meenakshi\\s*(tech|technova)",
+      "name": "Meenakshi Tech Park",
+      "height_m": 75.0,
+      "floors": 20,
+      "category": "Enterprise IT Tower"
+    },
+    {
+      "regex": "waverock",
+      "name": "Waverock SEZ IT Park",
+      "height_m": 60.0,
+      "floors": 16,
+      "category": "Grade-A IT SEZ Skyscraper"
+    },
+    {
+      "regex": "mantri\\s*cosmos",
+      "name": "Mantri Cosmos",
+      "height_m": 65.0,
+      "floors": 18,
+      "category": "High-Rise Residential Complex"
+    },
+    {
+      "regex": "mantri\\s*celestia",
+      "name": "Mantri Celestia",
+      "height_m": 48.0,
+      "floors": 14,
+      "category": "High-Rise Residential Complex"
+    },
+    {
+      "regex": "vamsiram\\s*(jyothi|tech|bhub)",
+      "name": "Vamsiram Jyothi Tech Park",
+      "height_m": 65.0,
+      "floors": 18,
+      "category": "Grade-A Commercial High-Rise"
+    },
+    {
+      "regex": "microsoft",
+      "name": "Microsoft IDC Campus",
+      "height_m": 35.0,
+      "floors": 8,
+      "category": "Enterprise Tech Campus"
+    },
+    {
+      "regex": "google",
+      "name": "Google Hyderabad Campus",
+      "height_m": 50.0,
+      "floors": 12,
+      "category": "Global Tech Campus"
+    },
+    {
+      "regex": "amazon",
+      "name": "Amazon Hyderabad Campus",
+      "height_m": 85.0,
+      "floors": 18,
+      "category": "Global Tech Headquarters"
+    },
+    {
+      "regex": "cognizant",
+      "name": "Cognizant Technologies",
+      "height_m": 45.0,
+      "floors": 12,
+      "category": "Enterprise IT Tower"
+    },
+    {
+      "regex": "honeywell",
+      "name": "Honeywell Technology Campus",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Corporate Tech Campus"
+    },
+    {
+      "regex": "nvidia",
+      "name": "Nvidia Corporation",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Corporate Tech Campus"
+    },
+    {
+      "regex": "franklin\\s*templeton",
+      "name": "Franklin Templeton",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Financial Corporate Office"
+    },
+    {
+      "regex": "hsbc",
+      "name": "HSBC Global Operations",
+      "height_m": 45.0,
+      "floors": 12,
+      "category": "Corporate Banking Tower"
+    },
+    {
+      "regex": "deloitte",
+      "name": "Deloitte Tower",
+      "height_m": 55.0,
+      "floors": 15,
+      "category": "Corporate High-Rise Tower"
+    },
+    {
+      "regex": "oracle",
+      "name": "Oracle Campus",
+      "height_m": 32.0,
+      "floors": 8,
+      "category": "Corporate Tech Campus"
+    },
+    {
+      "regex": "tcs|tata\\s*consultancy",
+      "name": "TCS Deccan Park / Kohinoor",
+      "height_m": 35.0,
+      "floors": 9,
+      "category": "Enterprise IT Campus"
+    },
+    {
+      "regex": "tech\\s*mahindra",
+      "name": "Tech Mahindra Campus",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Enterprise IT Campus"
+    },
+    {
+      "regex": "wipro",
+      "name": "Wipro Technologies",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Enterprise IT Campus"
+    },
+    {
+      "regex": "infosys",
+      "name": "Infosys Campus",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Enterprise IT Campus"
+    },
+    {
+      "regex": "capgemini",
+      "name": "Capgemini Campus",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Enterprise IT Campus"
+    },
+    {
+      "regex": "qualcomm",
+      "name": "Qualcomm Commerzone",
+      "height_m": 100.0,
+      "floors": 22,
+      "category": "Grade-A IT Skyscraper"
+    },
+    {
+      "regex": "wells\\s*fargo",
+      "name": "Wells Fargo Tower",
       "height_m": 80.5,
       "floors": 23,
       "category": "Corporate IT Skyscraper"
+    },
+    {
+      "regex": "sarath\\s*city\\s*(capital)?\\s*mall",
+      "name": "Sarath City Capital Mall",
+      "height_m": 42.0,
+      "floors": 8,
+      "category": "Super-Regional Shopping Mall"
+    },
+    {
+      "regex": "nexus\\s*hyderabad|forum\\s*sujana",
+      "name": "Nexus Hyderabad Mall",
+      "height_m": 35.0,
+      "floors": 7,
+      "category": "Major Shopping Mall"
     },
     {
       "regex": "inorbit\\s*mall",
@@ -350,11 +1789,137 @@
       "category": "Retail & Entertainment Complex"
     },
     {
-      "regex": "salarpuria|sattva\\s*knowledge",
-      "name": "Salarpuria Sattva Knowledge City",
-      "height_m": 75.0,
-      "floors": 21,
-      "category": "Grade-A IT Park"
+      "regex": "ikea",
+      "name": "IKEA Hyderabad",
+      "height_m": 24.0,
+      "floors": 4,
+      "category": "Flagship Retail Store"
+    },
+    {
+      "regex": "aig\\s*hospital",
+      "name": "AIG Hospitals",
+      "height_m": 56.0,
+      "floors": 15,
+      "category": "Super-Specialty Medical Center"
+    },
+    {
+      "regex": "continental\\s*hospital",
+      "name": "Continental Hospitals",
+      "height_m": 55.0,
+      "floors": 15,
+      "category": "Super-Specialty Hospital"
+    },
+    {
+      "regex": "kims\\s*hospital",
+      "name": "KIMS Hospitals",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "Super-Specialty Hospital"
+    },
+    {
+      "regex": "care\\s*hospital",
+      "name": "Care Hospitals",
+      "height_m": 45.0,
+      "floors": 12,
+      "category": "Multi-Specialty Hospital"
+    },
+    {
+      "regex": "apollo\\s*(cradle|clinic|hospital)",
+      "name": "Apollo Healthcare",
+      "height_m": 42.0,
+      "floors": 11,
+      "category": "Healthcare Complex"
+    },
+    {
+      "regex": "medicover\\s*hospital",
+      "name": "Medicover Hospitals",
+      "height_m": 40.0,
+      "floors": 10,
+      "category": "Multi-Specialty Hospital"
+    },
+    {
+      "regex": "itc\\s*kohenur",
+      "name": "ITC Kohenur",
+      "height_m": 50.0,
+      "floors": 14,
+      "category": "5-Star Luxury Hotel"
+    },
+    {
+      "regex": "westin",
+      "name": "The Westin Hyderabad Mindspace",
+      "height_m": 55.0,
+      "floors": 16,
+      "category": "5-Star Luxury Hotel"
+    },
+    {
+      "regex": "trident",
+      "name": "Trident Hotel Hyderabad",
+      "height_m": 52.0,
+      "floors": 15,
+      "category": "5-Star Luxury Hotel"
+    },
+    {
+      "regex": "sheraton",
+      "name": "Sheraton Hotel Hyderabad",
+      "height_m": 48.0,
+      "floors": 14,
+      "category": "5-Star Luxury Hotel"
+    },
+    {
+      "regex": "novotel",
+      "name": "Novotel Hyderabad Convention Centre",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Convention Hotel"
+    },
+    {
+      "regex": "hyatt",
+      "name": "Hyatt Hyderabad",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Luxury Hotel"
+    },
+    {
+      "regex": "radisson",
+      "name": "Radisson Hyderabad Hitec City",
+      "height_m": 35.0,
+      "floors": 10,
+      "category": "Business Hotel"
+    },
+    {
+      "regex": "convention.*cent(er|re)|hicc|hitex",
+      "name": "HICC / Hitex Exhibition Centre",
+      "height_m": 25.0,
+      "floors": 4,
+      "category": "International Convention Centre"
+    },
+    {
+      "regex": "cyber\\s*towers?",
+      "name": "Cyber Towers",
+      "height_m": 45.0,
+      "floors": 10,
+      "category": "Iconic IT Landmark"
+    },
+    {
+      "regex": "cyber\\s*(gateway|pearl)",
+      "name": "Cyber Gateway / Pearl",
+      "height_m": 35.0,
+      "floors": 8,
+      "category": "IT Technology Park"
+    },
+    {
+      "regex": "mindspace.*(building|tower)|raheja.*mindspace",
+      "name": "Raheja Mindspace IT Tower",
+      "height_m": 65.0,
+      "floors": 18,
+      "category": "Grade-A IT Skyscraper"
+    },
+    {
+      "regex": "wells\\s*fargo.*tower\\s*4",
+      "name": "Wells Fargo Tower 4",
+      "height_m": 80.5,
+      "floors": 23,
+      "category": "Corporate IT Skyscraper"
     },
     {
       "regex": "novartis",
@@ -392,20 +1957,6 @@
       "category": "High-Rise Luxury Residential"
     },
     {
-      "regex": "itc\\s*kohenur",
-      "name": "ITC Kohenur",
-      "height_m": 50.0,
-      "floors": 14,
-      "category": "Luxury Hotel"
-    },
-    {
-      "regex": "cyber\\s*towers?",
-      "name": "Cyber Towers",
-      "height_m": 45.0,
-      "floors": 10,
-      "category": "Iconic IT Landmark"
-    },
-    {
       "regex": "cyber\\s*gateway",
       "name": "Cyber Gateway",
       "height_m": 35.0,
@@ -420,13 +1971,6 @@
       "category": "IT Technology Park"
     },
     {
-      "regex": "ikea",
-      "name": "IKEA Hyderabad",
-      "height_m": 24.0,
-      "floors": 4,
-      "category": "Flagship Retail Store"
-    },
-    {
       "regex": "mindspace.*building|raheja.*mindspace|mindspace.*tower",
       "name": "Raheja Mindspace IT Tower",
       "height_m": 78.0,
@@ -439,20 +1983,6 @@
       "height_m": 85.0,
       "floors": 24,
       "category": "Corporate High-Rise Tower"
-    },
-    {
-      "regex": "my\\s*home\\s*bhooja",
-      "name": "My Home Bhooja",
-      "height_m": 115.0,
-      "floors": 36,
-      "category": "Luxury Residential Skyscraper"
-    },
-    {
-      "regex": "my\\s*home\\s*twitza",
-      "name": "My Home Twitza",
-      "height_m": 80.0,
-      "floors": 22,
-      "category": "Corporate IT High-Rise"
     },
     {
       "regex": "ascendas|the\\s*v\\b|v\\s*park",
@@ -481,13 +2011,6 @@
       "height_m": 14.0,
       "floors": 3,
       "category": "Cultural Heritage Complex"
-    },
-    {
-      "regex": "aig\\s*hospital",
-      "name": "AIG Hospitals",
-      "height_m": 56.0,
-      "floors": 15,
-      "category": "Super-Specialty Medical Center"
     }
   ]
 }

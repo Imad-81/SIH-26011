@@ -48,38 +48,6 @@ except ImportError:
     HAS_TRIMESH = False
     print("⚠️  trimesh not installed — GLB export will be skipped")
 
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass
-
-warnings.filterwarnings('ignore', category=rasterio.errors.NotGeoreferencedWarning)
-warnings.filterwarnings('ignore', category=FutureWarning)
-
-# ═══════════════════════════════════════════════════════════════════
-# CONFIGURATION
-# ═══════════════════════════════════════════════════════════════════
-
-# HITEC City expanded center (encompassing Cyber Towers, Mindspace, IKEA, Knowledge City)
-CENTER_LAT = 17.4370
-CENTER_LON = 78.3800
-
-# 4.0 km × 4.0 km bounding box (~16 km²)
-HALF_SIZE_KM = 2.0
-
-# CRS
-CRS_WGS84 = "EPSG:4326"
-CRS_UTM = "EPSG:32644"  # UTM Zone 44N for Hyderabad
-
-# Height estimation
-FLOOR_HEIGHT_M = 3.0
-MAX_VALID_HEIGHT_M = 200.0
-MIN_VALID_HEIGHT_M = 0.0
-
-# OpenTopography API
-OPENTOPO_API_KEY = os.environ.get("OPEN_TOPOGRAPHY_API", "")
-
 # Paths
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
@@ -88,6 +56,67 @@ PROCESSED_DIR = DATA_DIR / "processed"
 METADATA_DIR = DATA_DIR / "metadata"
 OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 VIEWER_DATA_DIR = PROJECT_ROOT / "viewer" / "public" / "data"
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv(PROJECT_ROOT / ".env")
+except ImportError:
+    pass
+
+warnings.filterwarnings('ignore', category=rasterio.errors.NotGeoreferencedWarning)
+warnings.filterwarnings('ignore', category=FutureWarning)
+
+# ═══════════════════════════════════════════════════════════════════
+# CONFIGURATION & UNIVERSAL LOCATION ENGINE
+# ═══════════════════════════════════════════════════════════════════
+
+# Default: HITEC City / Durgam Cheruvu / Financial District Corridor, Hyderabad
+CENTER_LAT = 17.4370
+CENTER_LON = 78.3800
+
+# 3.0 km × 3.0 km bounding box default (HALF_SIZE_KM = 1.5)
+HALF_SIZE_KM = 1.5
+
+# Geographic CRS
+CRS_WGS84 = "EPSG:4326"
+
+def get_utm_crs(lat: float, lon: float) -> str:
+    """Dynamically determine the appropriate UTM projected CRS for any location on Earth."""
+    zone = int((lon + 180) / 6) + 1
+    epsg = 32600 + zone if lat >= 0 else 32700 + zone
+    return f"EPSG:{epsg}"
+
+# Default Projected CRS for Hyderabad (UTM Zone 44N)
+CRS_UTM = get_utm_crs(CENTER_LAT, CENTER_LON)
+
+# City Presets for Universal Exploration
+CITY_PRESETS = {
+    "hyderabad": {"lat": 17.4370, "lon": 78.3800, "name": "Hyderabad (HITEC City / Financial District)"},
+    "mumbai": {"lat": 19.0657, "lon": 72.8687, "name": "Mumbai (Bandra Kurla Complex)"},
+    "bangalore": {"lat": 12.9352, "lon": 77.6946, "name": "Bengaluru (Bellandur / Outer Ring Road)"},
+    "pune": {"lat": 18.5913, "lon": 73.7389, "name": "Pune (Hinjawadi IT Park)"},
+    "delhi": {"lat": 28.4986, "lon": 77.0878, "name": "Gurugram / NCR (Cyber City)"}
+}
+
+# Key Urban High-Rise Clusters (UTM Zone 44N for Hyderabad fallback)
+URBAN_ZONES = [
+    ("Financial District", 215500, 219500, 1925000, 1929000, 2.5),
+    ("Old Mumbai Highway", 218000, 221500, 1928000, 1932500, 2.0),
+    ("HITEC City Core", 220500, 223800, 1930000, 1933500, 2.0),
+    ("Knowledge City / Raidurg", 220500, 223500, 1928000, 1930800, 2.0),
+    ("Gachibowli Tech Corridor", 217000, 221000, 1928000, 1931500, 1.8),
+    ("Kondapur High-Rise", 218000, 222000, 1932000, 1935500, 1.5),
+    ("Kukatpally / Moosapet", 222500, 226000, 1933500, 1937500, 1.3),
+    ("Jubilee Hills Commercial", 223500, 226500, 1928000, 1930500, 1.3),
+]
+
+# Height estimation
+FLOOR_HEIGHT_M = 3.0
+MAX_VALID_HEIGHT_M = 250.0
+MIN_VALID_HEIGHT_M = 0.0
+
+# OpenTopography API
+OPENTOPO_API_KEY = os.environ.get("OPEN_TOPOGRAPHY_API", "")
 
 # Colors for height visualization
 HEIGHT_COLORS = {
@@ -138,39 +167,42 @@ def ensure_dirs():
 # STAGE 1: AOI DEFINITION
 # ═══════════════════════════════════════════════════════════════════
 
-def compute_aoi():
-    """Compute the Area of Interest bounding box."""
+def compute_aoi(lat=None, lon=None, half_size_km=None, crs_utm=None):
+    """Compute the Area of Interest bounding box with dynamic center and size."""
     banner("STAGE 1: AOI Definition")
 
-    # Convert km offset to degrees (approximate)
-    # 1 degree latitude ≈ 111.32 km
-    # 1 degree longitude ≈ 111.32 * cos(lat) km
-    lat_offset = HALF_SIZE_KM / 111.32
-    lon_offset = HALF_SIZE_KM / (111.32 * math.cos(math.radians(CENTER_LAT)))
+    target_lat = lat if lat is not None else CENTER_LAT
+    target_lon = lon if lon is not None else CENTER_LON
+    target_half_size = half_size_km if half_size_km is not None else HALF_SIZE_KM
+    target_utm = crs_utm if crs_utm is not None else get_utm_crs(target_lat, target_lon)
 
-    south = CENTER_LAT - lat_offset
-    north = CENTER_LAT + lat_offset
-    west = CENTER_LON - lon_offset
-    east = CENTER_LON + lon_offset
+    # Convert km offset to degrees (approximate)
+    lat_offset = target_half_size / 111.32
+    lon_offset = target_half_size / (111.32 * math.cos(math.radians(target_lat)))
+
+    south = target_lat - lat_offset
+    north = target_lat + lat_offset
+    west = target_lon - lon_offset
+    east = target_lon + lon_offset
 
     aoi = {
-        "center": {"lat": CENTER_LAT, "lon": CENTER_LON},
+        "center": {"lat": round(target_lat, 6), "lon": round(target_lon, 6)},
         "bbox": {
             "south": round(south, 6),
             "north": round(north, 6),
             "west": round(west, 6),
             "east": round(east, 6),
         },
-        "size_km": HALF_SIZE_KM * 2,
-        "area_km2": (HALF_SIZE_KM * 2) ** 2,
+        "size_km": round(target_half_size * 2.0, 2),
+        "area_km2": round((target_half_size * 2.0) ** 2, 2),
         "crs_geographic": CRS_WGS84,
-        "crs_projected": CRS_UTM,
+        "crs_projected": target_utm,
     }
 
-    info(f"Center: {CENTER_LAT}°N, {CENTER_LON}°E (Durgam Cheruvu)")
+    info(f"Center: {target_lat:.4f}°N, {target_lon:.4f}°E | Projected CRS: {target_utm}")
     info(f"Bbox: S={aoi['bbox']['south']}, N={aoi['bbox']['north']}, "
          f"W={aoi['bbox']['west']}, E={aoi['bbox']['east']}")
-    info(f"Size: {aoi['size_km']} km × {aoi['size_km']} km = ~{aoi['area_km2']:.0f} km²")
+    info(f"Size: {aoi['size_km']} km × {aoi['size_km']} km = ~{aoi['area_km2']:.1f} km²")
 
     return aoi
 
@@ -417,6 +449,113 @@ out skel qt;
 
 
 # ═══════════════════════════════════════════════════════════════════
+# STAGE 2b: OSM LANDUSE & URBAN ZONING DOWNLOAD
+# ═══════════════════════════════════════════════════════════════════
+
+def download_osm_landuse(aoi):
+    """Download OSM landuse & zoning polygons (commercial, industrial, retail, residential) via Overpass API."""
+    banner("STAGE 2b: OSM Landuse & Zoning Download")
+
+    output_path = RAW_DIR / "osm_landuse.geojson"
+    meta_path = RAW_DIR / "landuse_cache_meta.json"
+
+    # Check cache matching current AOI bbox
+    cache_valid = False
+    if meta_path.exists() and output_path.exists() and output_path.stat().st_size > 500:
+        try:
+            with open(meta_path) as mf:
+                m = json.load(mf)
+            if m.get("bbox") == aoi["bbox"]:
+                cache_valid = True
+        except Exception:
+            pass
+
+    if cache_valid:
+        try:
+            gdf_landuse = gpd.read_file(output_path)
+            info(f"Using cached OSM landuse: {output_path.name} ({len(gdf_landuse)} zones)")
+            return gdf_landuse
+        except Exception:
+            pass
+
+    b = aoi["bbox"]
+    bbox_str = f"{b['south']},{b['west']},{b['north']},{b['east']}"
+    query = f"""
+[out:json][timeout:90];
+(
+  way["landuse"~"commercial|industrial|retail|residential|construction"]({bbox_str});
+  relation["landuse"~"commercial|industrial|retail|residential|construction"]({bbox_str});
+);
+out body;
+>;
+out skel qt;
+"""
+
+    mirrors = [
+        ("overpass-api.de", "https://overpass-api.de/api/interpreter"),
+        ("maps.mail.ru", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"),
+        ("overpass.kumi.systems", "https://overpass.kumi.systems/api/interpreter"),
+    ]
+
+    resp = None
+    for mirror_name, url in mirrors:
+        progress(f"Querying Overpass API for landuse ({mirror_name})...")
+        try:
+            resp = requests.post(
+                url,
+                data={"data": query},
+                timeout=120,
+                headers={"User-Agent": "SIH26011-Pipeline/2.0"},
+            )
+            resp.raise_for_status()
+            info(f"Success via {mirror_name}")
+            break
+        except requests.RequestException as e:
+            warn(f"Mirror {mirror_name} failed: {e}")
+            resp = None
+            continue
+
+    features = []
+    if resp is not None:
+        try:
+            data = resp.json()
+            elements = data.get("elements", [])
+            nodes = {el["id"]: (el["lon"], el["lat"]) for el in elements if el["type"] == "node"}
+            for el in elements:
+                if el["type"] == "way":
+                    node_ids = el.get("nodes", [])
+                    coords = [nodes[nid] for nid in node_ids if nid in nodes]
+                    if len(coords) >= 4 and coords[0] == coords[-1]:
+                        poly = Polygon(coords)
+                        if poly.is_valid and poly.area > 0:
+                            tags = el.get("tags", {})
+                            features.append({
+                                "type": "Feature",
+                                "geometry": mapping(poly),
+                                "properties": {
+                                    "osm_id": el["id"],
+                                    "name": tags.get("name"),
+                                    "landuse": tags.get("landuse"),
+                                }
+                            })
+        except Exception as e:
+            warn(f"Failed to parse landuse Overpass response: {e}")
+
+    if features:
+        landuse_geojson = {"type": "FeatureCollection", "features": features}
+        with open(output_path, "w") as f:
+            json.dump(landuse_geojson, f)
+        with open(meta_path, "w") as mf:
+            json.dump({"bbox": aoi["bbox"]}, mf)
+        gdf_landuse = gpd.GeoDataFrame.from_features(features, crs=CRS_WGS84)
+        info(f"Downloaded {len(features)} landuse zones → {output_path.name}")
+        return gdf_landuse
+    else:
+        warn("No landuse zones downloaded, will use spatial bounding box zones")
+        return gpd.GeoDataFrame(columns=["landuse", "name", "geometry"], crs=CRS_WGS84)
+
+
+# ═══════════════════════════════════════════════════════════════════
 # STAGE 3: DSM DOWNLOAD (Copernicus GLO-30)
 # ═══════════════════════════════════════════════════════════════════
 
@@ -514,7 +653,7 @@ def _merge_rasters(paths, output_path):
 
 
 # ═══════════════════════════════════════════════════════════════════
-# STAGE 4: DEM DOWNLOAD
+# STAGE 4: DEM DOWNLOAD (Bare Earth)
 # ═══════════════════════════════════════════════════════════════════
 
 def download_dem(aoi):
@@ -522,21 +661,31 @@ def download_dem(aoi):
     banner("STAGE 4: DEM Download (Bare Earth)")
 
     output_path = RAW_DIR / "dem.tif"
-    if output_path.exists() and output_path.stat().st_size > 1000:
-        info(f"Using cached DEM: {output_path.name} ({output_path.stat().st_size / 1024:.1f} KB)")
-        return output_path
+    dsm_path = RAW_DIR / "dsm.tif"
 
-    # Strategy 1: OpenTopography SRTM GL1 (we have API key)
-    if OPENTOPO_API_KEY:
+    # Verify if cached DEM exists and is not a duplicate of DSM
+    if output_path.exists() and output_path.stat().st_size > 5000:
+        if dsm_path.exists() and output_path.stat().st_size == dsm_path.stat().st_size:
+            warn("Cached dem.tif is an identical copy of dsm.tif. Re-downloading bare-earth SRTM DEM...")
+            output_path.unlink(missing_ok=True)
+        else:
+            info(f"Using cached DEM: {output_path.name} ({output_path.stat().st_size / 1024:.1f} KB)")
+            return output_path
+
+    # Read API key dynamically from environment
+    api_key = os.environ.get("OPEN_TOPOGRAPHY_API", "").strip() or OPENTOPO_API_KEY
+    if api_key:
         progress("Attempting SRTM GL1 via OpenTopography API...")
         b = aoi["bbox"]
+        # Add 0.015 degree margin to ensure complete raster overlap during UTM warping
+        pad = 0.015
         url = (
             f"https://portal.opentopography.org/API/globaldem"
             f"?demtype=SRTMGL1"
-            f"&south={b['south']}&north={b['north']}"
-            f"&west={b['west']}&east={b['east']}"
+            f"&south={b['south'] - pad:.5f}&north={b['north'] + pad:.5f}"
+            f"&west={b['west'] - pad:.5f}&east={b['east'] + pad:.5f}"
             f"&outputFormat=GTiff"
-            f"&API_Key={OPENTOPO_API_KEY}"
+            f"&API_Key={api_key}"
         )
 
         try:
@@ -545,13 +694,10 @@ def download_dem(aoi):
 
             # Check content type (API returns error as JSON/text sometimes)
             content_type = resp.headers.get('content-type', '')
-            if 'tif' in content_type or 'octet' in content_type or len(resp.content) > 10000:
-                total = int(resp.headers.get('content-length', 0))
+            if 'tif' in content_type or 'octet' in content_type or len(resp.content) > 5000:
                 with open(output_path, "wb") as f:
-                    downloaded = 0
                     for chunk in resp.iter_content(chunk_size=8192):
                         f.write(chunk)
-                        downloaded += len(chunk)
 
                 # Verify it's a valid raster
                 try:
@@ -566,7 +712,6 @@ def download_dem(aoi):
                     output_path.unlink(missing_ok=True)
             else:
                 warn(f"OpenTopography returned non-raster content: {content_type}")
-                # Try to read error message
                 try:
                     err_text = resp.text[:500]
                     warn(f"  Response: {err_text}")
@@ -576,17 +721,13 @@ def download_dem(aoi):
         except requests.RequestException as e:
             warn(f"OpenTopography request failed: {e}")
     else:
-        warn("No OpenTopography API key found in .env")
+        warn("No OpenTopography API key found in .env (set OPEN_TOPOGRAPHY_API)")
 
-    # Strategy 2: Use Copernicus GLO-30 as both DSM and approximate DEM
-    # BUT — we need to be honest about this
+    # Strategy 2: Fallback to Copernicus GLO-30
     warn("Could not obtain a separate bare-earth DEM")
     warn("Falling back: will use Copernicus GLO-30 for both DSM and DEM")
-    warn("Building heights from DSM-DEM will be ZERO in this case")
-    warn("Height estimation will rely on OSM tags + building:levels only")
+    warn("Building heights will rely on OSM tags & morphological heuristics")
 
-    # Copy DSM as DEM so pipeline can continue (clearly marked in metadata)
-    dsm_path = RAW_DIR / "dsm.tif"
     if dsm_path.exists():
         import shutil
         shutil.copy2(dsm_path, output_path)
@@ -598,16 +739,18 @@ def download_dem(aoi):
 
 
 # ═══════════════════════════════════════════════════════════════════
-# STAGE 5: RASTER ALIGNMENT & CLIPPING
+# STAGE 5: RASTER ALIGNMENT, CLIPPING & nDSM DIFFERENTIAL HEIGHTS
 # ═══════════════════════════════════════════════════════════════════
 
 def clip_and_align_rasters(aoi, dem_path, dsm_path):
-    """Clip and reproject DEM and DSM to AOI in UTM."""
+    """Clip and reproject DEM and DSM to AOI in UTM, and compute nDSM."""
     banner("STAGE 5: Raster Alignment & Clipping")
 
     aoi_geom = aoi_polygon_wgs84(aoi)
+    crs_utm = aoi.get("crs_projected", CRS_UTM)
     dem_clipped = PROCESSED_DIR / "dem_clipped.tif"
     dsm_clipped = PROCESSED_DIR / "dsm_clipped.tif"
+    ndsm_clipped = PROCESSED_DIR / "ndsm_clipped.tif"
 
     dem_same_as_dsm = False
 
@@ -615,10 +758,8 @@ def clip_and_align_rasters(aoi, dem_path, dsm_path):
         progress(f"Processing {label}: {src_path.name}")
 
         with rasterio.open(src_path) as src:
-            # First clip in source CRS
             src_crs = src.crs
 
-            # Transform AOI to source CRS if needed
             if str(src_crs) != CRS_WGS84:
                 transformer = pyproj.Transformer.from_crs(CRS_WGS84, src_crs, always_xy=True)
                 b = aoi["bbox"]
@@ -637,28 +778,25 @@ def clip_and_align_rasters(aoi, dem_path, dsm_path):
             else:
                 clip_geom = aoi_geom
 
-            # Check overlap
             raster_bounds = box(*src.bounds)
             if not raster_bounds.intersects(clip_geom):
                 error(f"{label} does not overlap AOI!")
-                return None, None
-            
+                return None
+
             overlap = raster_bounds.intersection(clip_geom)
             overlap_pct = (overlap.area / clip_geom.area) * 100
             info(f"  {label} overlap with AOI: {overlap_pct:.1f}%")
 
-            # Clip
             try:
                 clipped_data, clipped_transform = rasterio_mask(
                     src, [mapping(clip_geom)], crop=True, nodata=src.nodata or -9999
                 )
             except Exception as e:
                 error(f"  Clipping failed: {e}")
-                return None, None
+                return None
 
-            # Calculate transform to UTM
             dst_transform, dst_width, dst_height = calculate_default_transform(
-                src_crs, CRS_UTM,
+                src_crs, crs_utm,
                 clipped_data.shape[2], clipped_data.shape[1],
                 left=clipped_transform.c,
                 bottom=clipped_transform.f + clipped_transform.e * clipped_data.shape[1],
@@ -669,7 +807,7 @@ def clip_and_align_rasters(aoi, dem_path, dsm_path):
             meta = src.meta.copy()
             meta.update({
                 "driver": "GTiff",
-                "crs": CRS_UTM,
+                "crs": crs_utm,
                 "transform": dst_transform,
                 "width": dst_width,
                 "height": dst_height,
@@ -684,24 +822,70 @@ def clip_and_align_rasters(aoi, dem_path, dsm_path):
                         src_transform=clipped_transform,
                         src_crs=src_crs,
                         dst_transform=dst_transform,
-                        dst_crs=CRS_UTM,
+                        dst_crs=crs_utm,
                         resampling=Resampling.bilinear,
                     )
 
             info(f"  {label} clipped & reprojected → {dst_path.name}")
 
-            with rasterio.open(dst_path) as check:
-                info(f"    CRS: {check.crs}")
-                info(f"    Size: {check.width} × {check.height}")
-                info(f"    Resolution: {check.res[0]:.1f}m × {check.res[1]:.1f}m")
-
-    # Check if DEM and DSM are actually the same file
+    # Check if DEM and DSM are identical
     if dem_path.name == dsm_path.name or _files_identical(dem_path, dsm_path):
         dem_same_as_dsm = True
         warn("DEM and DSM are the same dataset — raster-derived heights will be ~0")
-        warn("Height estimation will rely on OSM tags only")
+    else:
+        info("DEM (bare earth SRTM) and DSM (surface Copernicus) are distinct!")
+        info("Physical nDSM differential heights enabled!")
 
-    return dem_clipped, dsm_clipped, dem_same_as_dsm
+    # Generate pixel-aligned nDSM = max(0, DSM - DEM)
+    if not dem_same_as_dsm and dem_clipped.exists() and dsm_clipped.exists():
+        try:
+            with rasterio.open(dsm_clipped) as dsm_f, rasterio.open(dem_clipped) as dem_f:
+                dsm_data = dsm_f.read(1)
+                dsm_meta = dsm_f.meta.copy()
+
+                # Resample DEM to match DSM grid exactly
+                dem_resampled = np.zeros(dsm_data.shape, dtype=np.float32)
+                reproject(
+                    source=rasterio.band(dem_f, 1),
+                    destination=dem_resampled,
+                    src_transform=dem_f.transform,
+                    src_crs=dem_f.crs,
+                    dst_transform=dsm_f.transform,
+                    dst_crs=dsm_f.crs,
+                    resampling=Resampling.bilinear,
+                )
+
+                dsm_nodata = dsm_f.nodata if dsm_f.nodata is not None else -9999
+                dem_nodata = dem_f.nodata if dem_f.nodata is not None else -9999
+
+                valid = (
+                    (dsm_data != dsm_nodata)
+                    & (dem_resampled != dem_nodata)
+                    & (~np.isnan(dsm_data))
+                    & (~np.isnan(dem_resampled))
+                    & (dsm_data > -100)
+                    & (dem_resampled > -100)
+                )
+
+                ndsm_data = np.full(dsm_data.shape, -9999.0, dtype=np.float32)
+                ndsm_data[valid] = np.maximum(0.0, dsm_data[valid] - dem_resampled[valid])
+
+                dsm_meta.update({
+                    "dtype": "float32",
+                    "nodata": -9999.0,
+                })
+                with rasterio.open(ndsm_clipped, "w", **dsm_meta) as dst:
+                    dst.write(ndsm_data, 1)
+
+                valid_ndsm = ndsm_data[valid]
+                max_diff = float(np.max(valid_ndsm)) if len(valid_ndsm) > 0 else 0.0
+                mean_diff = float(np.mean(valid_ndsm)) if len(valid_ndsm) > 0 else 0.0
+                info(f"  nDSM raster computed & aligned → {ndsm_clipped.name}")
+                info(f"    Mean surface difference: {mean_diff:.2f}m | Peak physical height: {max_diff:.1f}m")
+        except Exception as e:
+            warn(f"Failed to generate nDSM raster: {e}")
+
+    return dem_clipped, dsm_clipped, dem_same_as_dsm, (ndsm_clipped if ndsm_clipped.exists() else None)
 
 
 def _files_identical(path1, path2):
@@ -713,17 +897,91 @@ def _files_identical(path1, path2):
 
 
 # ═══════════════════════════════════════════════════════════════════
-# STAGE 6: BUILDING HEIGHT ESTIMATION
+# STAGE 6: 5-TIER HIERARCHICAL BUILDING HEIGHT ESTIMATION
 # ═══════════════════════════════════════════════════════════════════
 
-def estimate_building_heights(aoi, buildings_path, dem_path, dsm_path, dem_same_as_dsm=False):
+def propagate_cluster_heights(gdf_utm, heights, floors, sources, radius_m=150.0):
+    """
+    Propagate authoritative building heights to nearby unheighted morphological buildings
+    within the same complex or corporate/residential campus.
+    """
+    try:
+        from scipy.spatial import cKDTree
+    except ImportError:
+        warn("scipy not installed; skipping cluster height propagation")
+        return 0
+
+    centroids = []
+    for geom in gdf_utm.geometry:
+        if geom and not geom.is_empty:
+            c = geom.centroid
+            centroids.append((c.x, c.y))
+        else:
+            centroids.append((0.0, 0.0))
+    centroids = np.array(centroids)
+
+    if len(centroids) == 0:
+        return 0
+
+    tree = cKDTree(centroids)
+
+    AUTH_SOURCES = {"landmark_registry", "osm_tag", "osm_levels", "raster_ndsm", "raster_annular"}
+    
+    # Identify anchor towers (authoritative height >= 24m)
+    auth_indices = [
+        i for i, (src, h) in enumerate(zip(sources, heights))
+        if src in AUTH_SOURCES and h >= 24.0
+    ]
+
+    if not auth_indices:
+        return 0
+
+    propagated_count = 0
+    for i, (src, h) in enumerate(zip(sources, heights)):
+        if not src.startswith("morphological"):
+            continue
+
+        geom = gdf_utm.geometry.iloc[i]
+        area = geom.area if geom and not geom.is_empty else 0
+        # Only propagate to structures with meaningful footprint (>= 250 m²)
+        if area < 250:
+            continue
+
+        neighbor_indices = tree.query_ball_point(centroids[i], r=radius_m)
+        auth_neighbors = [j for j in neighbor_indices if j in auth_indices and j != i]
+
+        if auth_neighbors:
+            weights = []
+            cand_heights = []
+            pt_i = centroids[i]
+            for j in auth_neighbors:
+                dist = max(10.0, float(np.linalg.norm(pt_i - centroids[j])))
+                w = 1.0 / dist
+                weights.append(w)
+                cand_heights.append(heights[j])
+
+            weighted_h = float(np.average(cand_heights, weights=weights))
+            # 88% scale factor for ancillary / sibling campus towers
+            final_h = round(weighted_h * 0.88, 2)
+
+            if final_h > h + 4.0:
+                heights[i] = min(final_h, MAX_VALID_HEIGHT_M)
+                floors[i] = max(1, round(heights[i] / 3.5))
+                sources[i] = "cluster_propagation"
+                propagated_count += 1
+
+    return propagated_count
+
+
+def estimate_building_heights(aoi, buildings_path, dem_path, dsm_path, dem_same_as_dsm=False, ndsm_path=None, landuse_gdf=None):
     """
     Estimate building heights using a 5-Tier Hierarchical Fusion Engine:
       Tier 1: Authoritative Landmark Registry & Verified OSM tags (osm_height, osm_levels)
-      Tier 2: Annular Buffer Local Morphological Ground Filter on modern DSM
-      Tier 3: Spatial Cluster Propagation (HITEC City / Knowledge City / Raidurg tech corridors)
-      Tier 4: Morphological & Typological Regression / Rules Engine (Footprint Area Law)
-      Tier 5: Hyderabad GHMC Urban Lot-Size Baseline Defaults
+      Tier 2: Physical nDSM Differential Ground Filter & Annular Buffer Sampling
+      Tier 3: OSM Landuse Zoning & Spatial High-Rise Corridor Multipliers
+      Tier 3.5: Spatial Campus & Complex Height Propagation (cKDTree)
+      Tier 4: Morphological & Typological Regression (Footprint Area Law + Under-Construction Heuristics)
+      Tier 5: Urban Lot-Size Baseline Defaults
     """
     banner("STAGE 6: 5-Tier Hierarchical Building Height Estimation")
 
@@ -734,9 +992,9 @@ def estimate_building_heights(aoi, buildings_path, dem_path, dsm_path, dem_same_
     features = buildings_geojson["features"]
     progress(f"Processing {len(features)} buildings...")
 
-    # Create GeoDataFrame
+    crs_utm = aoi.get("crs_projected", CRS_UTM)
     gdf = gpd.GeoDataFrame.from_features(features, crs=CRS_WGS84)
-    gdf_utm = gdf.to_crs(CRS_UTM)
+    gdf_utm = gdf.to_crs(crs_utm)
 
     # Load authoritative landmark registry
     registry_path = METADATA_DIR / "landmarks_registry.json"
@@ -752,13 +1010,32 @@ def estimate_building_heights(aoi, buildings_path, dem_path, dsm_path, dem_same_
         except Exception as e:
             warn(f"Failed to load landmark registry: {e}")
 
-    # Open DSM for Annular Sampling
+    # Prepare Landuse spatial index
+    landuse_utm = None
+    landuse_sindex = None
+    if landuse_gdf is not None and not landuse_gdf.empty:
+        try:
+            landuse_utm = landuse_gdf.to_crs(crs_utm)
+            landuse_sindex = landuse_utm.sindex
+            info(f"Loaded {len(landuse_utm)} landuse zoning polygons for spatial multipliers")
+        except Exception as e:
+            warn(f"Failed to prepare landuse spatial index: {e}")
+
+    # Open Rasters
     dsm_src = None
     if dsm_path and Path(dsm_path).exists():
         try:
             dsm_src = rasterio.open(dsm_path)
         except Exception as e:
-            warn(f"Could not open DSM for annular sampling: {e}")
+            warn(f"Could not open DSM for height sampling: {e}")
+
+    ndsm_src = None
+    if ndsm_path and Path(ndsm_path).exists() and not dem_same_as_dsm:
+        try:
+            ndsm_src = rasterio.open(ndsm_path)
+            info("nDSM raster active: physical surface-minus-ground differential enabled!")
+        except Exception as e:
+            warn(f"Could not open nDSM raster: {e}")
 
     estimated_heights = []
     estimated_floors_list = []
@@ -816,7 +1093,7 @@ def estimate_building_heights(aoi, buildings_path, dem_path, dsm_path, dem_same_
         if h is None and osm_height is not None and not pd.isna(osm_height):
             try:
                 val = float(str(osm_height).replace("m", "").strip())
-                if 3.0 <= val <= 250.0:
+                if 3.0 <= val <= MAX_VALID_HEIGHT_M:
                     h = val
                     fl = max(1, round(h / 3.5))
                     src = "osm_tag"
@@ -838,110 +1115,177 @@ def estimate_building_heights(aoi, buildings_path, dem_path, dsm_path, dem_same_
                 pass
 
         # -------------------------------------------------------------
-        # TIER 2: Annular Buffer Local Morphological Ground Filter
+        # TIER 2: Physical nDSM Differential & Annular Ground Filter
         # -------------------------------------------------------------
-        if h is None and dsm_src is not None and geom is not None and not geom.is_empty and area >= 800:
+        if h is None and ndsm_src is not None and geom is not None and not geom.is_empty and area >= 300:
+            try:
+                roof_img, _ = rasterio_mask(ndsm_src, [mapping(geom)], crop=True, nodata=-9999.0, filled=True)
+                roof_data = roof_img[0]
+                valid_ndsm = roof_data[(roof_data != -9999.0) & (~np.isnan(roof_data)) & (roof_data > 2.0)]
+                if len(valid_ndsm) >= 2:
+                    cand_h = float(np.percentile(valid_ndsm, 85))
+                    if 5.0 <= cand_h <= MAX_VALID_HEIGHT_M:
+                        h = round(cand_h, 2)
+                        fl = max(1, round(h / 3.5))
+                        src = "raster_ndsm"
+            except Exception:
+                pass
+
+        if h is None and dsm_src is not None and geom is not None and not geom.is_empty and area >= 500:
             annular_h = _sample_annular_dsm(dsm_src, geom)
-            if annular_h is not None and 10.0 <= annular_h <= 140.0:
+            if annular_h is not None and 6.0 <= annular_h <= 160.0:
                 h = round(annular_h, 2)
                 fl = max(1, round(h / 3.5))
                 src = "raster_annular"
 
         # -------------------------------------------------------------
-        # TIER 3: Spatial Cluster Context (HITEC City / Knowledge City)
+        # TIER 3: OSM Landuse Zoning & Spatial Corridor Context
         # -------------------------------------------------------------
-        is_in_tech_corridor = False
-        if centroid is not None:
-            # Encompasses the entire continuous HITEC City IT Corridor:
-            # Raidurg, Knowledge City, Mindspace, Cyber Towers, Phoenix Avance, Cyber Gateway
-            is_in_tech_corridor = (220400 <= centroid.x <= 223600 and 1927400 <= centroid.y <= 1932200)
+        zone_mult = 1.0
+        zone_label = "default"
+
+        # Check OSM landuse polygon first
+        if landuse_sindex is not None and centroid is not None:
+            cand_indices = list(landuse_sindex.intersection((centroid.x, centroid.y, centroid.x, centroid.y)))
+            if cand_indices:
+                cand_rows = landuse_utm.iloc[cand_indices]
+                exact_hits = cand_rows[cand_rows.intersects(centroid)]
+                if len(exact_hits) > 0:
+                    lu = str(exact_hits.iloc[0].get("landuse") or "").lower()
+                    if "commercial" in lu or "office" in lu:
+                        zone_mult = 2.0
+                        zone_label = "osm_commercial"
+                    elif "industrial" in lu:
+                        zone_mult = 1.8
+                        zone_label = "osm_tech_park"
+                    elif "construction" in lu:
+                        zone_mult = 2.2
+                        zone_label = "osm_construction"
+                    elif "retail" in lu:
+                        zone_mult = 1.3
+                        zone_label = "osm_retail"
+                    elif "residential" in lu:
+                        zone_mult = 1.0
+                        zone_label = "osm_residential"
+
+        # Fallback to coordinate-based high-rise urban clusters
+        if zone_mult == 1.0 and centroid is not None:
+            for z_name, min_x, max_x, min_y, max_y, mult in URBAN_ZONES:
+                if min_x <= centroid.x <= max_x and min_y <= centroid.y <= max_y:
+                    zone_mult = mult
+                    zone_label = z_name
+                    break
 
         # -------------------------------------------------------------
         # TIER 4: Morphological & Typological Regression / Rules Engine
         # -------------------------------------------------------------
         if h is None:
-            is_it_or_office = (
-                office in ["it", "company", "commercial", "yes", "government"]
-                or b_type in ["commercial", "office"]
-                or any(k in name.lower() for k in ["tower", "tech", "software", "infotech", "centre", "center", "cyber", "block", "plaza", "house", "campus"])
-                or (is_in_tech_corridor and area >= 1200)
+            is_construction = (b_type == "construction" or "construction" in name.lower())
+            is_parking = (
+                b_type in ["parking", "garage", "carpark"]
+                or amenity in ["parking"]
+                or any(k in name.lower() for k in ["parking", "carpark", "car park", "multi level carpark", "garage"])
+            )
+            is_academic = (
+                amenity in ["school", "college", "university", "kindergarten"]
+                or b_type in ["school", "college", "university"]
+                or any(k in name.lower() for k in ["school", "college", "university", "polytechnic", "institute of fashion", "institute of", "academy", "hostel", "academic block"])
             )
             is_mall = (shop in ["mall", "supermarket"] or b_type == "retail" or "mall" in name.lower())
             is_apartments = (
-                b_type == "apartments"
-                or any(k in name.lower() for k in ["residency", "heights", "apartments", "towers", "gardenia", "enclave"])
+                b_type in ["apartments", "residential"]
+                or any(k in name.lower() for k in ["residency", "heights", "apartments", "towers", "gardenia", "enclave", "villa", "flats", "vayu", "teja", "prithvi", "jal", "agni", "block a", "block b", "block c", "block d", "block e"])
+            )
+            is_it_or_office = (
+                not is_apartments
+                and not is_academic
+                and not is_parking
+                and (
+                    office in ["it", "company", "commercial", "yes", "government"]
+                    or b_type in ["commercial", "office"]
+                    or any(k in name.lower() for k in ["tower", "tech", "software", "infotech", "centre", "center", "cyber", "block", "plaza", "house", "hub", "business"])
+                    or (zone_mult >= 1.8 and area >= 800)
+                )
             )
             is_worship = (amenity in ["place_of_worship"] or b_type in ["place_of_worship", "temple", "mosque", "church"])
 
             # Deterministic variation (+/- 0.4m) using hash of ID
             seed_val = int(hashlib.md5(f"{osm_id}_{idx}".encode()).hexdigest()[:6], 16) % 9 - 4
-            delta = seed_val * 0.1  # -0.4m to +0.4m
+            delta = seed_val * 0.1
 
-            if is_mall:
-                fl = 6 if area >= 5000 else 4
+            if is_construction:
+                # Under construction: render at full planned high-rise height
+                if zone_mult >= 1.8:
+                    fl = 28  # Major commercial/IT tower under development
+                    h = round(fl * 3.5 + delta, 2)
+                    src = "morphological_construction_commercial"
+                else:
+                    fl = 16  # High-rise residential project under development
+                    h = round(fl * 3.0 + delta, 2)
+                    src = "morphological_construction_residential"
+            elif is_parking:
+                fl = 6 if area >= 2000 else 4
+                h = round(fl * 3.2 + delta, 2)
+                src = "morphological_parking"
+            elif is_academic:
+                fl = 5 if area >= 2000 else 3
+                h = round(fl * 3.5 + delta, 2)
+                src = "morphological_academic"
+            elif is_mall:
+                fl = 6 if area >= 4000 else 4
                 h = round(fl * 4.5 + delta, 2)
                 src = "morphological_retail"
             elif is_it_or_office:
                 if area >= 5000:
-                    fl = 20
-                    h = round(fl * 3.5 + delta, 2)
-                elif area >= 2500:
-                    fl = 14
-                    h = round(fl * 3.5 + delta, 2)
-                elif area >= 1000:
-                    fl = 10
-                    h = round(fl * 3.5 + delta, 2)
+                    fl = max(16, round(24 * min(zone_mult, 1.4)))
+                elif area >= 3000:
+                    fl = max(14, round(18 * min(zone_mult, 1.3)))
+                elif area >= 1200:
+                    fl = max(10, round(13 * min(zone_mult, 1.2)))
                 elif area >= 400:
-                    fl = 6
-                    h = round(fl * 3.5 + delta, 2)
+                    fl = max(6, round(8 * min(zone_mult, 1.2)))
                 else:
                     fl = 4
-                    h = round(fl * 3.5 + delta, 2)
+                h = round(fl * 3.5 + delta, 2)
                 src = "morphological_office"
             elif is_apartments:
                 if area >= 2500:
-                    fl = 20
-                    h = round(fl * 3.0 + delta, 2)
+                    fl = max(16, round(22 * min(zone_mult, 1.5)))
                 elif area >= 1000:
-                    fl = 12
-                    h = round(fl * 3.0 + delta, 2)
+                    fl = max(10, round(14 * min(zone_mult, 1.3)))
                 elif area >= 400:
-                    fl = 6
-                    h = round(fl * 3.0 + delta, 2)
+                    fl = max(6, round(8 * min(zone_mult, 1.2)))
                 else:
-                    fl = 4
-                    h = round(fl * 3.0 + delta, 2)
+                    fl = max(4, round(4 * (1.2 if zone_mult >= 1.8 else 1.0)))
+                h = round(fl * 3.0 + delta, 2)
                 src = "morphological_residential"
             elif is_worship:
                 fl = 2
                 h = round(9.0 + delta, 2)
                 src = "morphological_civic"
             else:
-                # General structures classified by footprint area (Tier 5 GHMC baseline)
+                # General structures classified by footprint area & urban zoning
                 if area >= 4000:
-                    fl = 12
+                    fl = max(10, round(14 * min(zone_mult, 1.4)))
                     h = round(fl * 3.5 + delta, 2)
                     src = "morphological_large"
                 elif area >= 1500:
-                    fl = 8
+                    fl = max(7, round(9 * min(zone_mult, 1.3)))
                     h = round(fl * 3.2 + delta, 2)
                     src = "morphological_midrise"
                 elif area >= 500:
-                    fl = 5
+                    fl = max(4, round(5 * min(zone_mult, 1.2)))
                     h = round(fl * 3.0 + delta, 2)
                     src = "morphological_midrise"
                 elif area >= 120:
-                    # Standard Hyderabad residential G+3 (4 floors)
-                    fl = 4
+                    fl = 4 if zone_mult < 1.8 else 5
                     h = round(fl * 3.0 + delta, 2)
                     src = "morphological_residential"
                 elif area >= 50:
-                    # Compact residential G+2 (3 floors)
                     fl = 3
                     h = round(fl * 3.0 + delta, 2)
                     src = "morphological_residential"
                 else:
-                    # Small auxiliary structure / kiosk
                     fl = 1
                     h = 3.5
                     src = "morphological_small"
@@ -950,13 +1294,26 @@ def estimate_building_heights(aoi, buildings_path, dem_path, dsm_path, dem_same_
         h = max(3.5, min(h, MAX_VALID_HEIGHT_M))
         fl = max(1, round(fl if fl else h / FLOOR_HEIGHT_M))
 
+        clean_name = name if (name and str(name).lower() != 'nan' and len(name.strip()) > 0) else None
         estimated_heights.append(round(float(h), 2))
         estimated_floors_list.append(int(fl))
         height_sources.append(src)
-        assigned_names.append(name if name else None)
+        assigned_names.append(clean_name)
 
     if dsm_src is not None:
         dsm_src.close()
+    if ndsm_src is not None:
+        ndsm_src.close()
+
+    # -------------------------------------------------------------
+    # TIER 3.5: Campus / Complex Height Propagation (cKDTree)
+    # -------------------------------------------------------------
+    progress("Running Campus & Complex Height Propagation (Tier 3.5)...")
+    prop_count = propagate_cluster_heights(
+        gdf_utm, estimated_heights, estimated_floors_list, height_sources, radius_m=150.0
+    )
+    if prop_count > 0:
+        info(f"Propagated cluster heights to {prop_count} buildings across tech & residential campuses!")
 
     # Add to GeoDataFrame
     gdf["estimated_height"] = estimated_heights
@@ -1134,7 +1491,7 @@ def generate_3d_buildings(gdf, aoi, dem_path=None):
                 "estimatedFloors": int(row.get("estimated_floors", 1)),
                 "osmLevels": int(row["osm_levels"]) if row.get("osm_levels") and not pd.isna(row.get("osm_levels")) else None,
                 "buildingType": row.get("building_type", "yes"),
-                "name": row.get("name") if row.get("name") and not pd.isna(row.get("name")) else None,
+                "name": row.get("name") if (row.get("name") and not pd.isna(row.get("name")) and str(row.get("name")).strip().lower() != 'nan') else None,
                 "heightSource": row.get("height_source", "unknown"),
                 "baseElevation": base_elev,
                 "centroid": [cx_rel, cy_rel],
@@ -1177,8 +1534,10 @@ def generate_3d_buildings(gdf, aoi, dem_path=None):
             "withLandmarkRegistry": sum(1 for b in buildings_json if b["heightSource"] == "landmark_registry"),
             "withOsmHeight": sum(1 for b in buildings_json if b["heightSource"] == "osm_tag"),
             "withOsmLevels": sum(1 for b in buildings_json if b["heightSource"] == "osm_levels"),
+            "withRasterNdsm": sum(1 for b in buildings_json if b["heightSource"] == "raster_ndsm"),
             "withRasterAnnular": sum(1 for b in buildings_json if b["heightSource"] == "raster_annular"),
-            "withRasterHeight": sum(1 for b in buildings_json if b["heightSource"] in ["raster", "raster_annular"]),
+            "withRasterHeight": sum(1 for b in buildings_json if b["heightSource"] in ["raster", "raster_annular", "raster_ndsm"]),
+            "withClusterPropagation": sum(1 for b in buildings_json if b["heightSource"] == "cluster_propagation"),
             "withMorphological": sum(1 for b in buildings_json if "morphological" in b["heightSource"]),
             "withDefault": sum(1 for b in buildings_json if b["heightSource"] in ["default", "unknown"]),
         },
@@ -1383,11 +1742,57 @@ def generate_water_data(aoi):
     banner("STAGE 8b: Water & Bridge Synchronization")
 
     water_raw = RAW_DIR / "water_features.json"
+    meta_path = RAW_DIR / "water_cache_meta.json"
+
+    cache_valid = False
+    if water_raw.exists() and meta_path.exists() and water_raw.stat().st_size > 1000:
+        try:
+            with open(meta_path) as mf:
+                m = json.load(mf)
+            if m.get("bbox") == aoi["bbox"]:
+                cache_valid = True
+        except Exception:
+            pass
+
+    if not cache_valid:
+        progress("Downloading water & bridge features via Overpass API...")
+        b = aoi["bbox"]
+        bbox_str = f"{b['south']},{b['west']},{b['north']},{b['east']}"
+        query = f"""
+[out:json][timeout:90];
+(
+  way["natural"="water"]({bbox_str});
+  way["water"]({bbox_str});
+  relation["natural"="water"]({bbox_str});
+  way["bridge"~"yes|viaduct"]({bbox_str});
+);
+out body;
+>;
+out skel qt;
+"""
+        for mirror_name, url in [
+            ("overpass-api.de", "https://overpass-api.de/api/interpreter"),
+            ("maps.mail.ru", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"),
+            ("overpass.kumi.systems", "https://overpass.kumi.systems/api/interpreter"),
+        ]:
+            try:
+                r = requests.post(url, data={"data": query}, timeout=90, headers={"User-Agent": "SIH26011-Pipeline/2.0"})
+                if r.status_code == 200:
+                    with open(water_raw, "w") as f:
+                        f.write(r.text)
+                    with open(meta_path, "w") as mf:
+                        json.dump({"bbox": aoi["bbox"]}, mf)
+                    info(f"Downloaded water features via {mirror_name}")
+                    break
+            except Exception:
+                continue
+
     if not water_raw.exists():
-        warn("No raw water features found, skipping water data generation")
+        warn("No raw water features available, skipping water data generation")
         return
 
-    transformer = pyproj.Transformer.from_crs(CRS_WGS84, CRS_UTM, always_xy=True)
+    crs_utm = aoi.get("crs_projected", CRS_UTM)
+    transformer = pyproj.Transformer.from_crs(CRS_WGS84, crs_utm, always_xy=True)
     center_x, center_y = transformer.transform(aoi["center"]["lon"], aoi["center"]["lat"])
 
     with open(water_raw) as f:
@@ -1402,8 +1807,8 @@ def generate_water_data(aoi):
     for e in elements:
         tags = e.get("tags", {})
         name = tags.get("name", "")
-        is_water = tags.get("natural") == "water" or tags.get("water") in ["lake", "reservoir", "pond"]
-        is_bridge = tags.get("bridge") == "yes" and "durgam" in name.lower()
+        is_water = tags.get("natural") == "water" or tags.get("water") in ["lake", "reservoir", "pond", "basin"]
+        is_bridge = tags.get("bridge") in ["yes", "viaduct"]
 
         if e.get("type") == "way" and (is_water or is_bridge):
             way_nodes = [nodes[nid] for nid in e.get("nodes", []) if nid in nodes]
@@ -1415,7 +1820,7 @@ def generate_water_data(aoi):
 
                 item = {
                     "id": str(e["id"]),
-                    "name": name or ("Durgam Cheruvu" if is_water else "Durgam Cheruvu Bridge"),
+                    "name": name or ("Lake / Reservoir" if is_water else "Bridge Span"),
                     "coordinates": rel_coords,
                 }
                 if is_water and len(rel_coords) >= 4:
@@ -1430,15 +1835,59 @@ def generate_water_data(aoi):
     water_out = VIEWER_DATA_DIR / "water.json"
     with open(water_out, "w") as f:
         json.dump(water_data, f, indent=2)
-    info(f"Water & bridge data synchronized → {water_out.name} ({len(water_items)} water, {len(bridge_items)} bridges)")
+    info(f"Water & bridge data synchronized → {water_out.name} ({len(water_items)} water bodies, {len(bridge_items)} bridges)")
 
 
 def generate_road_data(aoi, dem_path):
     """Generate 3D road network with elevated bridges, flyovers, ramps and support piers."""
     banner("STAGE 8c: 3D Road Network & Flyover Generation")
+
+    highway_raw = RAW_DIR / "highway_features.json"
+    meta_path = RAW_DIR / "highway_cache_meta.json"
+
+    cache_valid = False
+    if highway_raw.exists() and meta_path.exists() and highway_raw.stat().st_size > 10000:
+        try:
+            with open(meta_path) as mf:
+                m = json.load(mf)
+            if m.get("bbox") == aoi["bbox"]:
+                cache_valid = True
+        except Exception:
+            pass
+
+    if not cache_valid:
+        progress("Downloading highway network via Overpass API...")
+        b = aoi["bbox"]
+        bbox_str = f"{b['south']},{b['west']},{b['north']},{b['east']}"
+        query = f"""
+[out:json][timeout:150];
+(
+  way["highway"~"^(motorway|trunk|primary|secondary|tertiary|residential|service|unclassified)"]({bbox_str});
+);
+out body;
+>;
+out skel qt;
+"""
+        for mirror_name, url in [
+            ("overpass-api.de", "https://overpass-api.de/api/interpreter"),
+            ("maps.mail.ru", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"),
+            ("overpass.kumi.systems", "https://overpass.kumi.systems/api/interpreter"),
+        ]:
+            try:
+                r = requests.post(url, data={"data": query}, timeout=120, headers={"User-Agent": "SIH26011-Pipeline/2.0"})
+                if r.status_code == 200:
+                    with open(highway_raw, "w") as f:
+                        f.write(r.text)
+                    with open(meta_path, "w") as mf:
+                        json.dump({"bbox": aoi["bbox"]}, mf)
+                    info(f"Downloaded road network via {mirror_name}")
+                    break
+            except Exception:
+                continue
+
     try:
         from build_roads import main as run_build_roads
-        run_build_roads()
+        run_build_roads(aoi=aoi, dem_path=dem_path)
     except Exception as e:
         warn(f"Failed to generate road data via build_roads: {e}")
 
@@ -1674,26 +2123,75 @@ def print_summary(metadata, gdf):
 # MAIN PIPELINE
 # ═══════════════════════════════════════════════════════════════════
 
+def parse_args():
+    """Parse CLI arguments for universal location and AOI configuration."""
+    import argparse
+    parser = argparse.ArgumentParser(description="SIH26011 — Autonomous 3D Building & City Pipeline")
+    parser.add_argument("--city", type=str, choices=list(CITY_PRESETS.keys()), default=None,
+                        help="Preset city shortcut (hyderabad, mumbai, bangalore, pune, delhi)")
+    parser.add_argument("--lat", type=float, default=None, help=f"Center latitude (default: {CENTER_LAT})")
+    parser.add_argument("--lon", type=float, default=None, help=f"Center longitude (default: {CENTER_LON})")
+    parser.add_argument("--size", type=float, default=3.0,
+                        help="AOI box size in km (default: 3.0 km, producing 3km × 3km)")
+    parser.add_argument("--half-size", type=float, default=None,
+                        help="AOI half-size in km (overrides --size)")
+    parser.add_argument("--force-download", action="store_true",
+                        help="Force re-download of raw OSM, DEM, and DSM data")
+    return parser.parse_args()
+
+
+# ═══════════════════════════════════════════════════════════════════
+# MAIN PIPELINE
+# ═══════════════════════════════════════════════════════════════════
+
 def main():
-    """Run the complete pipeline."""
+    """Run the complete autonomous 3D building pipeline."""
     print()
     print("  ╔══════════════════════════════════════════════════════════╗")
-    print("  ║  🚀 SIH26011 — 3D Building Pipeline for Hyderabad 🚀   ║")
-    print("  ║  Durgam Cheruvu / HITEC City                            ║")
+    print("  ║  🚀 SIH26011 — Autonomous 3D Building City Pipeline 🚀   ║")
+    print("  ║  Multi-Tier Geospatial Data Acquisition & 3D Extrusion   ║")
     print("  ╚══════════════════════════════════════════════════════════╝")
     print()
 
+    args = parse_args()
     start_time = time.time()
     ensure_dirs()
 
+    if args.force_download:
+        warn("Force download requested: removing raw cached rasters and features...")
+        for p in [
+            RAW_DIR / "dem.tif", PROCESSED_DIR / "dem_clipped.tif", PROCESSED_DIR / "ndsm_clipped.tif",
+            RAW_DIR / "aoi_cache_meta.json", RAW_DIR / "landuse_cache_meta.json",
+            RAW_DIR / "highway_cache_meta.json", RAW_DIR / "water_cache_meta.json"
+        ]:
+            p.unlink(missing_ok=True)
+
+    lat = CENTER_LAT
+    lon = CENTER_LON
+    if args.city and args.city in CITY_PRESETS:
+        preset = CITY_PRESETS[args.city]
+        lat = preset["lat"]
+        lon = preset["lon"]
+        info(f"Using city preset: {preset['name']}")
+    if args.lat is not None:
+        lat = args.lat
+    if args.lon is not None:
+        lon = args.lon
+
+    half_size = (args.size / 2.0) if args.half_size is None else args.half_size
+    crs_utm = get_utm_crs(lat, lon)
+
     # Stage 1: AOI
-    aoi = compute_aoi()
+    aoi = compute_aoi(lat=lat, lon=lon, half_size_km=half_size, crs_utm=crs_utm)
 
     # Stage 2: OSM Buildings
     buildings_path = download_osm_buildings(aoi)
     if buildings_path is None:
         error("FATAL: OSM building download failed. Cannot continue.")
         sys.exit(1)
+
+    # Stage 2b: OSM Landuse & Zoning
+    landuse_gdf = download_osm_landuse(aoi)
 
     # Stage 3: DSM
     dsm_path = download_copernicus_dsm(aoi)
@@ -1713,11 +2211,11 @@ def main():
         error("FATAL: Raster alignment failed. Cannot continue.")
         sys.exit(1)
 
-    dem_clipped, dsm_clipped, dem_same_as_dsm = result
+    dem_clipped, dsm_clipped, dem_same_as_dsm, ndsm_clipped = result
 
     # Stage 6: Height Estimation
     processed_path, gdf = estimate_building_heights(
-        aoi, buildings_path, dem_clipped, dsm_clipped, dem_same_as_dsm
+        aoi, buildings_path, dem_clipped, dsm_clipped, dem_same_as_dsm, ndsm_clipped, landuse_gdf
     )
 
     # Stage 7: 3D Extrusion
