@@ -74,12 +74,12 @@ export default function Legend({ stats, renderMode, visible, onToggle }: LegendP
               Object.entries(TYPE_COLORS)
                 .filter(([k]) => k !== 'yes')
                 .slice(0, 5)
-                .map(([_, item]) => (
+                .map(([, item]) => (
                   <LegendItem key={item.label} color={item.color} label={item.label} />
                 ))}
 
             {renderMode === 'quality' &&
-              Object.entries(SOURCE_COLORS).map(([_, item]) => (
+              Object.values(SOURCE_COLORS).map((item) => (
                 <LegendItem key={item.label} color={item.color} label={item.label} />
               ))}
 

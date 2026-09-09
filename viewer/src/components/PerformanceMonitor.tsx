@@ -28,12 +28,17 @@ let globalMetrics: PerfMetrics = {
  */
 export function PerformanceTracker() {
   const frameCount = useRef(0);
-  const lastTime = useRef(performance.now());
+  const lastTime = useRef<number | null>(null);
   const fpsAccumulator = useRef(60);
 
   useFrame(({ gl }) => {
-    frameCount.current++;
     const now = performance.now();
+    if (lastTime.current === null) {
+      lastTime.current = now;
+      return;
+    }
+
+    frameCount.current++;
     const delta = now - lastTime.current;
 
     if (delta >= 400) {

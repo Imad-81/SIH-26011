@@ -56,19 +56,20 @@ OSM Buildings + DEM + DSM → Height Estimation → 3D Extrusion → Interactive
 ```
 sih_power_rangers/
 ├── scripts/
-│   └── pipeline.py          # Python data pipeline
-├── viewer/                   # Next.js + Three.js web app
+│   ├── pipeline.py          # Master autonomous geospatial pipeline
+│   └── build_roads.py       # 3D Road Network, Multi-Tier Flyovers & Piers Generator
+├── viewer/                   # Next.js 16 + React 19 + Three.js web application
 │   ├── src/
 │   │   ├── app/              # Next.js app router
-│   │   ├── components/       # React Three Fiber components
-│   │   ├── hooks/            # Data loading hooks
-│   │   └── lib/              # Utilities (types, colors, geo)
-│   └── public/data/          # Pipeline output consumed by viewer
+│   │   ├── components/       # 3D Canvas and UI components (R3F, BatchedMesh)
+│   │   ├── hooks/            # Data loading & telemetry hooks
+│   │   └── lib/              # Spatial indexing, colors, types, coordinate helpers
+│   └── public/data/          # Synchronized datasets consumed by viewer
 ├── data/
-│   ├── raw/                  # Downloaded source data
-│   ├── processed/            # Processed outputs
-│   └── metadata/             # Data provenance
-└── outputs/                  # Preview images, GLB export
+│   ├── raw/                  # Downloaded OSM, DEM, DSM rasters and vectors
+│   ├── processed/            # Clipped rasters and 3D GeoJSON
+│   └── metadata/             # Landmarks registry and provenance metadata
+└── outputs/                  # High-res preview maps and GLB models
 ```
 
 ---
@@ -91,14 +92,18 @@ source venv/bin/activate
 # Install Python dependencies
 pip install -r requirements.txt
 
-# Create .env file with API key (optional but recommended)
-echo "OPEN_TOPOGRAPHY_API=your_api_key_here" > .env
+# Run the pipeline for Hyderabad (default 3km × 3km)
+python scripts/pipeline.py --city hyderabad
 
-# Run the pipeline
-python scripts/pipeline.py
+# Or run with custom city preset or coordinates
+python scripts/pipeline.py --city mumbai --size 5.0
+python scripts/pipeline.py --lat 17.4370 --lon 78.3800 --size 3.0
+
+# Force re-download of raw rasters and OSM data
+python scripts/pipeline.py --force-download
 ```
 
-### 2. Start the Viewer
+### 2. Start the 3D Viewer
 
 ```bash
 cd viewer
@@ -110,45 +115,45 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 📐 How Building Height Is Estimated
+## 📐 5-Tier Hierarchical Height Estimation Engine
 
-```
-building_height = median(DSM pixels inside footprint) - median(DEM pixels inside footprint)
-```
+Building heights are accurately inferred using a hierarchical fusion pipeline:
 
-- **DSM** (Digital Surface Model) — captures rooftop/canopy elevation
-- **DEM** (Digital Elevation Model) — captures bare ground elevation
-- **Difference** = approximate building height
-
-### Fallback chain:
-1. Raster-derived height (DSM - DEM)
-2. OSM `height` tag
-3. OSM `building:levels` × 3m
-4. Default: 4m (single-story assumption)
-
-### Floor estimation:
-```
-estimated_floors = round(height / 3.0)
-```
-(3m per floor is a prototype assumption only)
+1. **Tier 1: Authoritative Registry & Verified Tags**
+   - Authoritative landmark registry with 130+ verified skyscraper heights (e.g., Wells Fargo, Raheja Mindspace, Phoenix VK Towers) and regex matching.
+   - Ground-truth OSM explicit `height` and `building:levels` tags.
+2. **Tier 2: Physical nDSM Ground Differential & Annular Sampling**
+   - Normalized Digital Surface Model (`nDSM = DSM - DEM`) sampling over roof footprints.
+   - Annular ground-ring filtering on Copernicus GLO-30 DSM to isolate structure height against local terrain.
+3. **Tier 3: Landuse Zoning & Spatial High-Rise Corridors**
+   - OSM landuse zoning polygons (commercial, IT park, residential, retail).
+   - High-rise corridor multipliers for financial districts and tech campuses.
+4. **Tier 3.5: Campus & Complex Height Propagation**
+   - `scipy.spatial.cKDTree` spatial clustering: propagates authoritative heights across campus sibling towers.
+5. **Tier 4: Morphological Regression**
+   - Footprint area scaling law, aspect ratio, and building classification heuristics (commercial, IT, residential, academic, civic, parking).
+6. **Tier 5: Urban Lot Baseline Defaults**
+   - Municipal baseline defaults for unclassified structures.
 
 ---
 
-## 🎮 Viewer Controls
+## 🎮 Viewer Features & Controls
 
-| Action | Control |
-|--------|---------|
-| **Orbit** | Left-click + drag |
-| **Zoom** | Scroll wheel |
-| **Pan** | Right-click + drag |
-| **Select building** | Click on building |
-| **Deselect** | Click on empty space |
+| Feature | Description |
+|---------|-------------|
+| **Orbit / Pan / Zoom** | Left-click + drag to orbit, right-click to pan, scroll wheel to zoom |
+| **Building Inspection** | Click any building to focus camera, view estimated height, floors, and solar potential |
+| **Drone Camera Tour** | Guided cinematic drone flight across key Hyderabad landmarks |
+| **Camera Presets** | Instant fly-to buttons for Financial District, HITEC City, Cable Bridge, etc. |
+| **Time of Day** | Real-time dynamic sun, sky, dusk/dawn glow, and night illumination with vehicle traffic |
+| **Simulation Modes** | **Height** (elevation gradient), **Landuse** (typology), **Data Quality** (confidence tiers), **Flood** (interactive flood level simulation), **Solar** (photovoltaic potential) |
+| **3D Infrastructure** | 230+ km multi-tier road network with elevated flyovers and concrete support columns |
 
 ---
 
 ## ⚠️ Disclaimer
 
-> The generated building heights and 3D geometries are **prototype estimates** and are **not authoritative cadastral or survey data**. Heights are derived from ~30m resolution satellite data and OSM tags, which have inherent inaccuracies.
+> The generated building heights and 3D geometries are **prototype estimates** and are **not authoritative cadastral or survey data**. Heights are derived from satellite data, OpenStreetMap vectors, and machine inference.
 
 ---
 
@@ -162,4 +167,3 @@ estimated_floors = round(height / 3.0)
 ---
 
 *Built with ❤️ for SIH 2026 by Team Power Rangers*
-# SIH-26011

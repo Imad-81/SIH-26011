@@ -181,7 +181,7 @@ export default function Buildings({
         }
       }
 
-      (bMesh as any).userData = { instanceMap: instToBuilding, sectorId: s };
+      bMesh.userData = { instanceMap: instToBuilding, sectorId: s };
       sectorMeshes.push({
         id: s,
         batchedMesh: bMesh,
@@ -233,9 +233,9 @@ export default function Buildings({
         bMesh.setColorAt(instId, tempColor);
       }
 
-      const meshAny = bMesh as any;
-      if (meshAny._colorsTexture) {
-        meshAny._colorsTexture.needsUpdate = true;
+      const meshInternal = bMesh as unknown as { _colorsTexture?: { needsUpdate: boolean } };
+      if (meshInternal._colorsTexture) {
+        meshInternal._colorsTexture.needsUpdate = true;
       }
     }
   }, [
@@ -257,8 +257,7 @@ export default function Buildings({
   const handlePointerMove = useCallback(
     (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation();
-      const targetObj = e.object as any;
-      const instMap: Map<number, BuildingData> | undefined = targetObj?.userData?.instanceMap;
+      const instMap = (e.object.userData as { instanceMap?: Map<number, BuildingData> })?.instanceMap;
       if (!instMap) return;
 
       const batchId =
@@ -291,8 +290,7 @@ export default function Buildings({
   const handleClick = useCallback(
     (e: ThreeEvent<MouseEvent>) => {
       e.stopPropagation();
-      const targetObj = e.object as any;
-      const instMap: Map<number, BuildingData> | undefined = targetObj?.userData?.instanceMap;
+      const instMap = (e.object.userData as { instanceMap?: Map<number, BuildingData> })?.instanceMap;
       if (!instMap) return;
 
       const batchId =

@@ -28,16 +28,13 @@ import matplotlib
 matplotlib.use('Agg')  # Non-interactive backend
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from matplotlib.patches import Patch
 import numpy as np
 import pandas as pd
 import rasterio
 from rasterio.mask import mask as rasterio_mask
 from rasterio.warp import calculate_default_transform, reproject, Resampling
-from rasterio.transform import from_bounds
 import requests
-from shapely.geometry import shape, mapping, box, Polygon, MultiPolygon
-from shapely.ops import unary_union
+from shapely.geometry import mapping, box, Polygon, MultiPolygon
 import pyproj
 from tqdm import tqdm
 
@@ -56,6 +53,9 @@ PROCESSED_DIR = DATA_DIR / "processed"
 METADATA_DIR = DATA_DIR / "metadata"
 OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 VIEWER_DATA_DIR = PROJECT_ROOT / "viewer" / "public" / "data"
+
+# Ensure scripts directory is in sys.path for local module resolution
+sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
 
 try:
     from dotenv import load_dotenv
@@ -163,6 +163,41 @@ def ensure_dirs():
     info("Directory structure created")
 
 
+# Overpass API mirrors with failover support
+OVERPASS_MIRRORS = [
+    ("overpass-api.de", "https://overpass-api.de/api/interpreter"),
+    ("maps.mail.ru", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"),
+    ("overpass.kumi.systems", "https://overpass.kumi.systems/api/interpreter"),
+]
+
+
+def query_overpass(query: str, timeout: int = 120, user_agent: str = "SIH26011-Pipeline/2.0") -> dict | None:
+    """Execute an Overpass QL query across multiple mirror endpoints with automatic fallback."""
+    for mirror_name, url in OVERPASS_MIRRORS:
+        progress(f"Querying Overpass API ({mirror_name})...")
+        try:
+            resp = requests.post(
+                url,
+                data={"data": query},
+                timeout=timeout,
+                headers={"User-Agent": user_agent},
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            if "elements" in data:
+                info(f"Success via {mirror_name}")
+                return data
+        except requests.RequestException as e:
+            warn(f"Mirror {mirror_name} failed: {e}")
+            continue
+        except Exception as e:
+            warn(f"Failed to parse response from {mirror_name}: {e}")
+            continue
+
+    error("All Overpass API mirrors failed!")
+    return None
+
+
 # ═══════════════════════════════════════════════════════════════════
 # STAGE 1: AOI DEFINITION
 # ═══════════════════════════════════════════════════════════════════
@@ -253,36 +288,10 @@ out body;
 out skel qt;
 """
 
-    # Try multiple Overpass API mirrors
-    mirrors = [
-        ("overpass-api.de", "https://overpass-api.de/api/interpreter"),
-        ("maps.mail.ru", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"),
-        ("overpass.kumi.systems", "https://overpass.kumi.systems/api/interpreter"),
-    ]
-
-    resp = None
-    for mirror_name, url in mirrors:
-        progress(f"Querying Overpass API ({mirror_name})...")
-        try:
-            resp = requests.post(
-                url,
-                data={"data": query},
-                timeout=180,
-                headers={"User-Agent": "SIH26011-Pipeline/1.0"},
-            )
-            resp.raise_for_status()
-            info(f"Success via {mirror_name}")
-            break
-        except requests.RequestException as e:
-            warn(f"Mirror {mirror_name} failed: {e}")
-            resp = None
-            continue
-
-    if resp is None:
-        error("All Overpass API mirrors failed!")
+    data = query_overpass(query, timeout=180, user_agent="SIH26011-Pipeline/1.0")
+    if data is None:
         return None
 
-    data = resp.json()
     elements = data.get("elements", [])
 
     # Parse nodes
@@ -491,34 +500,10 @@ out body;
 out skel qt;
 """
 
-    mirrors = [
-        ("overpass-api.de", "https://overpass-api.de/api/interpreter"),
-        ("maps.mail.ru", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"),
-        ("overpass.kumi.systems", "https://overpass.kumi.systems/api/interpreter"),
-    ]
-
-    resp = None
-    for mirror_name, url in mirrors:
-        progress(f"Querying Overpass API for landuse ({mirror_name})...")
-        try:
-            resp = requests.post(
-                url,
-                data={"data": query},
-                timeout=120,
-                headers={"User-Agent": "SIH26011-Pipeline/2.0"},
-            )
-            resp.raise_for_status()
-            info(f"Success via {mirror_name}")
-            break
-        except requests.RequestException as e:
-            warn(f"Mirror {mirror_name} failed: {e}")
-            resp = None
-            continue
-
+    data = query_overpass(query, timeout=120)
     features = []
-    if resp is not None:
+    if data is not None:
         try:
-            data = resp.json()
             elements = data.get("elements", [])
             nodes = {el["id"]: (el["lon"], el["lat"]) for el in elements if el["type"] == "node"}
             for el in elements:
@@ -1770,22 +1755,13 @@ out body;
 >;
 out skel qt;
 """
-        for mirror_name, url in [
-            ("overpass-api.de", "https://overpass-api.de/api/interpreter"),
-            ("maps.mail.ru", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"),
-            ("overpass.kumi.systems", "https://overpass.kumi.systems/api/interpreter"),
-        ]:
-            try:
-                r = requests.post(url, data={"data": query}, timeout=90, headers={"User-Agent": "SIH26011-Pipeline/2.0"})
-                if r.status_code == 200:
-                    with open(water_raw, "w") as f:
-                        f.write(r.text)
-                    with open(meta_path, "w") as mf:
-                        json.dump({"bbox": aoi["bbox"]}, mf)
-                    info(f"Downloaded water features via {mirror_name}")
-                    break
-            except Exception:
-                continue
+        data = query_overpass(query, timeout=90)
+        if data is not None:
+            with open(water_raw, "w") as f:
+                json.dump(data, f)
+            with open(meta_path, "w") as mf:
+                json.dump({"bbox": aoi["bbox"]}, mf)
+            info("Downloaded water features")
 
     if not water_raw.exists():
         warn("No raw water features available, skipping water data generation")
@@ -1868,22 +1844,13 @@ out body;
 >;
 out skel qt;
 """
-        for mirror_name, url in [
-            ("overpass-api.de", "https://overpass-api.de/api/interpreter"),
-            ("maps.mail.ru", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"),
-            ("overpass.kumi.systems", "https://overpass.kumi.systems/api/interpreter"),
-        ]:
-            try:
-                r = requests.post(url, data={"data": query}, timeout=120, headers={"User-Agent": "SIH26011-Pipeline/2.0"})
-                if r.status_code == 200:
-                    with open(highway_raw, "w") as f:
-                        f.write(r.text)
-                    with open(meta_path, "w") as mf:
-                        json.dump({"bbox": aoi["bbox"]}, mf)
-                    info(f"Downloaded road network via {mirror_name}")
-                    break
-            except Exception:
-                continue
+        data = query_overpass(query, timeout=120)
+        if data is not None:
+            with open(highway_raw, "w") as f:
+                json.dump(data, f)
+            with open(meta_path, "w") as mf:
+                json.dump({"bbox": aoi["bbox"]}, mf)
+            info("Downloaded road network")
 
     try:
         from build_roads import main as run_build_roads
@@ -1913,7 +1880,6 @@ def generate_preview(gdf, aoi):
                 dem_data = np.where(dem_data == nodata, np.nan, dem_data)
 
                 # Create hillshade
-                from numpy import gradient
                 dy, dx = np.gradient(dem_data)
                 slope = np.pi / 2.0 - np.arctan(np.sqrt(dx ** 2 + dy ** 2))
                 aspect = np.arctan2(-dx, dy)

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { BuildingData, LandmarkData, RenderMode, TimeOfDay } from '@/lib/types';
+import { BuildingData, RenderMode, TimeOfDay } from '@/lib/types';
 import { CAMERA_PRESETS } from './CameraController';
 
 interface TopBarProps {

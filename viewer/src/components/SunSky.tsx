@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo } from 'react';
-import * as THREE from 'three';
 import { Stars } from '@react-three/drei';
 import { TimeOfDay } from '@/lib/types';
 import { SKY_CONFIGS } from '@/lib/skyConfig';

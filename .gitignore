@@ -24,6 +24,10 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Next.js
+# Next.js & TypeScript
 viewer/.next/
 viewer/out/
+*.tsbuildinfo
+
+# Large raw cache files
+data/raw/*10km*.json

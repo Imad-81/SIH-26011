@@ -42,7 +42,6 @@ export default function Roads({
   }, []);
 
   const isNight = timeOfDay === 'night';
-  const isDusk = timeOfDay === 'dusk' || timeOfDay === 'dawn';
 
   // Build high-performance merged road geometries
   const {
