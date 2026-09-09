@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import * as THREE from 'three';
 import { Html } from '@react-three/drei';
 import { LandmarkData } from '@/lib/types';
 
@@ -20,40 +21,82 @@ export default function Landmarks({ onSelectLandmark, selectedLandmarkId }: Land
       .catch((err) => console.error('Failed to load landmarks:', err));
   }, []);
 
+  // High-performance Instanced Laser Beams and Ground Rings (Consolidates 30 draw calls into 2)
+  const { laserMesh, ringMesh } = useMemo(() => {
+    if (landmarks.length === 0) return { laserMesh: null, ringMesh: null };
+
+    const cylGeom = new THREE.CylinderGeometry(0.25, 0.25, 1.0, 8);
+    cylGeom.translate(0, 0.5, 0); // origin at base
+
+    const ringGeom = new THREE.RingGeometry(4, 5, 24);
+    ringGeom.rotateX(-Math.PI / 2);
+
+    const cylMat = new THREE.MeshBasicMaterial({
+      color: '#00f5ff',
+      transparent: true,
+      opacity: 0.35,
+    });
+
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: '#00f5ff',
+      transparent: true,
+      opacity: 0.45,
+      side: THREE.DoubleSide,
+    });
+
+    const lMesh = new THREE.InstancedMesh(cylGeom, cylMat, landmarks.length);
+    const rMesh = new THREE.InstancedMesh(ringGeom, ringMat, landmarks.length);
+
+    const dummy = new THREE.Object3D();
+    const cyanColor = new THREE.Color('#00f5ff');
+    const pinkColor = new THREE.Color('#ff007f');
+
+    for (let i = 0; i < landmarks.length; i++) {
+      const lm = landmarks[i];
+      const beamHeight = Math.max(12, lm.height);
+      const isSel = selectedLandmarkId === lm.id;
+
+      // Laser Cylinder
+      dummy.position.set(lm.pos[0], lm.pos[1] - beamHeight, lm.pos[2]);
+      dummy.scale.set(1, beamHeight, 1);
+      dummy.rotation.set(0, 0, 0);
+      dummy.updateMatrix();
+      lMesh.setMatrixAt(i, dummy.matrix);
+      lMesh.setColorAt(i, isSel ? pinkColor : cyanColor);
+
+      // Target Ring
+      dummy.position.set(lm.pos[0], lm.pos[1] - beamHeight + 0.5, lm.pos[2]);
+      dummy.scale.set(1, 1, 1);
+      dummy.updateMatrix();
+      rMesh.setMatrixAt(i, dummy.matrix);
+      rMesh.setColorAt(i, isSel ? pinkColor : cyanColor);
+    }
+
+    lMesh.instanceMatrix.needsUpdate = true;
+    rMesh.instanceMatrix.needsUpdate = true;
+    if (lMesh.instanceColor) lMesh.instanceColor.needsUpdate = true;
+    if (rMesh.instanceColor) rMesh.instanceColor.needsUpdate = true;
+
+    return { laserMesh: lMesh, ringMesh: rMesh };
+  }, [landmarks, selectedLandmarkId]);
+
   if (landmarks.length === 0) return null;
 
   return (
-    <group>
+    <group name="landmarks-group">
+      {/* 🚀 Instanced Laser Beams: 1 Single Draw Call */}
+      {laserMesh && <primitive object={laserMesh} />}
+
+      {/* 🎯 Instanced Ground Rings: 1 Single Draw Call */}
+      {ringMesh && <primitive object={ringMesh} />}
+
+      {/* 3D Floating HTML Badges */}
       {landmarks.map((landmark) => {
         const isSelected = selectedLandmarkId === landmark.id;
         const isHovered = hoveredId === landmark.id;
 
-        const beamHeight = Math.max(12, landmark.height);
-
         return (
           <group key={landmark.id} position={landmark.pos}>
-            {/* Vertical Laser Beacon Beam from building base up to the badge */}
-            <mesh position={[0, -beamHeight / 2, 0]}>
-              <cylinderGeometry args={[0.25, 0.25, beamHeight, 8]} />
-              <meshBasicMaterial
-                color={isSelected ? '#ff007f' : '#00f5ff'}
-                transparent
-                opacity={isSelected ? 0.8 : isHovered ? 0.6 : 0.25}
-              />
-            </mesh>
-
-            {/* Glowing Base Target Ring on Ground */}
-            <mesh position={[0, -beamHeight + 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-              <ringGeometry args={[4, 5, 24]} />
-              <meshBasicMaterial
-                color={isSelected ? '#ff007f' : '#00f5ff'}
-                transparent
-                opacity={isSelected ? 0.9 : 0.4}
-                side={2}
-              />
-            </mesh>
-
-            {/* 3D Floating HTML Badge */}
             <Html
               position={[0, 4, 0]}
               center

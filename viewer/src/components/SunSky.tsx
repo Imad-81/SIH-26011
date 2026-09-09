@@ -22,17 +22,17 @@ export default function SunSky({ timeOfDay }: SunSkyProps) {
         color={config.directionalLight.color}
         castShadow
         shadow-mapSize={[2048, 2048]}
-        shadow-camera-far={5000}
-        shadow-camera-left={-1800}
-        shadow-camera-right={1800}
-        shadow-camera-top={1800}
-        shadow-camera-bottom={-1800}
+        shadow-camera-far={18000}
+        shadow-camera-left={-5500}
+        shadow-camera-right={5500}
+        shadow-camera-top={5500}
+        shadow-camera-bottom={-5500}
         shadow-bias={-0.0005}
       />
 
       {/* Secondary Atmosphere Fill Light */}
       <directionalLight
-        position={[-config.directionalLight.position[0] * 0.5, 300, -config.directionalLight.position[2] * 0.5]}
+        position={[-config.directionalLight.position[0] * 0.5, 800, -config.directionalLight.position[2] * 0.5]}
         intensity={config.fillLight.intensity}
         color={config.fillLight.color}
       />
@@ -51,8 +51,8 @@ export default function SunSky({ timeOfDay }: SunSkyProps) {
       {/* 3D Deep Space Starfield */}
       {config.stars.count > 0 && (
         <Stars
-          radius={3000}
-          depth={80}
+          radius={8000}
+          depth={150}
           count={config.stars.count}
           factor={4}
           saturation={0.6}

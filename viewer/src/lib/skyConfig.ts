@@ -83,8 +83,8 @@ export const SKY_CONFIGS: Record<TimeOfDay, SkyPalette> = {
 
     // Fog matches the luminous pale horizon
     fogColor: '#b0d6f5',
-    fogNear: 1600,
-    fogFar: 6500,
+    fogNear: 3500,
+    fogFar: 22000,
 
     sun: {
       visible: true,
@@ -130,7 +130,7 @@ export const SKY_CONFIGS: Record<TimeOfDay, SkyPalette> = {
     directionalLight: {
       color: '#fffbf0',
       intensity: 1.85,
-      position: [400, 950, 200],
+      position: [2400, 3800, 1200],
     },
     ambientLight: {
       color: '#93c5fd',
@@ -150,8 +150,8 @@ export const SKY_CONFIGS: Record<TimeOfDay, SkyPalette> = {
     hazeColor: 'rgba(249, 115, 22, 0.65)',
 
     fogColor: '#432342',
-    fogNear: 900,
-    fogFar: 4800,
+    fogNear: 2500,
+    fogFar: 18000,
 
     sun: {
       visible: true,
@@ -197,7 +197,7 @@ export const SKY_CONFIGS: Record<TimeOfDay, SkyPalette> = {
     directionalLight: {
       color: '#ffb07c',
       intensity: 1.5,
-      position: [700, 250, 400],
+      position: [3200, 1400, 1800],
     },
     ambientLight: {
       color: '#4a2545',
@@ -217,8 +217,8 @@ export const SKY_CONFIGS: Record<TimeOfDay, SkyPalette> = {
     hazeColor: 'rgba(234, 88, 12, 0.6)',
 
     fogColor: '#341539',
-    fogNear: 900,
-    fogFar: 4800,
+    fogNear: 2500,
+    fogFar: 18000,
 
     sun: {
       visible: true,
@@ -264,7 +264,7 @@ export const SKY_CONFIGS: Record<TimeOfDay, SkyPalette> = {
     directionalLight: {
       color: '#ff6f00',
       intensity: 1.6,
-      position: [-700, 200, -300],
+      position: [-3200, 1200, -1500],
     },
     ambientLight: {
       color: '#381647',
@@ -284,8 +284,8 @@ export const SKY_CONFIGS: Record<TimeOfDay, SkyPalette> = {
     hazeColor: 'rgba(15, 23, 42, 0.8)',
 
     fogColor: '#080c18',
-    fogNear: 1100,
-    fogFar: 5500,
+    fogNear: 3000,
+    fogFar: 20000,
 
     sun: {
       visible: false,
@@ -331,7 +331,7 @@ export const SKY_CONFIGS: Record<TimeOfDay, SkyPalette> = {
     directionalLight: {
       color: '#7dd3fc',
       intensity: 0.65,
-      position: [500, 800, 300],
+      position: [2400, 3200, 1400],
     },
     ambientLight: {
       color: '#0a0f1d',

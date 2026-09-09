@@ -68,14 +68,17 @@ export default function TopBar({
       }
     }
 
-    return buildings
-      .filter((b) => {
-        const nameMatch = b.name && b.name.toLowerCase().includes(q);
-        const typeMatch = b.buildingType && b.buildingType.toLowerCase().includes(q);
-        const idMatch = b.osmId && b.osmId.toString().includes(q);
-        return nameMatch || typeMatch || idMatch;
-      })
-      .slice(0, 10);
+    const results: BuildingData[] = [];
+    for (let i = 0; i < buildings.length && results.length < 10; i++) {
+      const b = buildings[i];
+      const nameMatch = b.name && b.name.toLowerCase().includes(q);
+      const typeMatch = b.buildingType && b.buildingType.toLowerCase().includes(q);
+      const idMatch = b.osmId && b.osmId.toString().includes(q);
+      if (nameMatch || typeMatch || idMatch) {
+        results.push(b);
+      }
+    }
+    return results;
   }, [searchQuery, buildings]);
 
   // Close dropdowns on outside click
@@ -119,7 +122,7 @@ export default function TopBar({
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
           </div>
           <p className="text-[10px] text-gray-400 tracking-wider uppercase font-medium">
-            Hyderabad 3D Twin · Durgam Cheruvu
+            Hyderabad 100 km² Digital Twin · 68K Buildings
           </p>
         </div>
       </div>

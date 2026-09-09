@@ -2,13 +2,13 @@ import { BuildingData } from './types';
 
 /**
  * 2D Uniform Spatial Grid Index for O(1) Building Lookups
- * Partitions the 4.0 km × 4.0 km Area of Interest into 100m grid cells.
+ * Partitions the 10.0 km × 10.0 km Area of Interest into 150m grid cells.
  */
 export class SpatialGridIndex {
   private cellSize: number;
   private grid: Map<string, BuildingData[]>;
 
-  constructor(cellSize: number = 100) {
+  constructor(cellSize: number = 150) {
     this.cellSize = cellSize;
     this.grid = new Map();
   }

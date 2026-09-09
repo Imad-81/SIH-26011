@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { useFrame } from '@react-three/fiber';
 import { WaterDataset } from '@/lib/types';
 import { SCALE, getTerrainY } from '@/lib/geo';
@@ -29,37 +30,65 @@ export default function Water({ centerElevation, floodLevelMeters, timeOfDay = '
   const waterElevation = Math.max(533, floodLevelMeters);
   const waterY = getTerrainY(waterElevation, centerElevation) + 0.3;
 
-  // Build 3D lake polygon geometries
-  const lakeGeometries = useMemo(() => {
-    if (!waterData || !waterData.water) return [];
+  // Build high-performance merged 3D lake geometries (Consolidates 198 draw calls into 2)
+  const { mergedWaterGeometry, mergedEdgesGeometry } = useMemo(() => {
+    if (!waterData || !waterData.water || waterData.water.length === 0) {
+      return { mergedWaterGeometry: null, mergedEdgesGeometry: null };
+    }
 
     const geoms: THREE.BufferGeometry[] = [];
+    const edgeGeoms: THREE.BufferGeometry[] = [];
 
     for (const lake of waterData.water) {
       const coords = lake.coordinates;
       if (!coords || coords.length < 3) continue;
 
-      const shape = new THREE.Shape();
-      shape.moveTo(coords[0][0] * SCALE, coords[0][1] * SCALE);
-      for (let i = 1; i < coords.length; i++) {
-        shape.lineTo(coords[i][0] * SCALE, coords[i][1] * SCALE);
-      }
-      shape.closePath();
+      try {
+        const shape = new THREE.Shape();
+        shape.moveTo(coords[0][0] * SCALE, coords[0][1] * SCALE);
+        for (let i = 1; i < coords.length; i++) {
+          shape.lineTo(coords[i][0] * SCALE, coords[i][1] * SCALE);
+        }
+        shape.closePath();
 
-      // ShapeGeometry in XY plane, rotate to XZ
-      const geom = new THREE.ShapeGeometry(shape);
-      geom.rotateX(-Math.PI / 2);
-      geoms.push(geom);
+        // ShapeGeometry in XY plane, rotate to XZ
+        const geom = new THREE.ShapeGeometry(shape);
+        geom.rotateX(-Math.PI / 2);
+        geoms.push(geom);
+
+        const edgeG = new THREE.EdgesGeometry(geom);
+        edgeGeoms.push(edgeG);
+      } catch {
+        // Skip invalid polygon
+      }
     }
 
-    return geoms;
+    let mergedWater: THREE.BufferGeometry | null = null;
+    let mergedEdges: THREE.BufferGeometry | null = null;
+
+    if (geoms.length > 0) {
+      try {
+        mergedWater = mergeGeometries(geoms, false);
+      } catch (err) {
+        console.warn('Failed to merge water geometries:', err);
+      }
+    }
+
+    if (edgeGeoms.length > 0) {
+      try {
+        mergedEdges = mergeGeometries(edgeGeoms, false);
+      } catch (err) {
+        console.warn('Failed to merge water edge geometries:', err);
+      }
+    }
+
+    return { mergedWaterGeometry: mergedWater, mergedEdgesGeometry: mergedEdges };
   }, [waterData]);
 
   // Subtle wave shimmer animation
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
     if (materialRef.current) {
-      // Subtle pulse on water opacity and roughness
       materialRef.current.roughness = 0.15 + Math.sin(t * 1.5) * 0.05;
     }
   });
@@ -68,30 +97,28 @@ export default function Water({ centerElevation, floodLevelMeters, timeOfDay = '
   const waterColor = isDay ? '#0077be' : '#00e5ff';
   const waterEmissive = isDay ? '#003366' : '#005577';
 
-  if (!waterData || lakeGeometries.length === 0) return null;
+  if (!mergedWaterGeometry) return null;
 
   return (
     <group position={[0, waterY, 0]}>
-      {lakeGeometries.map((geom, idx) => (
-        <mesh key={idx} geometry={geom} receiveShadow ref={idx === 0 ? meshRef : undefined}>
-          <meshStandardMaterial
-            ref={idx === 0 ? materialRef : undefined}
-            color={waterColor}
-            emissive={waterEmissive}
-            emissiveIntensity={0.35}
-            roughness={0.15}
-            metalness={0.85}
-            transparent
-            opacity={0.88}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-      ))}
+      {/* 🚀 Merged 99 Lake Surfaces: 1 Single Draw Call */}
+      <mesh geometry={mergedWaterGeometry} receiveShadow ref={meshRef}>
+        <meshStandardMaterial
+          ref={materialRef}
+          color={waterColor}
+          emissive={waterEmissive}
+          emissiveIntensity={0.35}
+          roughness={0.15}
+          metalness={0.85}
+          transparent
+          opacity={0.88}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
 
-      {/* Shoreline glowing foam / boundary contour */}
-      {lakeGeometries.map((geom, idx) => (
-        <lineSegments key={`edge-${idx}`} position={[0, 0.05, 0]}>
-          <edgesGeometry args={[geom]} />
+      {/* 🌊 Merged Shoreline Glowing Foam Outlines: 1 Single Draw Call */}
+      {mergedEdgesGeometry && (
+        <lineSegments geometry={mergedEdgesGeometry} position={[0, 0.05, 0]}>
           <lineBasicMaterial
             color="#64ffda"
             transparent
@@ -99,7 +126,7 @@ export default function Water({ centerElevation, floodLevelMeters, timeOfDay = '
             linewidth={2}
           />
         </lineSegments>
-      ))}
+      )}
     </group>
   );
 }

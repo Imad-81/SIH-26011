@@ -13,9 +13,24 @@ export interface CameraPreset {
 
 export const CAMERA_PRESETS: Record<string, CameraPreset> = {
   default: {
-    name: 'Overview',
-    camPos: [1100, 650, 1100],
+    name: 'Metropolitan Overview (10km)',
+    camPos: [2600, 1500, 2600],
     target: [0, 0, 0],
+  },
+  financialdistrict: {
+    name: 'Financial District (W)',
+    camPos: [-3400, 420, 600],
+    target: [-3900, 60, 400],
+  },
+  kukatpally: {
+    name: 'Kukatpally Corridors (N)',
+    camPos: [-400, 450, -3400],
+    target: [-800, 50, -4200],
+  },
+  jubileehills: {
+    name: 'Jubilee Hills Ridge (E)',
+    camPos: [2300, 320, -200],
+    target: [3000, 80, -500],
   },
   qualcomm: {
     name: 'Qualcomm Commerzone',
@@ -59,7 +74,7 @@ export const CAMERA_PRESETS: Record<string, CameraPreset> = {
   },
   ortho: {
     name: 'Top-Down GIS',
-    camPos: [0, 2600, 1],
+    camPos: [0, 7500, 1],
     target: [0, 0, 0],
   },
 };
@@ -91,10 +106,10 @@ const TOUR_WAYPOINTS = [
     duration: 6.0,
   },
   {
-    // Waypoint 5: Panoramic 3D Topography Overview
-    camPos: new THREE.Vector3(1200, 750, 1200),
+    // Waypoint 5: Panoramic 3D Topography Overview (10km Metropolis)
+    camPos: new THREE.Vector3(2600, 1500, 2600),
     target: new THREE.Vector3(0, 0, 0),
-    duration: 7.0,
+    duration: 8.0,
   },
 ];
 
@@ -198,7 +213,7 @@ export default function CameraController({
       dampingFactor={0.06}
       maxPolarAngle={Math.PI / 2.05}
       minDistance={20}
-      maxDistance={6000}
+      maxDistance={25000}
       autoRotate={autoRotate && !isTourActive}
       autoRotateSpeed={0.7}
     />

@@ -112,12 +112,18 @@ body {
 .controls-hint {
   position: fixed;
   bottom: 16px;
-  right: 16px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 30;
   font-size: 11px;
   color: var(--text-muted);
   font-family: 'JetBrains Mono', monospace;
   pointer-events: none;
+  background: rgba(10, 15, 32, 0.75);
+  backdrop-filter: blur(12px);
+  padding: 4px 14px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Sky Parallax Animations & GPU Acceleration */

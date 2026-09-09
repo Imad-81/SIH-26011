@@ -76,7 +76,7 @@ function SceneContent({
 
   return (
     <>
-      <PerspectiveCamera makeDefault position={[1100, 650, 1100]} fov={48} near={2} far={12000} />
+      <PerspectiveCamera makeDefault position={[2400, 1400, 2400]} fov={48} near={2} far={35000} />
 
       {/* Real-time WebGL Telemetry Tracker */}
       <PerformanceTracker />
@@ -149,6 +149,7 @@ export default function Scene(props: SceneProps) {
       {/* High-Performance 3D Canvas Layer */}
       <Canvas
         shadows
+        dpr={[1, 1.5]}
         gl={{
           antialias: true,
           alpha: true,
