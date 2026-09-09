@@ -260,36 +260,53 @@ class FloorSlabEngine:
     ) -> List[Tuple[float, float, float]]:
         """
         Returns list of (floor_index, z_min, z_max) for each floor.
-        Ensures exact match with building total height and DEM base elevation.
+        STRICT INVARIANT:
+          sum(floor_heights) == total_height
+          z_min(floor 0) == base_elevation
+          z_max(floor num_floors - 1) == base_elevation + total_height
+          Zero floating, zero clipping, zero drift!
         """
-        num_floors = max(1, num_floors)
-        
+        num_floors = max(1, int(num_floors))
+        total_height = float(total_height)
+        base_elevation = float(base_elevation)
+
         if num_floors == 1:
             return [(0, round(base_elevation, 2), round(base_elevation + total_height, 2))]
 
-        # Default floor profile
-        is_comm = any(t in building_type.lower() for t in ["commercial", "office", "retail"])
-        ground_h = custom_ground_h if custom_ground_h else (4.5 if is_comm else 3.5)
-        
-        if custom_typical_h:
-            typical_h = custom_typical_h
+        # Determine target unnormalized floor heights
+        if custom_ground_h is not None and custom_typical_h is not None:
+            raw_heights = [custom_ground_h] + [custom_typical_h] * (num_floors - 1)
         else:
-            typical_h = max(2.8, (total_height - ground_h) / (num_floors - 1))
+            is_comm = any(t in building_type.lower() for t in ["commercial", "office", "retail"])
+            # Ground lobby is typically slightly taller than upper floors
+            target_ground_h = 4.5 if is_comm else 3.5
+            # Ensure ground floor doesn't take more than 40% of building height for low-rises
+            ground_h = min(target_ground_h, total_height * 0.35)
+            typical_h = (total_height - ground_h) / (num_floors - 1)
+            raw_heights = [ground_h] + [typical_h] * (num_floors - 1)
 
-        # Adjust ground_h if total_height is smaller than estimated
-        if ground_h + typical_h * (num_floors - 1) > total_height * 1.05:
-            typical_h = total_height / num_floors
-            ground_h = typical_h
+        # Normalize raw heights so their sum strictly equals total_height
+        raw_sum = sum(raw_heights)
+        if raw_sum > 0:
+            scale_factor = total_height / raw_sum
+            floor_heights = [h * scale_factor for h in raw_heights]
+        else:
+            uniform_h = total_height / num_floors
+            floor_heights = [uniform_h] * num_floors
 
         elevations = []
         current_z = base_elevation
 
         for i in range(num_floors):
-            floor_h = ground_h if i == 0 else typical_h
-            z_min = current_z
-            z_max = current_z + floor_h
+            # For the last floor, snap exactly to base_elevation + total_height to eliminate rounding error
+            if i == num_floors - 1:
+                z_min = current_z
+                z_max = base_elevation + total_height
+            else:
+                z_min = current_z
+                z_max = current_z + floor_heights[i]
+                current_z = z_max
             elevations.append((i, round(z_min, 2), round(z_max, 2)))
-            current_z = z_max
 
         return elevations
 

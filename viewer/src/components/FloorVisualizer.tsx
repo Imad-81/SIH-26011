@@ -57,13 +57,20 @@ export default function FloorVisualizer({
     const floorRec = cadastreRecord?.floors?.find((f) => f.floorIndex === floorIndex);
     const floorHeight = floorRec ? floorRec.heightM : building.height / floorsCount;
     
-    // Base elevation of the building
+    // Base ground elevation in Three.js world coordinates
     const baseMSL = building.baseElevation ?? centerElevation;
-    const floorBaseMSL = floorRec ? floorRec.zMin : baseMSL + (floorIndex * (building.height / floorsCount));
-    
-    // Convert MSL to Three.js Y
-    const worldY = getTerrainY(floorBaseMSL, centerElevation);
-    const extrudeHeight = Math.max(floorHeight * SCALE, 0.6);
+    const baseY = getTerrainY(baseMSL, centerElevation);
+
+    // Exact vertical offset above the building's base in real metric units
+    const offsetFromBase = floorRec
+      ? Math.max(0, floorRec.zMin - baseMSL)
+      : floorIndex * (building.height / floorsCount);
+
+    const floorBaseMSL = floorRec ? floorRec.zMin : baseMSL + offsetFromBase;
+
+    // Exact world Y in Three.js coordinates (1:1 building vertical scale, matching Buildings.tsx)
+    const worldY = baseY + offsetFromBase * SCALE;
+    const extrudeHeight = Math.max(floorHeight * SCALE, 0.4);
 
     try {
       const geom = new THREE.ExtrudeGeometry(shape, {

@@ -3,6 +3,46 @@
   "version": "1.0",
   "updated_at": "2026-09-08T18:47:00Z",
   "by_osm_id": {
+    "340821779": {
+      "name": "Vayu (My Home Bhooja Block A)",
+      "campus": "My Home Bhooja",
+      "location": "Raidurg, Hyderabad",
+      "height_m": 100.0,
+      "floors": 33,
+      "category": "High-Rise Residential Luxury Skyscraper",
+      "confidence": "high",
+      "source": "TS-RERA P02400000027 Architectural Filing"
+    },
+    "340821780": {
+      "name": "Varuna (My Home Bhooja Block B)",
+      "campus": "My Home Bhooja",
+      "location": "Raidurg, Hyderabad",
+      "height_m": 100.0,
+      "floors": 33,
+      "category": "High-Rise Residential Luxury Skyscraper",
+      "confidence": "high",
+      "source": "TS-RERA P02400000027 Architectural Filing"
+    },
+    "340821781": {
+      "name": "Teja (My Home Bhooja Block C)",
+      "campus": "My Home Bhooja",
+      "location": "Raidurg, Hyderabad",
+      "height_m": 100.0,
+      "floors": 33,
+      "category": "High-Rise Residential Luxury Skyscraper",
+      "confidence": "high",
+      "source": "TS-RERA P02400000027 Architectural Filing"
+    },
+    "340821782": {
+      "name": "Prithvi (My Home Bhooja Block D)",
+      "campus": "My Home Bhooja",
+      "location": "Raidurg, Hyderabad",
+      "height_m": 100.0,
+      "floors": 33,
+      "category": "High-Rise Residential Luxury Skyscraper",
+      "confidence": "high",
+      "source": "TS-RERA P02400000027 Architectural Filing"
+    },
     "68883448": {
       "name": "Cyber Towers",
       "campus": "HITEC City Phase 1",
