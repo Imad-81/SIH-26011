@@ -22,7 +22,7 @@
       "source": "OpenStreetMap",
       "api": "Overpass API (https://overpass-api.de/api/interpreter)",
       "license": "ODbL 1.0 (https://opendatacommons.org/licenses/odbl/1-0/)",
-      "download_date": "2026-09-09T04:34:25.655311+00:00"
+      "download_date": "2026-09-09T04:49:23.810492+00:00"
     },
     "dsm": {
       "source": "Copernicus DEM GLO-30",
@@ -32,13 +32,13 @@
       "crs": "EPSG:4326",
       "download_url": "https://copernicus-dem-30m.s3.amazonaws.com/",
       "license": "Copernicus licence (https://spacedata.copernicus.eu/en/web/guest/collections/copernicus-digital-elevation-model)",
-      "download_date": "2026-09-09T04:34:25.655319+00:00"
+      "download_date": "2026-09-09T04:49:23.810500+00:00"
     },
     "dem": {
       "source": "SRTM GL1 via OpenTopography",
       "description": "Used as bare-earth approximation",
       "api": "OpenTopography GlobalDEM API",
-      "download_date": "2026-09-09T04:34:25.655321+00:00",
+      "download_date": "2026-09-09T04:49:23.810502+00:00",
       "note": "SRTM is technically a DSM but older data (2000) serves as ground approximation"
     }
   },
