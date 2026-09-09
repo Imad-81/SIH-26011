@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/three-config';
 import { useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useBuildingData } from '@/hooks/useBuildingData';

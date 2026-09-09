@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/three-config';
 import { useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera } from '@react-three/drei';
@@ -168,7 +169,7 @@ export default function Scene(props: SceneProps) {
 
       {/* High-Performance 3D Canvas Layer */}
       <Canvas
-        shadows
+        shadows="percentage"
         dpr={[1, 1.5]}
         gl={{
           antialias: true,
@@ -179,6 +180,9 @@ export default function Scene(props: SceneProps) {
         }}
         onCreated={({ gl }) => {
           gl.setClearColor(0x000000, 0);
+          if (gl.shadowMap) {
+            gl.shadowMap.type = THREE.PCFShadowMap;
+          }
         }}
         style={{
           background: 'transparent',
