@@ -74,7 +74,10 @@ export default function TopBar({
       const nameMatch = b.name && b.name.toLowerCase().includes(q);
       const typeMatch = b.buildingType && b.buildingType.toLowerCase().includes(q);
       const idMatch = b.osmId && b.osmId.toString().includes(q);
-      if (nameMatch || typeMatch || idMatch) {
+      const ulpinMatch = b.ulpin2d && b.ulpin2d.toLowerCase().includes(q);
+      const surveyMatch = b.surveyNumber && (b.surveyNumber.toLowerCase().includes(q) || q.includes(b.surveyNumber.toLowerCase()));
+      const ulpin3dMatch = b.ulpin3dSample && b.ulpin3dSample.toLowerCase().includes(q);
+      if (nameMatch || typeMatch || idMatch || ulpinMatch || surveyMatch || ulpin3dMatch) {
         results.push(b);
       }
     }
@@ -145,7 +148,7 @@ export default function TopBar({
           <span className="text-gray-400 text-sm">🔍</span>
           <input
             type="text"
-            placeholder="Search Qualcomm, Inorbit, >30m..."
+            placeholder="Search Qualcomm, 2D/3D ULPIN, Sy No..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setSearchFocused(true)}
@@ -180,19 +183,29 @@ export default function TopBar({
                   onSelectBuilding(b);
                   setSearchQuery(b.name || `Building #${b.osmId}`);
                 }}
-                className="px-3.5 py-2.5 hover:bg-cyan-500/15 cursor-pointer border-b border-white/5 transition-colors flex items-center justify-between"
+                className="px-3.5 py-2 hover:bg-cyan-500/15 cursor-pointer border-b border-white/5 transition-colors flex items-center justify-between"
               >
-                <div>
-                  <p className="text-xs font-semibold text-white truncate max-w-[180px]">
+                <div className="min-w-0 flex-1 mr-2">
+                  <p className="text-xs font-semibold text-white truncate">
                     {b.name || `Building #${b.osmId || b.id.slice(0, 8)}`}
                   </p>
-                  <p className="text-[10px] text-gray-400 capitalize">
-                    {b.buildingType} · {b.estimatedFloors} {b.estimatedFloors === 1 ? 'fl' : 'floors'}
-                  </p>
+                  <div className="flex items-center gap-1.5 text-[10px] text-gray-400 mt-0.5">
+                    {b.surveyNumber && (
+                      <span className="text-emerald-400 font-mono">Sy.{b.surveyNumber}</span>
+                    )}
+                    {b.ulpin2d && (
+                      <span className="font-mono text-cyan-400/80 truncate max-w-[110px]">{b.ulpin2d}</span>
+                    )}
+                  </div>
                 </div>
-                <span className="text-xs font-mono font-bold text-cyan-400">
-                  {b.height.toFixed(1)}m
-                </span>
+                <div className="text-right shrink-0">
+                  <span className="text-xs font-mono font-bold text-cyan-400 block">
+                    {b.height.toFixed(1)}m
+                  </span>
+                  <span className="text-[10px] text-gray-400">
+                    {b.estimatedFloors} fl
+                  </span>
+                </div>
               </div>
             ))}
           </div>

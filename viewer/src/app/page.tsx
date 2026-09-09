@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useBuildingData } from '@/hooks/useBuildingData';
+import { useCadastreData } from '@/hooks/useCadastreData';
 import { SelectedBuilding, LandmarkData, RenderMode, TimeOfDay, BuildingData } from '@/lib/types';
 import LoadingScreen from '@/components/LoadingScreen';
 import BuildingInfo from '@/components/BuildingInfo';
@@ -22,10 +23,16 @@ const Scene = dynamic(() => import('@/components/Scene'), {
 
 export default function Home() {
   const { buildings, terrain, loading, error, progress } = useBuildingData();
+  const { cadastreData, getBuildingCadastre } = useCadastreData();
   const [selectedBuilding, setSelectedBuilding] = useState<SelectedBuilding | null>(null);
   const [selectedLandmark, setSelectedLandmark] = useState<LandmarkData | null>(null);
   const [legendVisible, setLegendVisible] = useState(true);
   const [loadingComplete, setLoadingComplete] = useState(false);
+
+  // 3D ULPIN Cadastral States
+  const [selectedFloorIndex, setSelectedFloorIndex] = useState<number>(0);
+  const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
+  const [isFloorIsolated, setIsFloorIsolated] = useState<boolean>(false);
 
   // Advanced Visual & Simulation States
   const [renderMode, setRenderMode] = useState<RenderMode>('height');
@@ -42,13 +49,20 @@ export default function Home() {
   const [cameraTargetPos, setCameraTargetPos] = useState<[number, number, number] | null>(null);
   const [cameraLookAt, setCameraLookAt] = useState<[number, number, number] | null>(null);
 
+  const activeCadastreRecord = selectedBuilding ? getBuildingCadastre(selectedBuilding.id) : null;
+
   const handleLoadingComplete = useCallback(() => {
     setLoadingComplete(true);
   }, []);
 
   const handleBuildingSelect = useCallback((building: SelectedBuilding | null) => {
     setSelectedBuilding(building);
-    if (building) setSelectedLandmark(null);
+    if (building) {
+      setSelectedLandmark(null);
+      setSelectedFloorIndex(0);
+      setSelectedUnitId(null);
+      setIsFloorIsolated(false);
+    }
   }, []);
 
   const handleLandmarkSelect = useCallback((landmark: LandmarkData) => {
@@ -152,6 +166,10 @@ export default function Home() {
             selectedBuilding={selectedBuilding}
             onSelectLandmark={handleLandmarkSelect}
             selectedLandmarkId={selectedLandmark?.id || null}
+            cadastreRecord={activeCadastreRecord}
+            selectedFloorIndex={selectedFloorIndex}
+            selectedUnitId={selectedUnitId}
+            isFloorIsolated={isFloorIsolated}
           />
         </div>
       )}
@@ -183,12 +201,19 @@ export default function Home() {
         />
       )}
 
-      {/* Building Inspection Dossier */}
+      {/* Building Inspection Dossier & 3D ULPIN Cadastre Panel */}
       {loadingComplete && (
         <BuildingInfo
           building={selectedBuilding}
           onClose={() => setSelectedBuilding(null)}
           onFlyTo={handleFlyToBuilding}
+          cadastreRecord={activeCadastreRecord}
+          selectedFloorIndex={selectedFloorIndex}
+          onSelectFloor={setSelectedFloorIndex}
+          selectedUnitId={selectedUnitId}
+          onSelectUnit={setSelectedUnitId}
+          isFloorIsolated={isFloorIsolated}
+          onToggleFloorIsolation={() => setIsFloorIsolated((prev) => !prev)}
         />
       )}
 

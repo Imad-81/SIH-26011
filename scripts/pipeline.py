@@ -63,6 +63,12 @@ try:
 except ImportError:
     pass
 
+try:
+    from cadastre_ulpin import generate_3d_cadastre
+    HAS_CADASTRE = True
+except ImportError:
+    HAS_CADASTRE = False
+
 warnings.filterwarnings('ignore', category=rasterio.errors.NotGeoreferencedWarning)
 warnings.filterwarnings('ignore', category=FutureWarning)
 
@@ -1495,6 +1501,25 @@ def generate_3d_buildings(gdf, aoi, dem_path=None):
     if dem_src is not None:
         dem_src.close()
 
+    # Stage 7b: 3D ULPIN & Vertical Cadastre Mapping
+    cadastre_stats = {}
+    if HAS_CADASTRE:
+        try:
+            _, _, cadastre_stats = generate_3d_cadastre(gdf_utm, aoi, buildings_json, dem_path=check_dem)
+        except Exception as e:
+            warn(f"3D Cadastre generation encountered issue: {e}")
+
+    # Ensure features_3d have 2D ULPIN and cadastral tags
+    b_lookup = {b["id"]: b for b in buildings_json}
+    for feat in features_3d:
+        b_id = feat["properties"]["building_id"]
+        if b_id in b_lookup:
+            b_info = b_lookup[b_id]
+            feat["properties"]["ulpin_2d"] = b_info.get("ulpin2d")
+            feat["properties"]["survey_number"] = b_info.get("surveyNumber")
+            feat["properties"]["village_name"] = b_info.get("villageName")
+            feat["properties"]["has_floor_plan"] = b_info.get("hasFloorPlan", False)
+
     # Save 3D GeoJSON
     geojson_3d = {
         "type": "FeatureCollection",
@@ -1525,6 +1550,9 @@ def generate_3d_buildings(gdf, aoi, dem_path=None):
             "withClusterPropagation": sum(1 for b in buildings_json if b["heightSource"] == "cluster_propagation"),
             "withMorphological": sum(1 for b in buildings_json if "morphological" in b["heightSource"]),
             "withDefault": sum(1 for b in buildings_json if b["heightSource"] in ["default", "unknown"]),
+            "total2DParcels": cadastre_stats.get("total2DParcels", len(buildings_json)),
+            "total3DVerticalParcels": cadastre_stats.get("total3DVerticalParcels", 0),
+            "buildingsWithFloorPlans": cadastre_stats.get("buildingsWithFloorPlans", 0),
         },
         "generatedAt": datetime.now(timezone.utc).isoformat(),
     }
@@ -1609,6 +1637,12 @@ def generate_analytics(gdf, buildings_json):
         "grossFloorAreaM2": round(gross_floor_area, 1),
         "heightBuckets": height_buckets,
         "typeBreakdown": type_breakdown,
+        "cadastre": {
+            "total2DParcels": total_buildings,
+            "total3DVerticalParcels": sum(b.get("unitsCount", b.get("floorsCount", 1)) for b in buildings_json),
+            "buildingsWithFloorPlans": sum(1 for b in buildings_json if b.get("hasFloorPlan")),
+            "verticalDensityRatio": round(sum(b.get("unitsCount", 1) for b in buildings_json) / max(1, total_buildings), 2)
+        },
         "solar": {
             "usableRooftopAreaM2": round(usable_rooftop, 1),
             "dailyGenerationKwh": round(daily_gen_kwh, 1),

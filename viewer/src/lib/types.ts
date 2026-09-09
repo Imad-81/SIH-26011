@@ -12,7 +12,58 @@ export interface BuildingData {
   heightSource: string;
   baseElevation?: number;
   centroid?: [number, number];
+  ulpin2d?: string;
+  surveyNumber?: string;
+  villageName?: string;
+  hasFloorPlan?: boolean;
+  floorsCount?: number;
+  unitsCount?: number;
+  ulpin3dSample?: string;
 }
+
+export interface UlpinUnit {
+  unitId: string;
+  unitName: string;
+  ulpin3d: string;
+  unitType: string;
+  carpetAreaM2: number;
+  zMin: number;
+  zMax: number;
+  bedrooms?: number;
+  facing?: string;
+  status?: string;
+  coordinates?: [number, number][];
+}
+
+export interface FloorCadastre {
+  floorIndex: number;
+  floorLabel: string;
+  ulpin3d: string;
+  zMin: number;
+  zMax: number;
+  heightM: number;
+  units: UlpinUnit[];
+}
+
+export interface BuildingCadastreRecord {
+  buildingId: string;
+  osmId: number | null;
+  buildingName: string | null;
+  ulpin2d: string;
+  hasFloorPlan: boolean;
+  surveyNumber: string;
+  villageName: string;
+  mandalName: string;
+  districtName: string;
+  khataNumber: string;
+  ptinGhmc: string;
+  reraId: string;
+  totalFloors: number;
+  totalUnits: number;
+  floors: FloorCadastre[];
+}
+
+export type Ulpin3DDataset = Record<string, BuildingCadastreRecord>;
 
 export interface AOIData {
   center: { lat: number; lon: number };

@@ -1,0 +1,35 @@
+{
+  "building_name": "Salarpuria Sattva Knowledge City",
+  "osm_ids": [558276571, 852979201],
+  "total_floors": 22,
+  "architecture_type": "Grade-A IT Skyscraper (Multi-Tenant Corporate Suites)",
+  "ground_floor_height_m": 5.5,
+  "typical_floor_height_m": 3.6,
+  "rera_id": "P02400000452",
+  "typical_units_per_floor": [
+    {
+      "unit_id_suffix": "NW",
+      "unit_name_template": "Corporate Suite {floor}-NW (North Wing)",
+      "unit_type": "commercial_suite",
+      "carpet_area_m2": 1450.0
+    },
+    {
+      "unit_id_suffix": "SW",
+      "unit_name_template": "Corporate Suite {floor}-SW (South Wing)",
+      "unit_type": "commercial_suite",
+      "carpet_area_m2": 1450.0
+    },
+    {
+      "unit_id_suffix": "EW",
+      "unit_name_template": "Executive Suite {floor}-EW (East Wing)",
+      "unit_type": "commercial_suite",
+      "carpet_area_m2": 650.0
+    },
+    {
+      "unit_id_suffix": "CORE",
+      "unit_name_template": "Floor {floor} Elevator Lobby, Restrooms & Server Duct",
+      "unit_type": "common_area",
+      "carpet_area_m2": 250.0
+    }
+  ]
+}

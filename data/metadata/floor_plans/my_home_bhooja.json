@@ -1,0 +1,49 @@
+{
+  "building_name": "My Home Bhooja Luxury Residences",
+  "osm_ids": [340821779, 340821780, 340821781, 340821782],
+  "total_floors": 33,
+  "architecture_type": "Luxury High-Rise Residential Tower (4 Units / Floor)",
+  "ground_floor_height_m": 4.5,
+  "typical_floor_height_m": 3.1,
+  "rera_id": "P02400000027",
+  "typical_units_per_floor": [
+    {
+      "unit_id_suffix": "01",
+      "unit_name_template": "Flat {floor}01 (4BHK Luxury - East Facing)",
+      "unit_type": "residential_flat",
+      "carpet_area_m2": 318.0,
+      "bedrooms": 4,
+      "facing": "East"
+    },
+    {
+      "unit_id_suffix": "02",
+      "unit_name_template": "Flat {floor}02 (3BHK Premium - West Facing)",
+      "unit_type": "residential_flat",
+      "carpet_area_m2": 241.0,
+      "bedrooms": 3,
+      "facing": "West"
+    },
+    {
+      "unit_id_suffix": "03",
+      "unit_name_template": "Flat {floor}03 (3BHK Premium - North Facing)",
+      "unit_type": "residential_flat",
+      "carpet_area_m2": 241.0,
+      "bedrooms": 3,
+      "facing": "North"
+    },
+    {
+      "unit_id_suffix": "04",
+      "unit_name_template": "Flat {floor}04 (4BHK Luxury - South Facing)",
+      "unit_type": "residential_flat",
+      "carpet_area_m2": 318.0,
+      "bedrooms": 4,
+      "facing": "South"
+    },
+    {
+      "unit_id_suffix": "LOBBY",
+      "unit_name_template": "Floor {floor} Lift Lobby & Fire Escape",
+      "unit_type": "common_area",
+      "carpet_area_m2": 85.0
+    }
+  ]
+}

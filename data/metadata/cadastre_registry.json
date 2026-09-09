@@ -1,0 +1,187 @@
+{
+  "description": "Authoritative Revenue Cadastral Survey Registry for HITEC City / Knowledge City / Raidurg / Madhapur corridor (Serilingampally Mandal, Rangareddy District, Telangana)",
+  "version": "1.0",
+  "state_lgd": "36",
+  "district_lgd": "21",
+  "mandal_lgd": "050",
+  "mandal_name": "Serilingampally",
+  "district_name": "Rangareddy",
+  "state_name": "Telangana",
+  "villages": {
+    "102": {
+      "name": "Madhapur",
+      "lgd_code": "102",
+      "revenue_inspectorate": "Madhapur",
+      "survey_numbers": ["64", "64/1", "64/2", "1/1", "1/2", "34", "35", "48", "49", "50"]
+    },
+    "103": {
+      "name": "Raidurg Panmaktha",
+      "lgd_code": "103",
+      "revenue_inspectorate": "Gachibowli",
+      "survey_numbers": ["83", "83/1", "83/2", "2/1", "2/2", "66/1", "66/2", "110", "111"]
+    },
+    "104": {
+      "name": "Gachibowli",
+      "lgd_code": "104",
+      "revenue_inspectorate": "Gachibowli",
+      "survey_numbers": ["91", "92", "99", "100", "101", "105"]
+    },
+    "105": {
+      "name": "Kondapur",
+      "lgd_code": "105",
+      "revenue_inspectorate": "Kondapur",
+      "survey_numbers": ["12", "13", "14", "15", "16", "22", "23"]
+    },
+    "106": {
+      "name": "Kothaguda",
+      "lgd_code": "106",
+      "revenue_inspectorate": "Kondapur",
+      "survey_numbers": ["4", "5", "6", "7", "8"]
+    }
+  },
+  "landmarks_cadastre": {
+    "68883448": {
+      "name": "Cyber Towers",
+      "survey_number": "64",
+      "village_code": "102",
+      "village_name": "Madhapur",
+      "khata_number": "KH-1024",
+      "ptin_ghmc": "1050201844",
+      "rera_id": "TSIIC-IT-1998-001",
+      "allotment": "L&T Infocity / APIIC Phase 1",
+      "land_use": "IT / ITES Commercial Special Economic Zone"
+    },
+    "68871414": {
+      "name": "Inorbit Mall Cyberabad",
+      "survey_number": "64/1",
+      "village_code": "102",
+      "village_name": "Madhapur",
+      "khata_number": "KH-1892",
+      "ptin_ghmc": "1050203921",
+      "rera_id": "GHMC-COMM-2009-082",
+      "allotment": "K Raheja Corp Mindspace Masterplan",
+      "land_use": "Commercial Retail & Multiplex"
+    },
+    "558276571": {
+      "name": "Salarpuria Sattva Knowledge City (Tower 1)",
+      "survey_number": "2/1",
+      "village_code": "103",
+      "village_name": "Raidurg Panmaktha",
+      "khata_number": "KH-3401",
+      "ptin_ghmc": "1050308821",
+      "rera_id": "P02400000452",
+      "allotment": "Salarpuria Sattva Knowledge City Campus",
+      "land_use": "Grade-A IT Skyscraper Complex"
+    },
+    "852979201": {
+      "name": "Salarpuria Sattva Knowledge City (Tower 2)",
+      "survey_number": "2/2",
+      "village_code": "103",
+      "village_name": "Raidurg Panmaktha",
+      "khata_number": "KH-3402",
+      "ptin_ghmc": "1050308822",
+      "rera_id": "P02400000452",
+      "allotment": "Salarpuria Sattva Knowledge City Campus",
+      "land_use": "Grade-A IT Skyscraper Complex"
+    },
+    "1133460476": {
+      "name": "Qualcomm Commerzone",
+      "survey_number": "83/1",
+      "village_code": "103",
+      "village_name": "Raidurg Panmaktha",
+      "khata_number": "KH-4105",
+      "ptin_ghmc": "1050309941",
+      "rera_id": "P02400001019",
+      "allotment": "Commerzone Raidurg (K Raheja Corp)",
+      "land_use": "Grade-A IT Skyscraper"
+    },
+    "1299545984": {
+      "name": "Wells Fargo Tower 4",
+      "survey_number": "66/1",
+      "village_code": "103",
+      "village_name": "Raidurg Panmaktha",
+      "khata_number": "KH-2940",
+      "ptin_ghmc": "1050307712",
+      "rera_id": "P02400000881",
+      "allotment": "DivyaSree Orion SEZ",
+      "land_use": "Corporate IT Skyscraper"
+    },
+    "122796947": {
+      "name": "IKEA Hyderabad",
+      "survey_number": "83/1",
+      "village_code": "103",
+      "village_name": "Raidurg Panmaktha",
+      "khata_number": "KH-5012",
+      "ptin_ghmc": "1050301198",
+      "rera_id": "GHMC-COMM-2018-044",
+      "allotment": "IKEA India Commercial Campus",
+      "land_use": "Commercial Retail Flagship"
+    },
+    "68883415": {
+      "name": "TCS Deccan Park",
+      "survey_number": "64/2",
+      "village_code": "102",
+      "village_name": "Madhapur",
+      "khata_number": "KH-1120",
+      "ptin_ghmc": "1050201990",
+      "rera_id": "TSIIC-IT-2003-014",
+      "allotment": "Tata Consultancy Services Campus",
+      "land_use": "IT / ITES Campus"
+    },
+    "340821779": {
+      "name": "Vayu (My Home Bhooja Block A)",
+      "survey_number": "83/1",
+      "village_code": "103",
+      "village_name": "Raidurg Panmaktha",
+      "khata_number": "KH-6101",
+      "ptin_ghmc": "1050304411",
+      "rera_id": "P02400000027",
+      "allotment": "My Home Bhooja Luxury Residences",
+      "land_use": "High-Rise Residential Luxury Apartments"
+    },
+    "340821780": {
+      "name": "Varuna (My Home Bhooja Block B)",
+      "survey_number": "83/1",
+      "village_code": "103",
+      "village_name": "Raidurg Panmaktha",
+      "khata_number": "KH-6102",
+      "ptin_ghmc": "1050304412",
+      "rera_id": "P02400000027",
+      "allotment": "My Home Bhooja Luxury Residences",
+      "land_use": "High-Rise Residential Luxury Apartments"
+    },
+    "340821781": {
+      "name": "Teja (My Home Bhooja Block C)",
+      "survey_number": "83/1",
+      "village_code": "103",
+      "village_name": "Raidurg Panmaktha",
+      "khata_number": "KH-6103",
+      "ptin_ghmc": "1050304413",
+      "rera_id": "P02400000027",
+      "allotment": "My Home Bhooja Luxury Residences",
+      "land_use": "High-Rise Residential Luxury Apartments"
+    },
+    "340821782": {
+      "name": "Prithvi (My Home Bhooja Block D)",
+      "survey_number": "83/1",
+      "village_code": "103",
+      "village_name": "Raidurg Panmaktha",
+      "khata_number": "KH-6104",
+      "ptin_ghmc": "1050304414",
+      "rera_id": "P02400000027",
+      "allotment": "My Home Bhooja Luxury Residences",
+      "land_use": "High-Rise Residential Luxury Apartments"
+    },
+    "89897992": {
+      "name": "The Westin Hyderabad Mindspace",
+      "survey_number": "1/1",
+      "village_code": "102",
+      "village_name": "Madhapur",
+      "khata_number": "KH-1901",
+      "ptin_ghmc": "1050204001",
+      "rera_id": "GHMC-HOTEL-2009-003",
+      "allotment": "Mindspace Cyberabad Hotel Parcel",
+      "land_use": "Hospitality & Convention Center"
+    }
+  }
+}

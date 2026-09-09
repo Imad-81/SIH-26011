@@ -1,0 +1,86 @@
+{
+  "building_name": "Cyber Towers",
+  "osm_id": 68883448,
+  "total_floors": 10,
+  "architecture_type": "Cylindrical Drum with 4 Quadrant IT Wings",
+  "ground_floor_height_m": 5.0,
+  "typical_floor_height_m": 4.0,
+  "floors": [
+    {
+      "floor_index": 0,
+      "floor_label": "Ground Floor",
+      "units": [
+        {
+          "unit_id": "LOBBY",
+          "unit_name": "Central Atrium & Visitor Reception",
+          "unit_type": "common_area",
+          "carpet_area_m2": 520.0,
+          "rel_polygon": [[-15, -15], [15, -15], [15, 15], [-15, 15]]
+        },
+        {
+          "unit_id": "BANK",
+          "unit_name": "State Bank of India & Forex Hub",
+          "unit_type": "commercial_suite",
+          "carpet_area_m2": 320.0,
+          "rel_polygon": [[-45, -45], [-15, -45], [-15, -15], [-45, -15]]
+        },
+        {
+          "unit_id": "AUDI",
+          "unit_name": "Auditorium & Exhibition Hall",
+          "unit_type": "commercial_suite",
+          "carpet_area_m2": 480.0,
+          "rel_polygon": [[15, -45], [45, -45], [45, -15], [15, -15]]
+        },
+        {
+          "unit_id": "SEC",
+          "unit_name": "Building Management & Cyber Security Operations",
+          "unit_type": "utility",
+          "carpet_area_m2": 260.0,
+          "rel_polygon": [[-45, 15], [-15, 15], [-15, 45], [-45, 45]]
+        }
+      ]
+    },
+    {
+      "floor_index": 1,
+      "floor_label": "Floor 1",
+      "is_typical_template": true,
+      "units": [
+        {
+          "unit_id": "QA",
+          "unit_name": "IT Enterprise Suite - Quadrant A",
+          "unit_type": "commercial_suite",
+          "carpet_area_m2": 450.0,
+          "rel_polygon": [[-45, -45], [-10, -45], [-10, -10], [-45, -10]]
+        },
+        {
+          "unit_id": "QB",
+          "unit_name": "IT Enterprise Suite - Quadrant B",
+          "unit_type": "commercial_suite",
+          "carpet_area_m2": 450.0,
+          "rel_polygon": [[10, -45], [45, -45], [45, -10], [10, -10]]
+        },
+        {
+          "unit_id": "QC",
+          "unit_name": "IT Enterprise Suite - Quadrant C",
+          "unit_type": "commercial_suite",
+          "carpet_area_m2": 420.0,
+          "rel_polygon": [[10, 10], [45, 10], [45, 45], [10, 45]]
+        },
+        {
+          "unit_id": "QD",
+          "unit_name": "IT Enterprise Suite - Quadrant D",
+          "unit_type": "commercial_suite",
+          "carpet_area_m2": 420.0,
+          "rel_polygon": [[-45, 10], [-10, 10], [-10, 45], [-45, 45]]
+        },
+        {
+          "unit_id": "CORE",
+          "unit_name": "Central Lift Lobby, Restrooms & HVAC Shaft",
+          "unit_type": "common_area",
+          "carpet_area_m2": 180.0,
+          "rel_polygon": [[-10, -10], [10, -10], [10, 10], [-10, 10]]
+        }
+      ]
+    }
+  ]
+}

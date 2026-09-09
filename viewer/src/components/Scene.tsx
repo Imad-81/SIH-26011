@@ -15,6 +15,7 @@ import CameraController from './CameraController';
 import ParallaxSky from './ParallaxSky';
 import SkyParallaxTracker from './SkyParallaxTracker';
 import PerformanceHUD, { PerformanceTracker } from './PerformanceMonitor';
+import FloorVisualizer from './FloorVisualizer';
 import {
   BuildingData,
   BuildingsDataset,
@@ -23,6 +24,7 @@ import {
   LandmarkData,
   RenderMode,
   TimeOfDay,
+  BuildingCadastreRecord,
 } from '@/lib/types';
 
 interface SceneProps {
@@ -43,6 +45,10 @@ interface SceneProps {
   selectedBuilding: SelectedBuilding | null;
   onSelectLandmark: (landmark: LandmarkData) => void;
   selectedLandmarkId?: string | null;
+  cadastreRecord?: BuildingCadastreRecord | null;
+  selectedFloorIndex?: number;
+  selectedUnitId?: string | null;
+  isFloorIsolated?: boolean;
 }
 
 function SceneContent({
@@ -63,6 +69,10 @@ function SceneContent({
   selectedLandmarkId,
   showRoads = true,
   showTraffic = true,
+  cadastreRecord,
+  selectedFloorIndex = 0,
+  selectedUnitId = null,
+  isFloorIsolated = false,
 }: SceneProps) {
   const areaSize = data.aoi.sizeKm;
   const centerElev = terrain?.centerElevation ?? 569.0;
@@ -126,6 +136,16 @@ function SceneContent({
         highlightedIds={highlightedIds}
         onBuildingClick={handleBuildingClick}
         selectedId={selectedBuilding?.id || null}
+      />
+
+      {/* 📐 3D Cadastre Floor Slice & Unit Highlight */}
+      <FloorVisualizer
+        building={selectedBuilding}
+        cadastreRecord={cadastreRecord ?? null}
+        selectedFloorIndex={selectedFloorIndex}
+        selectedUnitId={selectedUnitId}
+        isFloorIsolated={isFloorIsolated}
+        centerElevation={centerElev}
       />
 
       {/* 3D Floating Landmark Badges & Beacon Lasers */}

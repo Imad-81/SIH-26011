@@ -1,0 +1,178 @@
+{
+  "building_name": "Inorbit Mall Cyberabad",
+  "osm_id": 68871414,
+  "total_floors": 6,
+  "architecture_type": "Regional Shopping Mall & Multiplex",
+  "ground_floor_height_m": 5.0,
+  "typical_floor_height_m": 4.2,
+  "floors": [
+    {
+      "floor_index": 0,
+      "floor_label": "Ground Floor",
+      "units": [
+        {
+          "unit_id": "ANCHOR1",
+          "unit_name": "Hypermarket Anchor (Shoppers Stop)",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 2800.0
+        },
+        {
+          "unit_id": "G01",
+          "unit_name": "Flagship Electronics & Apple Store",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 450.0
+        },
+        {
+          "unit_id": "G02",
+          "unit_name": "Cosmetics & Luxury Fragrance Bay",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 320.0
+        },
+        {
+          "unit_id": "ATRIUM",
+          "unit_name": "Central Grand Atrium & Event Stage",
+          "unit_type": "common_area",
+          "carpet_area_m2": 850.0
+        }
+      ]
+    },
+    {
+      "floor_index": 1,
+      "floor_label": "Floor 1",
+      "units": [
+        {
+          "unit_id": "F101",
+          "unit_name": "Zara & International Apparel",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 1200.0
+        },
+        {
+          "unit_id": "F102",
+          "unit_name": "H&M Fashion Megastore",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 1100.0
+        },
+        {
+          "unit_id": "F103",
+          "unit_name": "Footwear & Athleisure Pavilion",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 650.0
+        },
+        {
+          "unit_id": "CORR1",
+          "unit_name": "Mezzanine Concourse & Restrooms",
+          "unit_type": "common_area",
+          "carpet_area_m2": 500.0
+        }
+      ]
+    },
+    {
+      "floor_index": 2,
+      "floor_label": "Floor 2",
+      "units": [
+        {
+          "unit_id": "F201",
+          "unit_name": "Indian Ethnic Wear & Designer Pavilion",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 950.0
+        },
+        {
+          "unit_id": "F202",
+          "unit_name": "Home Furnishing & Decor Gallery",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 800.0
+        },
+        {
+          "unit_id": "F203",
+          "unit_name": "Kids Apparel & Toy World",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 720.0
+        }
+      ]
+    },
+    {
+      "floor_index": 3,
+      "floor_label": "Floor 3",
+      "units": [
+        {
+          "unit_id": "ENT01",
+          "unit_name": "Timezone Gaming Arcade & Bowling Alley",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 1400.0
+        },
+        {
+          "unit_id": "ENT02",
+          "unit_name": "VR Experience Arena & Kids Adventure Zone",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 850.0
+        }
+      ]
+    },
+    {
+      "floor_index": 4,
+      "floor_label": "Floor 4",
+      "units": [
+        {
+          "unit_id": "FC01",
+          "unit_name": "Inorbit Food Court - Central Seating (800 Pax)",
+          "unit_type": "common_area",
+          "carpet_area_m2": 1600.0
+        },
+        {
+          "unit_id": "REST1",
+          "unit_name": "Barbeque Nation Specialty Restaurant",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 480.0
+        },
+        {
+          "unit_id": "REST2",
+          "unit_name": "Chili's American Grill & Bar",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 420.0
+        }
+      ]
+    },
+    {
+      "floor_index": 5,
+      "floor_label": "Floor 5",
+      "units": [
+        {
+          "unit_id": "PVR_AUDI1",
+          "unit_name": "PVR Cinemas Screen 1 (IMAX)",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 580.0
+        },
+        {
+          "unit_id": "PVR_AUDI2",
+          "unit_name": "PVR Cinemas Screen 2 (4DX)",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 420.0
+        },
+        {
+          "unit_id": "PVR_AUDI3",
+          "unit_name": "PVR Cinemas Screen 3 (P[XL] Dolby Atmos)",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 520.0
+        },
+        {
+          "unit_id": "PVR_AUDI4",
+          "unit_name": "PVR Cinemas Screen 4",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 380.0
+        },
+        {
+          "unit_id": "PVR_AUDI5",
+          "unit_name": "PVR Cinemas Screen 5",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 380.0
+        },
+        {
+          "unit_id": "PVR_AUDI6",
+          "unit_name": "PVR Cinemas Screen 6",
+          "unit_type": "retail_bay",
+          "carpet_area_m2": 380.0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "description": "Procedural architectural layout archetypes for multi-story residential and commercial buildings without explicit BIM/CAD drawings",
+  "archetypes": {
+    "residential_multi_unit": {
+      "units_per_floor_formula": "min(6, max(2, round(footprint_area / 180)))",
+      "ground_floor": "Entrance Lobby, Society Office, Security Control, Covered Parking",
+      "typical_unit_prefix": "Flat",
+      "unit_typologies": [
+        {"suffix": "01", "type": "residential_flat", "type_desc": "3BHK Flat", "area_share": 0.28},
+        {"suffix": "02", "type": "residential_flat", "type_desc": "2BHK Flat", "area_share": 0.22},
+        {"suffix": "03", "type": "residential_flat", "type_desc": "3BHK Flat", "area_share": 0.28},
+        {"suffix": "04", "type": "residential_flat", "type_desc": "2BHK Flat", "area_share": 0.22}
+      ],
+      "common_core_share": 0.15
+    },
+    "commercial_multi_suite": {
+      "units_per_floor_formula": "min(4, max(2, round(footprint_area / 350)))",
+      "ground_floor": "Double-Height Reception, Visitor Access, Security Turnstiles",
+      "typical_unit_prefix": "Suite",
+      "unit_typologies": [
+        {"suffix": "A", "type": "commercial_suite", "type_desc": "Corporate Suite A", "area_share": 0.42},
+        {"suffix": "B", "type": "commercial_suite", "type_desc": "Corporate Suite B", "area_share": 0.42}
+      ],
+      "common_core_share": 0.16
+    }
+  }
+}

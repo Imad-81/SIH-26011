@@ -27,6 +27,12 @@
     "construction": 1,
     "train_station": 1
   },
+  "cadastre": {
+    "total2DParcels": 4641,
+    "total3DVerticalParcels": 22410,
+    "buildingsWithFloorPlans": 9,
+    "verticalDensityRatio": 4.83
+  },
   "solar": {
     "usableRooftopAreaM2": 1188165.0,
     "dailyGenerationKwh": 1176283.3,
