@@ -84,6 +84,9 @@ export default function Landmarks({ onSelectLandmark, selectedLandmarkId }: Land
 
   return (
     <group name="landmarks-group">
+      {/* Guard: no content if landmarks haven't loaded yet is handled by the early return above.
+          The early return is safe here because ALL hooks (useState, useEffect, useMemo) are called
+          before this point on every render. */}
       {/* 🚀 Instanced Laser Beams: 1 Single Draw Call */}
       {laserMesh && <primitive object={laserMesh} />}
 
