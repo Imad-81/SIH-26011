@@ -37,6 +37,21 @@ export const CAMERA_PRESETS: Record<string, CameraPreset> = {
     camPos: [1148, 70, 680],
     target: [1148, -10, 493],
   },
+  biodiversity: {
+    name: 'Bio-Diversity 2-Tier Flyover',
+    camPos: [-450, 140, 1050],
+    target: [-600, 25, 820],
+  },
+  gachibowli: {
+    name: 'Gachibowli & Shilpa Viaduct',
+    camPos: [-1350, 150, 420],
+    target: [-1600, 30, 150],
+  },
+  mindspace: {
+    name: 'Mindspace Junction & Flyover',
+    camPos: [-150, 130, -150],
+    target: [-350, 35, 100],
+  },
   lake: {
     name: 'Durgam Cheruvu Lake',
     camPos: [1084, 80, 960],

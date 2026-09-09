@@ -8,6 +8,7 @@ import Buildings from './Buildings';
 import Terrain from './Terrain';
 import Water from './Water';
 import Bridge from './Bridge';
+import Roads from './Roads';
 import Landmarks from './Landmarks';
 import SunSky from './SunSky';
 import CameraController from './CameraController';
@@ -33,6 +34,8 @@ interface SceneProps {
   isTourActive: boolean;
   onTourEnd: () => void;
   autoRotate: boolean;
+  showRoads?: boolean;
+  showTraffic?: boolean;
   highlightedIds?: Set<string>;
   cameraTargetPos?: [number, number, number] | null;
   cameraLookAt?: [number, number, number] | null;
@@ -58,6 +61,8 @@ function SceneContent({
   selectedBuilding,
   onSelectLandmark,
   selectedLandmarkId,
+  showRoads = true,
+  showTraffic = true,
 }: SceneProps) {
   const areaSize = data.aoi.sizeKm;
   const centerElev = terrain?.centerElevation ?? 569.0;
@@ -103,6 +108,14 @@ function SceneContent({
 
       {/* Durgam Cheruvu Cable-Stayed Bridge */}
       <Bridge centerElevation={centerElev} />
+
+      {/* 3D Road Network & Multi-Level Elevated Flyovers */}
+      <Roads
+        centerElevation={centerElev}
+        timeOfDay={timeOfDay}
+        showRoads={showRoads}
+        showTraffic={showTraffic}
+      />
 
       {/* 🚀 Ultra-Optimized Batched 3D Buildings (Single Draw Call) */}
       <Buildings

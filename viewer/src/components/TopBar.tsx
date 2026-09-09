@@ -14,6 +14,10 @@ interface TopBarProps {
   onToggleTour: () => void;
   autoRotate: boolean;
   onToggleAutoRotate: () => void;
+  showRoads?: boolean;
+  onToggleRoads?: () => void;
+  showTraffic?: boolean;
+  onToggleTraffic?: () => void;
   onSelectPreset: (presetKey: string) => void;
   onSelectBuilding: (building: BuildingData) => void;
   onOpenAnalytics: () => void;
@@ -31,6 +35,10 @@ export default function TopBar({
   onToggleTour,
   autoRotate,
   onToggleAutoRotate,
+  showRoads = true,
+  onToggleRoads,
+  showTraffic = true,
+  onToggleTraffic,
   onSelectPreset,
   onSelectBuilding,
   onOpenAnalytics,
@@ -326,6 +334,38 @@ export default function TopBar({
         >
           🔄
         </button>
+
+        {/* Roads & Flyovers Toggle */}
+        {onToggleRoads && (
+          <button
+            onClick={onToggleRoads}
+            title="Toggle 3D Road Network & Elevated Flyovers"
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
+              showRoads
+                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50'
+                : 'bg-white/5 text-gray-400 hover:text-white border border-white/10'
+            }`}
+          >
+            <span>🛣️</span>
+            <span>Roads</span>
+          </button>
+        )}
+
+        {/* Traffic Flow Animation Toggle */}
+        {onToggleTraffic && (
+          <button
+            onClick={onToggleTraffic}
+            title="Toggle Live Traffic Stream Animation"
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
+              showTraffic
+                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50'
+                : 'bg-white/5 text-gray-400 hover:text-white border border-white/10'
+            }`}
+          >
+            <span>⚡</span>
+            <span>Traffic</span>
+          </button>
+        )}
 
         {/* Flood Risk Toggle */}
         <button

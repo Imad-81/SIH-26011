@@ -35,6 +35,8 @@ export default function Home() {
   const [analyticsOpen, setAnalyticsOpen] = useState(false);
   const [isTourActive, setIsTourActive] = useState(false);
   const [autoRotate, setAutoRotate] = useState(false);
+  const [showRoads, setShowRoads] = useState(true);
+  const [showTraffic, setShowTraffic] = useState(true);
 
   // Camera flight targets
   const [cameraTargetPos, setCameraTargetPos] = useState<[number, number, number] | null>(null);
@@ -142,6 +144,8 @@ export default function Home() {
             isTourActive={isTourActive}
             onTourEnd={() => setIsTourActive(false)}
             autoRotate={autoRotate}
+            showRoads={showRoads}
+            showTraffic={showTraffic}
             cameraTargetPos={cameraTargetPos}
             cameraLookAt={cameraLookAt}
             onBuildingSelect={handleBuildingSelect}
@@ -164,6 +168,10 @@ export default function Home() {
           onToggleTour={() => setIsTourActive(!isTourActive)}
           autoRotate={autoRotate}
           onToggleAutoRotate={() => setAutoRotate(!autoRotate)}
+          showRoads={showRoads}
+          onToggleRoads={() => setShowRoads(!showRoads)}
+          showTraffic={showTraffic}
+          onToggleTraffic={() => setShowTraffic(!showTraffic)}
           onSelectPreset={handleSelectPreset}
           onSelectBuilding={(b) => {
             handleBuildingSelect(b as SelectedBuilding);

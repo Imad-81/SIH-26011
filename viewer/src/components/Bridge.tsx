@@ -23,7 +23,7 @@ export default function Bridge({ centerElevation }: BridgeProps) {
     if (!waterData || !waterData.bridges || waterData.bridges.length === 0) return null;
 
     // Base elevation for bridge deck (water is at ~533m, bridge deck clears at ~548m)
-    const deckY = getTerrainY(548, centerElevation) + 6.0;
+    const deckY = getTerrainY(548, centerElevation) + 0.6;
 
     // Collect bridge coordinate points
     // Filter to the section across Durgam Cheruvu (rel x ~ 700 to 1250, rel y ~ 700 to 900)

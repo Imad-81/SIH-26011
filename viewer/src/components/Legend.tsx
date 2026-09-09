@@ -1,7 +1,8 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { HEIGHT_RANGES, TYPE_COLORS, SOURCE_COLORS } from '@/lib/colors';
-import { DataStats, RenderMode } from '@/lib/types';
+import { DataStats, RenderMode, RoadStats } from '@/lib/types';
 
 interface LegendProps {
   stats: DataStats | null;
@@ -11,6 +12,16 @@ interface LegendProps {
 }
 
 export default function Legend({ stats, renderMode, visible, onToggle }: LegendProps) {
+  const [roadStats, setRoadStats] = useState<RoadStats | null>(null);
+
+  useEffect(() => {
+    fetch('/data/roads.json')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.stats) setRoadStats(data.stats);
+      })
+      .catch(() => {});
+  }, []);
   return (
     <div className="fixed left-4 bottom-4 z-40">
       <button
@@ -115,6 +126,24 @@ export default function Legend({ stats, renderMode, visible, onToggle }: LegendP
               <StatRow label="Default fallback" value={stats.withDefault} />
             </div>
           )}
+
+          {/* Road Network & Elevated Flyover Stats */}
+          {roadStats && (
+            <div className="px-4 py-2.5 space-y-1.5 border-t border-white/5 bg-white/[0.02]">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-gray-400 text-[10px] uppercase tracking-wider">
+                  Roads & Flyovers
+                </span>
+                <span className="text-cyan-400 font-mono text-[11px] font-bold">
+                  {roadStats.totalLengthKm} km
+                </span>
+              </div>
+              <StatRow label="Arterials & Flyovers" value={roadStats.tier1LengthKm} unit="km" />
+              <StatRow label="Secondary Corridors" value={roadStats.tier2LengthKm} unit="km" />
+              <StatRow label="Elevated Flyover Spans" value={roadStats.bridgeCount} unit="spans" />
+              <StatRow label="Structural Piers" value={roadStats.pierCount} unit="cols" />
+            </div>
+          )}
         </div>
       )}
 
@@ -152,11 +181,13 @@ function LegendItem({ color, label, pulse }: { color: string; label: string; pul
   );
 }
 
-function StatRow({ label, value }: { label: string; value?: number }) {
+function StatRow({ label, value, unit }: { label: string; value?: number; unit?: string }) {
   return (
     <div className="flex justify-between items-center text-xs">
       <span className="text-gray-400 text-[11px]">{label}</span>
-      <span className="text-white font-mono font-medium">{(value ?? 0).toLocaleString()}</span>
+      <span className="text-white font-mono font-medium">
+        {(value ?? 0).toLocaleString()} {unit && <span className="text-gray-400 text-[10px]">{unit}</span>}
+      </span>
     </div>
   );
 }

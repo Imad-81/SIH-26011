@@ -91,6 +91,44 @@ export interface WaterDataset {
   bridges: BridgeFeature[];
 }
 
+export interface RoadSegment {
+  id: number;
+  name?: string;
+  type: string;
+  tier: 1 | 2 | 3;
+  length: number;
+  coords: [number, number, number][]; // [rel_x, elevation_meters, rel_y]
+  isBridge?: boolean;
+  isUnderpass?: boolean;
+  layer?: number;
+}
+
+export interface BridgePier {
+  x: number;
+  z: number;
+  groundY: number;
+  deckY: number;
+  height: number;
+  bridge: string;
+}
+
+export interface RoadStats {
+  totalLengthKm: number;
+  tier1LengthKm: number;
+  tier2LengthKm: number;
+  tier3LengthKm: number;
+  bridgeCount: number;
+  underpassCount: number;
+  pierCount: number;
+  segmentCount: number;
+}
+
+export interface RoadDataset {
+  stats: RoadStats;
+  piers: BridgePier[];
+  roads: RoadSegment[];
+}
+
 export interface AnalyticsData {
   totalBuildings: number;
   totalFootprintAreaM2: number;

@@ -1433,6 +1433,16 @@ def generate_water_data(aoi):
     info(f"Water & bridge data synchronized → {water_out.name} ({len(water_items)} water, {len(bridge_items)} bridges)")
 
 
+def generate_road_data(aoi, dem_path):
+    """Generate 3D road network with elevated bridges, flyovers, ramps and support piers."""
+    banner("STAGE 8c: 3D Road Network & Flyover Generation")
+    try:
+        from build_roads import main as run_build_roads
+        run_build_roads()
+    except Exception as e:
+        warn(f"Failed to generate road data via build_roads: {e}")
+
+
 # ═══════════════════════════════════════════════════════════════════
 # STAGE 9: VISUALIZATION
 # ═══════════════════════════════════════════════════════════════════
@@ -1718,6 +1728,9 @@ def main():
 
     # Stage 8b: Water & Bridge Data
     generate_water_data(aoi)
+
+    # Stage 8c: Road Network & Elevated Flyovers
+    generate_road_data(aoi, dem_clipped)
 
     # Stage 9: Preview
     generate_preview(gdf, aoi)
