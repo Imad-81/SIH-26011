@@ -186,12 +186,13 @@ Built with **Next.js 16 (App Router)**, **React 19**, **Three.js**, and **React 
 
 | Feature | Description |
 |:--------|:------------|
-| **Interactive Cadastre Slicer** | Click any building to open the **Floor Visualizer**, view exploded 3D floor plates, inspect unit deed records, UDS, and Bhu-Aadhaar numbers. |
-| **High-Performance Batched Rendering** | Utilizes Three.js `BatchedMesh` and `InstancedMesh` to render 4,600+ buildings and 230+ km of roads in minimal draw calls. |
+| **Interactive Cadastre & Unit Inspector** | Click any building to open the dual-tabbed **Building Inspector** featuring: <ul><li>**3D Cadastre (Bhu-Aadhaar):** Official 14-character 2D ULPIN, vertical 3D parcel ULPINs, level-by-level floor breakdown, architectural unit deed records, encumbrance status, circle valuation, and UDS ratios.</li><li>**Geometry & Solar:** Base and rooftop MSL ground elevations, footprint area, and daily solar PV potential estimation.</li></ul> |
+| **Interactive 3D Floor Slicer & Isolation** | Isolate specific floor levels in real-time 3D, inspect horizontal floor plates, view flat-level subdivisions, and explode floor heights with the **Floor Visualizer**. |
+| **High-Performance Batched Rendering** | Utilizes Three.js `BatchedMesh` and `InstancedMesh` to render 4,600+ buildings and 230+ km of roads in minimal draw calls at 60+ FPS. |
 | **Multi-Tier Road Infrastructure** | Visualizes highways, arterial corridors, elevated flyovers, and bridge structures complete with concrete support piers. |
 | **Simulation Modes** | Switch seamlessly between: <ul><li>**Height Mode:** Elevation-based color gradient.</li><li>**Landuse Mode:** Typology color coding (Commercial, Residential, IT, Civic).</li><li>**Data Quality Mode:** Color-coded confidence tiers (Tiers 1–5).</li><li>**Flood Simulation:** Interactive water level rise slider ($0 - 30\,\text{m}$) with real-time building inundation warnings.</li><li>**Solar PV Potential:** Rooftop solar insolation analysis, daily kWh output, and annual carbon offset.</li></ul> |
 | **Cinematic Drone Flight Tours** | Automated camera waypoints sweeping across key Hyderabad landmarks (Financial District, Cable Bridge, HITEC City). |
-| **Dynamic Atmospheric Lighting** | Real-time solar azimuth and elevation tracking, dawn/dusk golden hour sky gradients, and nocturnal lighting with vehicle headlights. |
+| **Dynamic Atmospheric Lighting & Parallax Sky** | Real-time solar azimuth and elevation tracking, dynamic day-night cycle, parallax sky dome, dawn/dusk golden hour gradients, and nocturnal lighting. |
 
 ---
 
@@ -213,7 +214,7 @@ The complete set of official presentation decks conforming strictly to the offic
 | [**SIH2026_Power_Rangers_SIH26011.pdf**](SIH2026_Power_Rangers_SIH26011.pdf) | PDF | Initial baseline slide deck export (V1). |
 
 ### Presentation Deck Outline
-- **Slide 1:** Title Page — Problem Statement SIH26011 & Team GeoVoxel
+- **Slide 1:** Title Page — Problem Statement SIH26011 & Team GeoVoxel The coders
 - **Slide 2:** Proposed Solution — 5-Tier Elevation Fusion & 3D Bhu-Aadhaar (ULPIN) Decomposition
 - **Slide 3:** Technical Approach — Geospatial ETL, Volumetric Extrusion, & LADM ISO 19152 Compliance
 - **Slide 4:** Feasibility & Viability — Production-Ready Open Architecture with Enterprise Fault Tolerance
@@ -253,14 +254,18 @@ sih_power_rangers/
 │   │   │   ├── Buildings.tsx                  # BatchedMesh building renderer
 │   │   │   ├── Roads.tsx                      # 3D multi-tier road network with flyovers
 │   │   │   ├── FloorVisualizer.tsx            # Interactive 3D exploded floor cadastre visualizer
-│   │   │   ├── BuildingInfo.tsx               # Cadastral inspector & analytics sidebar
-│   │   │   ├── TopBar.tsx                     # Navigation header & quick metric badges
+│   │   │   ├── BuildingInfo.tsx               # Dual-tabbed 3D cadastre & spatial inspector
+│   │   │   ├── TopBar.tsx                     # Navigation header, clock & quick metric badges
 │   │   │   ├── SimulationControls.tsx         # Flood slider, solar toggles, simulation modes
+│   │   │   ├── ParallaxSky.tsx                # Dynamic day-night celestial sky dome
+│   │   │   ├── SkyParallaxTracker.tsx         # Real-time solar position & sky tracking
+│   │   │   ├── PerformanceMonitor.tsx         # Real-time FPS & draw-call performance HUD
 │   │   │   └── DroneTour.tsx                  # Guided cinematic camera tours
 │   │   ├── hooks/                             # Data loading hooks (useCadastreData, useAnalytics)
 │   │   └── lib/                               # Spatial indexing, coordinate converters, Three config
 │   └── public/data/                           # Synchronized JSON/GeoJSON datasets for web client
 └── outputs/
+    ├── buildings_3d.glb                       # Binary glTF/GLB 3D scene export
     ├── buildings_preview.png                  # High-res orthographic render of building models
     ├── cadastre_summary.json                  # Aggregated cadastral statistics
     └── presentation_assets/                   # High-res diagrams, slide previews, and screenshots
