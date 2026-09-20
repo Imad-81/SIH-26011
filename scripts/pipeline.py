@@ -16,6 +16,7 @@ import hashlib
 import json
 import math
 import os
+import random
 import re
 import sys
 import time
@@ -177,28 +178,44 @@ OVERPASS_MIRRORS = [
 ]
 
 
-def query_overpass(query: str, timeout: int = 120, user_agent: str = "SIH26011-Pipeline/2.0") -> dict | None:
-    """Execute an Overpass QL query across multiple mirror endpoints with automatic fallback."""
+def query_overpass(query: str, timeout: int = 120, user_agent: str = "SIH26011-Pipeline/2.0", max_retries: int = 3) -> dict | None:
+    """Execute an Overpass QL query across multiple mirror endpoints with automatic fallback and exponential backoff."""
     for mirror_name, url in OVERPASS_MIRRORS:
-        progress(f"Querying Overpass API ({mirror_name})...")
-        try:
-            resp = requests.post(
-                url,
-                data={"data": query},
-                timeout=timeout,
-                headers={"User-Agent": user_agent},
-            )
-            resp.raise_for_status()
-            data = resp.json()
-            if "elements" in data:
-                info(f"Success via {mirror_name}")
-                return data
-        except requests.RequestException as e:
-            warn(f"Mirror {mirror_name} failed: {e}")
-            continue
-        except Exception as e:
-            warn(f"Failed to parse response from {mirror_name}: {e}")
-            continue
+        for attempt in range(max_retries):
+            progress(f"Querying Overpass API ({mirror_name}, attempt {attempt + 1}/{max_retries})...")
+            is_429 = False
+            try:
+                resp = requests.post(
+                    url,
+                    data={"data": query},
+                    timeout=timeout,
+                    headers={"User-Agent": user_agent},
+                )
+                if resp.status_code == 429:
+                    is_429 = True
+                    warn(f"Mirror {mirror_name} rate limited (HTTP 429)")
+                else:
+                    resp.raise_for_status()
+                    data = resp.json()
+                    if "elements" in data:
+                        info(f"Success via {mirror_name}")
+                        return data
+                    else:
+                        warn(f"Response from {mirror_name} missing 'elements'")
+            except requests.exceptions.HTTPError as e:
+                if e.response is not None and e.response.status_code == 429:
+                    is_429 = True
+                warn(f"Mirror {mirror_name} failed: {e}")
+            except requests.RequestException as e:
+                warn(f"Mirror {mirror_name} failed: {e}")
+            except Exception as e:
+                warn(f"Failed to parse response from {mirror_name}: {e}")
+
+            wait = (2 ** attempt) + random.uniform(0.5, 1.5)
+            if is_429:
+                wait *= 2.0
+            warn(f"Sleeping {wait:.1f}s before retry...")
+            time.sleep(wait)
 
     error("All Overpass API mirrors failed!")
     return None
