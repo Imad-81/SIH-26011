@@ -4,6 +4,7 @@ export interface BuildingData {
   id: string;
   osmId: number | null;
   coordinates: [number, number][];
+  holes?: [number, number][][];
   height: number;
   estimatedFloors: number;
   osmLevels: number | null;

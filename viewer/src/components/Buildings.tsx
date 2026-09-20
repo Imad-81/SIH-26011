@@ -155,6 +155,21 @@ export default function Buildings({
           }
           shape.closePath();
 
+          if (b.holes && b.holes.length > 0) {
+            for (let h = 0; h < b.holes.length; h++) {
+              const hole = b.holes[h];
+              if (hole.length >= 3) {
+                const holePath = new THREE.Path();
+                holePath.moveTo(hole[0][0] * SCALE, hole[0][1] * SCALE);
+                for (let k = 1; k < hole.length; k++) {
+                  holePath.lineTo(hole[k][0] * SCALE, hole[k][1] * SCALE);
+                }
+                holePath.closePath();
+                shape.holes.push(holePath);
+              }
+            }
+          }
+
           const geom = new THREE.ExtrudeGeometry(shape, {
             depth: Math.max(b.height * SCALE, 0.5),
             bevelEnabled: false,
@@ -320,6 +335,21 @@ export default function Buildings({
         shape.lineTo(b.coordinates[i][0] * SCALE, b.coordinates[i][1] * SCALE);
       }
       shape.closePath();
+
+      if (b.holes && b.holes.length > 0) {
+        for (let h = 0; h < b.holes.length; h++) {
+          const hole = b.holes[h];
+          if (hole.length >= 3) {
+            const holePath = new THREE.Path();
+            holePath.moveTo(hole[0][0] * SCALE, hole[0][1] * SCALE);
+            for (let k = 1; k < hole.length; k++) {
+              holePath.lineTo(hole[k][0] * SCALE, hole[k][1] * SCALE);
+            }
+            holePath.closePath();
+            shape.holes.push(holePath);
+          }
+        }
+      }
 
       const geom = new THREE.ExtrudeGeometry(shape, {
         depth: Math.max(b.height * SCALE, 0.5),

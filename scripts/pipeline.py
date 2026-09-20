@@ -36,6 +36,8 @@ from rasterio.mask import mask as rasterio_mask
 from rasterio.warp import calculate_default_transform, reproject, Resampling, transform_bounds
 import requests
 from shapely.geometry import mapping, box, Polygon, MultiPolygon
+from shapely.ops import transform
+from shapely.affinity import translate
 import pyproj
 from tqdm import tqdm
 
@@ -352,6 +354,10 @@ out skel qt;
     ways = [el for el in elements if el["type"] == "way" and "tags" in el]
 
     progress(f"Processing {len(ways)} building ways...")
+    crs_projected = aoi.get("crs_projected", CRS_UTM)
+    transformer = pyproj.Transformer.from_crs(CRS_WGS84, crs_projected, always_xy=True)
+    transform_to_utm = transformer.transform
+
     for way in ways:
         node_ids = way.get("nodes", [])
         coords = []
@@ -373,8 +379,8 @@ out skel qt;
             if poly.is_empty or not poly.is_valid:
                 continue
             # Filter out tiny sub-sheds / utility boxes (< 15 m2) for visual cleanliness & performance
-            approx_area_m2 = poly.area * 111320.0 * 106000.0
-            if approx_area_m2 < 15.0:
+            poly_projected = transform(transform_to_utm, poly)
+            if poly_projected.area < 15.0:
                 continue
         except Exception:
             continue
@@ -430,21 +436,51 @@ out skel qt;
         members = rel.get("members", [])
 
         outer_rings = []
+        inner_rings = []
         for member in members:
-            if member.get("type") == "way" and member.get("role") == "outer":
-                if member["ref"] in way_geoms:
-                    coords = way_geoms[member["ref"]]
-                    if len(coords) >= 4:
+            if member.get("type") == "way":
+                role = member.get("role")
+                if member.get("ref") in way_geoms:
+                    coords = list(way_geoms[member["ref"]])
+                    if len(coords) >= 3:
                         if coords[0] != coords[-1]:
                             coords.append(coords[0])
-                        outer_rings.append(coords)
+                        if len(coords) >= 4:
+                            if role == "outer":
+                                outer_rings.append(coords)
+                            elif role == "inner":
+                                inner_rings.append(coords)
 
-        for ring in outer_rings:
+        for outer_coords in outer_rings:
             try:
-                poly = Polygon(ring)
-                if not poly.is_valid:
-                    poly = poly.buffer(0)
-                if poly.is_empty:
+                outer_poly = Polygon(outer_coords)
+                if not outer_poly.is_valid:
+                    outer_poly = outer_poly.buffer(0)
+                if outer_poly.is_empty:
+                    continue
+
+                # Match inner rings that fall inside this outer ring
+                matched_inners = []
+                for inner_coords in inner_rings:
+                    try:
+                        inner_poly = Polygon(inner_coords)
+                        if outer_poly.contains(inner_poly.centroid) or outer_poly.intersects(inner_poly):
+                            matched_inners.append(inner_coords)
+                    except Exception:
+                        pass
+
+                try:
+                    poly = Polygon(shell=outer_coords, holes=matched_inners)
+                    if not poly.is_valid:
+                        poly = poly.buffer(0)
+                except Exception:
+                    poly = outer_poly
+
+                if poly.is_empty or not poly.is_valid:
+                    continue
+
+                poly_projected = transform(transform_to_utm, poly)
+                if poly_projected.area < 15.0:
                     continue
             except Exception:
                 continue
@@ -1529,10 +1565,16 @@ def generate_3d_buildings(gdf, aoi, dem_path=None):
             features_3d.append(feature_3d)
 
             # Simplified building for Three.js
+            rel_holes = [
+                [[round(x - center_x, 2), round(y - center_y, 2)] for x, y in interior.coords]
+                for interior in poly.interiors
+            ] if poly.interiors else []
+
             building_data = {
                 "id": building_id,
                 "osmId": int(osm_id) if osm_id and not pd.isna(osm_id) else None,
                 "coordinates": [[round(x, 2), round(y, 2)] for x, y in rel_coords],
+                "holes": rel_holes,
                 "height": round(height, 2),
                 "estimatedFloors": int(row.get("estimated_floors", 1)),
                 "osmLevels": int(row["osm_levels"]) if row.get("osm_levels") and not pd.isna(row.get("osm_levels")) else None,
@@ -1547,7 +1589,8 @@ def generate_3d_buildings(gdf, aoi, dem_path=None):
             # Create 3D mesh for GLB export
             if HAS_TRIMESH:
                 try:
-                    mesh = _extrude_polygon(rel_coords, height)
+                    rel_poly = translate(poly, xoff=-center_x, yoff=-center_y)
+                    mesh = _extrude_polygon(rel_poly, height)
                     if mesh is not None:
                         all_meshes.append(mesh)
                 except Exception:
@@ -1714,23 +1757,25 @@ def generate_analytics(gdf, buildings_json):
     return analytics_data
 
 
-def _extrude_polygon(coords_2d, height):
+def _extrude_polygon(poly_or_coords, height):
     """Extrude a 2D polygon to a 3D prism using trimesh."""
-    if len(coords_2d) < 4 or height <= 0:
+    if height <= 0:
         return None
 
     try:
-        # Create 2D polygon path
-        poly = Polygon(coords_2d)
+        if isinstance(poly_or_coords, Polygon):
+            poly = poly_or_coords
+        else:
+            if len(poly_or_coords) < 4:
+                return None
+            poly = Polygon(poly_or_coords)
+
         if not poly.is_valid or poly.is_empty:
             return None
 
         # Simplify complex polygons for performance
-        if len(coords_2d) > 50:
+        if len(poly.exterior.coords) > 50:
             poly = poly.simplify(0.5, preserve_topology=True)
-
-        # Use trimesh to create extruded mesh
-        vertices_2d = np.array(list(poly.exterior.coords)[:-1])
 
         mesh = trimesh.creation.extrude_polygon(poly, height)
         return mesh
