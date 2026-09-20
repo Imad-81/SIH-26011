@@ -1436,10 +1436,11 @@ def generate_3d_buildings(gdf, aoi, dem_path=None):
     banner("STAGE 7: 3D Building Extrusion & Analytics")
 
     # Reproject to UTM for metric coordinates
-    gdf_utm = gdf.to_crs(CRS_UTM)
+    crs_projected = aoi.get("crs_projected", CRS_UTM)
+    gdf_utm = gdf.to_crs(crs_projected)
 
     # Calculate center in UTM for relative coordinates
-    transformer = pyproj.Transformer.from_crs(CRS_WGS84, CRS_UTM, always_xy=True)
+    transformer = pyproj.Transformer.from_crs(CRS_WGS84, crs_projected, always_xy=True)
     center_x, center_y = transformer.transform(aoi["center"]["lon"], aoi["center"]["lat"])
 
     # Open DEM to sample terrain base elevations for buildings
@@ -1729,7 +1730,8 @@ def generate_terrain_data(aoi, dem_path):
     """Generate terrain elevation grid for the Three.js viewer."""
     banner("STAGE 8: Terrain Data for Viewer")
 
-    transformer = pyproj.Transformer.from_crs(CRS_WGS84, CRS_UTM, always_xy=True)
+    crs_projected = aoi.get("crs_projected", CRS_UTM)
+    transformer = pyproj.Transformer.from_crs(CRS_WGS84, crs_projected, always_xy=True)
     center_x, center_y = transformer.transform(aoi["center"]["lon"], aoi["center"]["lat"])
 
     try:
@@ -1967,8 +1969,10 @@ def generate_preview(gdf, aoi):
         except Exception as e:
             warn(f"Hillshade generation failed: {e}")
 
+    crs_projected = aoi.get("crs_projected", CRS_UTM)
+
     # Reproject buildings to UTM for plotting
-    gdf_plot = gdf.to_crs(CRS_UTM)
+    gdf_plot = gdf.to_crs(crs_projected)
 
     # Create colormap
     cmap = plt.cm.RdYlGn_r
@@ -1988,7 +1992,7 @@ def generate_preview(gdf, aoi):
 
     # AOI boundary
     aoi_geom = aoi_polygon_wgs84(aoi)
-    aoi_gdf = gpd.GeoDataFrame(geometry=[aoi_geom], crs=CRS_WGS84).to_crs(CRS_UTM)
+    aoi_gdf = gpd.GeoDataFrame(geometry=[aoi_geom], crs=CRS_WGS84).to_crs(crs_projected)
     aoi_gdf.boundary.plot(ax=ax, color='#00f5ff', linewidth=2, linestyle='--', alpha=0.8)
 
     # Colorbar
@@ -2056,7 +2060,7 @@ def save_metadata(aoi, gdf, dem_same_as_dsm):
             "size_km": f"{aoi['size_km']} × {aoi['size_km']}",
             "approximate_area_km2": aoi["area_km2"],
             "crs_geographic": CRS_WGS84,
-            "crs_projected": CRS_UTM,
+            "crs_projected": aoi.get("crs_projected", CRS_UTM),
         },
         "data_sources": {
             "buildings": {
