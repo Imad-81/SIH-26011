@@ -32,7 +32,7 @@ import numpy as np
 import pandas as pd
 import rasterio
 from rasterio.mask import mask as rasterio_mask
-from rasterio.warp import calculate_default_transform, reproject, Resampling
+from rasterio.warp import calculate_default_transform, reproject, Resampling, transform_bounds
 import requests
 from shapely.geometry import mapping, box, Polygon, MultiPolygon
 import pyproj
@@ -252,6 +252,30 @@ def aoi_polygon_wgs84(aoi):
     """Create a Shapely polygon from the AOI bbox in WGS84."""
     b = aoi["bbox"]
     return box(b["west"], b["south"], b["east"], b["north"])
+
+
+def raster_covers_aoi(raster_path, aoi):
+    """Check if raster bounds fully contain the AOI bounding box."""
+    try:
+        with rasterio.open(raster_path) as src:
+            b = aoi["bbox"]
+            if src.crs and not src.crs.is_geographic:
+                r_left, r_bottom, r_right, r_top = transform_bounds(
+                    src.crs, "EPSG:4326", src.bounds.left, src.bounds.bottom, src.bounds.right, src.bounds.top
+                )
+            else:
+                r_left, r_bottom, r_right, r_top = src.bounds.left, src.bounds.bottom, src.bounds.right, src.bounds.top
+
+            eps = 1e-5
+            return (
+                r_left <= b["west"] + eps and
+                r_right >= b["east"] - eps and
+                r_bottom <= b["south"] + eps and
+                r_top >= b["north"] - eps
+            )
+    except Exception as e:
+        warn(f"Failed to inspect bounds of cached raster {raster_path.name}: {e}")
+        return False
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -556,8 +580,15 @@ def download_copernicus_dsm(aoi):
 
     output_path = RAW_DIR / "dsm.tif"
     if output_path.exists() and output_path.stat().st_size > 1000000:
-        info(f"Using cached Copernicus DSM: {output_path.name} ({output_path.stat().st_size / 1024 / 1024:.1f} MB)")
-        return output_path
+        if raster_covers_aoi(output_path, aoi):
+            info("Cached DSM covers AOI ✅")
+            info(f"Using cached Copernicus DSM: {output_path.name} ({output_path.stat().st_size / 1024 / 1024:.1f} MB)")
+            return output_path
+        else:
+            warn("Cached DSM outside AOI, re-downloading...")
+            output_path.unlink(missing_ok=True)
+            (PROCESSED_DIR / "dsm_clipped.tif").unlink(missing_ok=True)
+            (PROCESSED_DIR / "ndsm_clipped.tif").unlink(missing_ok=True)
 
     # Determine tile(s) needed
     # Tile naming: Copernicus_DSM_COG_10_N{lat}_00_E{lon}_00_DEM
@@ -654,12 +685,18 @@ def download_dem(aoi):
     output_path = RAW_DIR / "dem.tif"
     dsm_path = RAW_DIR / "dsm.tif"
 
-    # Verify if cached DEM exists and is not a duplicate of DSM
+    # Verify if cached DEM exists and covers AOI, and is not a duplicate of DSM
     if output_path.exists() and output_path.stat().st_size > 5000:
-        if dsm_path.exists() and output_path.stat().st_size == dsm_path.stat().st_size:
+        if not raster_covers_aoi(output_path, aoi):
+            warn("Cached DEM outside AOI, re-downloading...")
+            output_path.unlink(missing_ok=True)
+            (PROCESSED_DIR / "dem_clipped.tif").unlink(missing_ok=True)
+            (PROCESSED_DIR / "ndsm_clipped.tif").unlink(missing_ok=True)
+        elif dsm_path.exists() and output_path.stat().st_size == dsm_path.stat().st_size:
             warn("Cached dem.tif is an identical copy of dsm.tif. Re-downloading bare-earth SRTM DEM...")
             output_path.unlink(missing_ok=True)
         else:
+            info("Cached DEM covers AOI ✅")
             info(f"Using cached DEM: {output_path.name} ({output_path.stat().st_size / 1024:.1f} KB)")
             return output_path
 
