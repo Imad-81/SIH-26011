@@ -2160,7 +2160,9 @@ def main():
     if args.force_download:
         warn("Force download requested: removing raw cached rasters and features...")
         for p in [
-            RAW_DIR / "dem.tif", PROCESSED_DIR / "dem_clipped.tif", PROCESSED_DIR / "ndsm_clipped.tif",
+            RAW_DIR / "dem.tif", PROCESSED_DIR / "dem_clipped.tif",
+            RAW_DIR / "dsm.tif", PROCESSED_DIR / "dsm_clipped.tif",
+            PROCESSED_DIR / "ndsm_clipped.tif",
             RAW_DIR / "aoi_cache_meta.json", RAW_DIR / "landuse_cache_meta.json",
             RAW_DIR / "highway_cache_meta.json", RAW_DIR / "water_cache_meta.json"
         ]:
