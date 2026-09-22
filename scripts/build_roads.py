@@ -51,6 +51,12 @@ def get_tier(highway_type: str) -> int:
         return 2
     return 3
 
+def get_utm_crs(lat: float, lon: float) -> str:
+    """Dynamically determine the appropriate UTM projected CRS for any location on Earth."""
+    zone = int((lon + 180) / 6) + 1
+    epsg = 32600 + zone if lat >= 0 else 32700 + zone
+    return f"EPSG:{epsg}"
+
 def smoothstep(edge0: float, edge1: float, x: float) -> float:
     t = max(0.0, min(1.0, (x - edge0) / (edge1 - edge0)))
     return t * t * (3.0 - 2.0 * t)
@@ -65,20 +71,39 @@ def main(aoi=None, dem_path=None):
     if not actual_dem.exists():
         raise FileNotFoundError(f"Missing {actual_dem}")
 
-    # Center and CRS
+    # Center and CRS - if aoi is None, check cached metadata first before falling back to defaults
+    if aoi is None:
+        cache_meta = PROJECT_ROOT / "data" / "raw" / "aoi_cache_meta.json"
+        if cache_meta.exists():
+            try:
+                with open(cache_meta, "r", encoding="utf-8") as f:
+                    meta = json.load(f)
+                    c = meta.get("center", {})
+                    if "lon" in c and "lat" in c:
+                        c_lon = float(c["lon"])
+                        c_lat = float(c["lat"])
+                        aoi = {
+                            "center": {"lon": c_lon, "lat": c_lat},
+                            "crs_projected": get_utm_crs(c_lat, c_lon)
+                        }
+            except Exception:
+                pass
+
     center_lon = aoi["center"]["lon"] if aoi else CENTER_LON
     center_lat = aoi["center"]["lat"] if aoi else CENTER_LAT
-    crs_utm = aoi.get("crs_projected", "EPSG:32644") if aoi else "EPSG:32644"
+    crs_utm = aoi.get("crs_projected", get_utm_crs(center_lat, center_lon)) if aoi else get_utm_crs(center_lat, center_lon)
 
     # Coordinate transformer WGS84 -> UTM
     transformer = pyproj.Transformer.from_crs("EPSG:4326", crs_utm, always_xy=True)
     center_x, center_y = transformer.transform(center_lon, center_lat)
-    print(f"Center UTM: ({center_x:.2f}, {center_y:.2f})")
+    print(f"Center UTM: ({center_x:.2f}, {center_y:.2f}) [{crs_utm}]")
 
     # Load DEM
     with rasterio.open(actual_dem) as src:
         dem_data = src.read(1)
         nodata = src.nodata
+        inv_transform = ~src.transform
+        dem_shape = dem_data.shape
 
     # Compute default elevation dynamically from loaded raster median
     valid_mask = (dem_data != nodata) & (~np.isnan(dem_data)) & (dem_data > -50.0) & (dem_data < 8848.0)
@@ -89,8 +114,9 @@ def main(aoi=None, dem_path=None):
 
     def sample_dem(utm_x: float, utm_y: float) -> float:
         try:
-            row, col = src.index(utm_x, utm_y)
-            if 0 <= row < dem_data.shape[0] and 0 <= col < dem_data.shape[1]:
+            col_f, row_f = inv_transform * (utm_x, utm_y)
+            row, col = int(math.floor(row_f)), int(math.floor(col_f))
+            if 0 <= row < dem_shape[0] and 0 <= col < dem_shape[1]:
                 val = dem_data[row, col]
                 if val != nodata and not np.isnan(val) and -50.0 < val < 8848.0:
                     return float(val)
