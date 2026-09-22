@@ -804,16 +804,40 @@ def download_dem(aoi):
     else:
         warn("No OpenTopography API key found in .env (set OPEN_TOPOGRAPHY_API)")
 
-    # Strategy 2: Fallback to Copernicus GLO-30
-    warn("Could not obtain a separate bare-earth DEM")
-    warn("Falling back: will use Copernicus GLO-30 for both DSM and DEM")
-    warn("Building heights will rely on OSM tags & morphological heuristics")
-
+    # Strategy 2: Fallback to bare-earth approximation via morphological ground filter on DSM
+    warn("Could not obtain a separate bare-earth DEM from OpenTopography")
     if dsm_path.exists():
-        import shutil
-        shutil.copy2(dsm_path, output_path)
-        info(f"DEM (=copy of DSM, heights will be from OSM tags only) → {output_path.name}")
-        return output_path
+        info("Applying morphological ground filter to DSM to generate bare-earth DEM approximation...")
+        try:
+            from scipy.ndimage import minimum_filter
+            with rasterio.open(dsm_path) as src:
+                dsm_data = src.read(1)
+                meta = src.meta.copy()
+                nodata = src.nodata
+
+            valid_mask = (dsm_data != nodata) & (~np.isnan(dsm_data)) if nodata is not None else ~np.isnan(dsm_data)
+            filter_input = dsm_data.astype(np.float32).copy()
+            if np.any(valid_mask):
+                max_val = float(np.nanmax(dsm_data[valid_mask]))
+                filter_input[~valid_mask] = max_val
+                # 30-pixel window captures bare earth below building clusters
+                ground_approx = minimum_filter(filter_input, size=30)
+                if nodata is not None:
+                    ground_approx[~valid_mask] = nodata
+            else:
+                ground_approx = dsm_data.copy()
+
+            meta.update({"dtype": "float32"})
+            with rasterio.open(output_path, "w", **meta) as dst:
+                dst.write(ground_approx.astype(np.float32), 1)
+
+            info("Generated bare-earth approximation using morphological ground filter")
+            return output_path
+        except Exception as e:
+            warn(f"Morphological filtering failed: {e}. Falling back to DSM copy.")
+            import shutil
+            shutil.copy2(dsm_path, output_path)
+            return output_path
     else:
         error("DSM not available either. Cannot proceed with DEM.")
         return None
