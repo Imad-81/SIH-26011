@@ -95,7 +95,7 @@ export default function Legend({ stats, renderMode, visible, onToggle }: LegendP
               <>
                 <LegendItem color="#ff1744" label="Inundated / Vulnerable" pulse />
                 <LegendItem color="#37474f" label="Safe Above Flood Crest" />
-                <LegendItem color="#00e5ff" label="Durgam Cheruvu Lake" />
+                <LegendItem color="#00e5ff" label="Water Bodies & Reservoirs" />
               </>
             )}
 

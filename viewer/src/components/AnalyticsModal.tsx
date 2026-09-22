@@ -35,7 +35,8 @@ export default function AnalyticsModal({ onClose }: AnalyticsModalProps) {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'hyderabad_durgam_cheruvu_urban_analytics.csv');
+    const fileName = `${(data.cityName || 'urban').toLowerCase().replace(/[^a-z0-9]/g, '_')}_urban_analytics.csv`;
+    link.setAttribute('download', fileName);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -61,10 +62,10 @@ export default function AnalyticsModal({ onClose }: AnalyticsModalProps) {
             </div>
             <div>
               <h2 className="text-lg font-bold tracking-wide">
-                Hyderabad Digital Twin — Urban Intelligence
+                {data.cityName || 'Urban'} Digital Twin — Urban Intelligence
               </h2>
               <p className="text-xs text-gray-400">
-                3 km² AOI around Durgam Cheruvu & HITEC City · SIH26011
+                {data.areaSizeKm || 3} km² AOI · {data.cityName || 'Urban Core'} · SIH26011
               </p>
             </div>
           </div>
@@ -119,7 +120,7 @@ export default function AnalyticsModal({ onClose }: AnalyticsModalProps) {
                   Rooftop Solar & Carbon Offset Potential
                 </h3>
                 <p className="text-xs text-gray-400">
-                  Solar irradiance heuristic for Hyderabad (GHI: 5.5 kWh/m²/day)
+                  Solar irradiance heuristic {data.cityName ? `for ${data.cityName}` : ''} (GHI: {data.solar.ghiAverage ?? 5.5} kWh/m²/day)
                 </p>
               </div>
             </div>

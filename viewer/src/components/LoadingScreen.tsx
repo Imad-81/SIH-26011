@@ -67,7 +67,7 @@ export default function LoadingScreen({ progress, onComplete }: LoadingScreenPro
         SIH<span style={{ color: '#00f5ff' }}>26011</span>
       </h1>
       <p className="text-gray-400 text-sm mb-8 tracking-widest uppercase">
-        Hyderabad 3D Building Viewer
+        3D Cadastre & Digital Twin Platform
       </p>
 
       {/* Progress bar */}

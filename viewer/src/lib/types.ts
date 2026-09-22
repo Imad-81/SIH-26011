@@ -127,6 +127,7 @@ export interface LandmarkData {
   target: [number, number, number];
   height: number;
   badge: string;
+  location?: string;
 }
 
 export interface WaterFeature {
@@ -186,6 +187,8 @@ export interface RoadDataset {
 }
 
 export interface AnalyticsData {
+  cityName?: string;
+  areaSizeKm?: number;
   totalBuildings: number;
   totalFootprintAreaM2: number;
   totalBuiltVolumeM3: number;

@@ -68,7 +68,7 @@ export const CAMERA_PRESETS: Record<string, CameraPreset> = {
     target: [-350, 35, 100],
   },
   lake: {
-    name: 'Durgam Cheruvu Lake',
+    name: 'Waterfront / Lake Vista',
     camPos: [1084, 80, 960],
     target: [1084, -73, 760],
   },

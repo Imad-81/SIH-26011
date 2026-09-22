@@ -23,6 +23,8 @@ interface TopBarProps {
   onOpenAnalytics: () => void;
   floodControlOpen: boolean;
   onToggleFloodControl: () => void;
+  cityName?: string;
+  areaSizeKm?: number;
 }
 
 export default function TopBar({
@@ -44,6 +46,8 @@ export default function TopBar({
   onOpenAnalytics,
   floodControlOpen,
   onToggleFloodControl,
+  cityName,
+  areaSizeKm,
 }: TopBarProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
@@ -125,7 +129,11 @@ export default function TopBar({
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
           </div>
           <p className="text-[10px] text-gray-400 tracking-wider uppercase font-medium">
-            Hyderabad 100 km² Digital Twin · 68K Buildings
+            {[
+              cityName || 'Urban',
+              areaSizeKm ? `${areaSizeKm} km² Digital Twin` : 'Digital Twin',
+              buildings.length > 0 ? `${buildings.length.toLocaleString()} Buildings` : ''
+            ].filter(Boolean).join(' · ')}
           </p>
         </div>
       </div>

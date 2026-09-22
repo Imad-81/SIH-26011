@@ -6,9 +6,10 @@ interface LandmarkModalProps {
   landmark: LandmarkData | null;
   onClose: () => void;
   onFlyTo: (landmark: LandmarkData) => void;
+  cityName?: string;
 }
 
-export default function LandmarkModal({ landmark, onClose, onFlyTo }: LandmarkModalProps) {
+export default function LandmarkModal({ landmark, onClose, onFlyTo, cityName }: LandmarkModalProps) {
   if (!landmark) return null;
 
   return (
@@ -63,8 +64,8 @@ export default function LandmarkModal({ landmark, onClose, onFlyTo }: LandmarkMo
           </div>
           <div className="bg-white/5 rounded-xl p-2.5">
             <p className="text-gray-500 text-[10px] uppercase tracking-wider">Location</p>
-            <p className="text-white font-mono text-xs font-semibold mt-0.5">
-              Hyderabad, TG
+            <p className="text-white font-mono text-xs font-semibold mt-0.5 truncate">
+              {landmark.location || cityName || 'Urban Zone'}
             </p>
           </div>
         </div>

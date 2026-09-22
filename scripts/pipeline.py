@@ -1885,7 +1885,13 @@ def generate_analytics(gdf, buildings_json, aoi=None):
     annual_gen_mwh = (daily_gen_kwh * 365) / 1000.0
     annual_co2_tons = annual_gen_mwh * 0.82
     
+    city_name = None
+    if aoi:
+        city_name = aoi.get("name") or (aoi.get("city", "").title() if aoi.get("city") else None)
+
     analytics_data = {
+        "cityName": city_name or "Urban Core",
+        "areaSizeKm": aoi.get("size_km", 3.0) if aoi else 3.0,
         "totalBuildings": total_buildings,
         "totalFootprintAreaM2": round(total_footprint, 1),
         "totalBuiltVolumeM3": round(total_volume, 1),
@@ -2288,9 +2294,9 @@ def save_metadata(aoi, gdf, dem_same_as_dsm):
     banner("STAGE 10: Metadata & Summary")
 
     metadata = {
-        "project": "SIH26011 — 3D Building Visualization Prototype",
+        "project": "SIH26011 — 3D Cadastre & Digital Twin Platform",
         "area_of_interest": {
-            "name": "Durgam Cheruvu / HITEC City, Hyderabad, Telangana, India",
+            "name": aoi.get("name", "Urban Digital Twin AOI, India"),
             "center_wgs84": aoi["center"],
             "bbox_wgs84": aoi["bbox"],
             "size_km": f"{aoi['size_km']} × {aoi['size_km']}",

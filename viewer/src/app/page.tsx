@@ -208,6 +208,8 @@ export default function Home() {
           onOpenAnalytics={() => setAnalyticsOpen(true)}
           floodControlOpen={floodControlOpen}
           onToggleFloodControl={handleToggleFlood}
+          cityName={buildings.aoi?.name || buildings.aoi?.city}
+          areaSizeKm={buildings.aoi?.sizeKm}
         />
       )}
 
@@ -232,6 +234,7 @@ export default function Home() {
         <LandmarkModal
           landmark={selectedLandmark}
           onClose={() => setSelectedLandmark(null)}
+          cityName={buildings?.aoi?.name || buildings?.aoi?.city}
           onFlyTo={(l) => {
             setCameraTargetPos(l.cameraPos);
             setCameraLookAt(l.target);

@@ -1,4 +1,6 @@
 {
+  "cityName": "Hyderabad (HITEC City)",
+  "areaSizeKm": 3.0,
   "totalBuildings": 4641,
   "totalFootprintAreaM2": 1584220.0,
   "totalBuiltVolumeM3": 60374287.5,
