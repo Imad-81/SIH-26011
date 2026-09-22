@@ -32,7 +32,6 @@ OUTPUT_JSON = PROJECT_ROOT / "viewer" / "public" / "data" / "roads.json"
 # Center of AOI (matches buildings.json and pipeline.py)
 CENTER_LON = 78.3800
 CENTER_LAT = 17.4370
-DEFAULT_ELEV = 569.0
 
 # Road tier classification
 TIER_1_TYPES = {
@@ -81,16 +80,23 @@ def main(aoi=None, dem_path=None):
         dem_data = src.read(1)
         nodata = src.nodata
 
+    # Compute default elevation dynamically from loaded raster median
+    valid_mask = (dem_data != nodata) & (~np.isnan(dem_data)) & (dem_data > -50.0) & (dem_data < 8848.0)
+    if np.any(valid_mask):
+        default_elev = float(np.nanmedian(dem_data[valid_mask]))
+    else:
+        default_elev = 0.0
+
     def sample_dem(utm_x: float, utm_y: float) -> float:
         try:
             row, col = src.index(utm_x, utm_y)
             if 0 <= row < dem_data.shape[0] and 0 <= col < dem_data.shape[1]:
                 val = dem_data[row, col]
-                if val != nodata and not np.isnan(val) and 400 < val < 800:
+                if val != nodata and not np.isnan(val) and -50.0 < val < 8848.0:
                     return float(val)
         except Exception:
             pass
-        return DEFAULT_ELEV
+        return default_elev
 
     # Load OSM Highway data
     with open(RAW_HIGHWAYS, "r", encoding="utf-8") as f:
