@@ -158,8 +158,19 @@ HEIGHT_COLORS = {
     (60, 300): "#d63031",
 }
 
+# Regional Global Horizontal Irradiance (GHI) in kWh/m²/day
+SOLAR_GHI_LOOKUP = {
+    "hyderabad": 5.5,
+    "mumbai": 4.5,
+    "bangalore": 5.0,
+    "delhi": 5.5,
+    "pune": 5.3,
+    "chennai": 5.2,
+    "kolkata": 4.6,
+    "jaipur": 5.8,
+    "ahmedabad": 5.7,
+}
 
-# ═══════════════════════════════════════════════════════════════════
 # UTILITIES
 # ═══════════════════════════════════════════════════════════════════
 
@@ -1796,7 +1807,7 @@ def generate_3d_buildings(gdf, aoi, dem_path=None):
     info(f"Viewer data → viewer/public/data/buildings.json ({len(buildings_json)} buildings)")
 
     # Generate synchronized Analytics JSON
-    generate_analytics(gdf_utm, buildings_json)
+    generate_analytics(gdf_utm, buildings_json, aoi=aoi)
 
     # Export GLB
     glb_path = OUTPUTS_DIR / "buildings_3d.glb"
@@ -1816,7 +1827,7 @@ def generate_3d_buildings(gdf, aoi, dem_path=None):
     return geojson_path
 
 
-def generate_analytics(gdf, buildings_json):
+def generate_analytics(gdf, buildings_json, aoi=None):
     """Generate analytics.json matching the viewer's AnalyticsModal schema."""
     total_buildings = len(buildings_json)
     
@@ -1857,9 +1868,19 @@ def generate_analytics(gdf, buildings_json):
         else:
             height_buckets["60m+"] += 1
             
-    # Solar potential estimates (standard 5.5 GHI, 75% usable, 18% efficiency)
+    # Determine regional Solar GHI (kWh/m²/day)
+    active_city = (aoi.get("city") or "").lower() if aoi else ""
+    if active_city in SOLAR_GHI_LOOKUP:
+        ghi = SOLAR_GHI_LOOKUP[active_city]
+    elif aoi and "center" in aoi and "lat" in aoi["center"]:
+        lat = float(aoi["center"]["lat"])
+        ghi = round(5.5 - 0.03 * abs(lat - 23.5), 2)
+    else:
+        ghi = 5.5
+
+    # Solar potential estimates (regional GHI, 75% usable, 18% efficiency)
     usable_rooftop = total_footprint * 0.75
-    daily_gen_kwh = usable_rooftop * 5.5 * 0.18
+    daily_gen_kwh = usable_rooftop * ghi * 0.18
     annual_gen_mwh = (daily_gen_kwh * 365) / 1000.0
     annual_co2_tons = annual_gen_mwh * 0.82
     
@@ -1881,14 +1902,14 @@ def generate_analytics(gdf, buildings_json):
             "dailyGenerationKwh": round(daily_gen_kwh, 1),
             "annualGenerationMwh": round(annual_gen_mwh, 1),
             "annualCo2OffsetTons": round(annual_co2_tons, 1),
-            "ghiAverage": 5.5
+            "ghiAverage": ghi
         }
     }
     
     analytics_path = VIEWER_DATA_DIR / "analytics.json"
     with open(analytics_path, "w") as f:
         json.dump(analytics_data, f, indent=2)
-    info(f"Analytics data → {analytics_path.name}")
+    info(f"Analytics data → {analytics_path.name} (GHI: {ghi} kWh/m²/day)")
     return analytics_data
 
 
