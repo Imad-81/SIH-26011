@@ -2,7 +2,7 @@
 
 import { useMemo, useEffect, useState } from 'react';
 import * as THREE from 'three';
-import { WaterDataset } from '@/lib/types';
+import { RoadDataset, RoadSegment } from '@/lib/types';
 import { SCALE, getTerrainY } from '@/lib/geo';
 
 interface BridgeProps {
@@ -10,39 +10,50 @@ interface BridgeProps {
 }
 
 export default function Bridge({ centerElevation }: BridgeProps) {
-  const [waterData, setWaterData] = useState<WaterDataset | null>(null);
+  const [roadData, setRoadData] = useState<RoadDataset | null>(null);
 
   useEffect(() => {
-    fetch('/data/water.json')
-      .then((res) => res.json())
-      .then((data) => setWaterData(data))
-      .catch((err) => console.error('Failed to load bridge data:', err));
+    fetch('/data/roads.json')
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data: RoadDataset) => setRoadData(data))
+      .catch((err) => console.error('Failed to load bridge road data:', err));
   }, []);
 
   const bridgeModel = useMemo(() => {
-    if (!waterData || !waterData.bridges || waterData.bridges.length === 0) return null;
+    if (!roadData || !roadData.roads || roadData.roads.length === 0) return null;
 
-    // Base elevation for bridge deck (water is at ~533m, bridge deck clears at ~548m)
-    const deckY = getTerrainY(548, centerElevation) + 0.6;
+    // Find elevated bridge road segments
+    const bridgeRoads = roadData.roads.filter((r) => r.isBridge && r.coords && r.coords.length >= 2);
+    if (bridgeRoads.length === 0) return null;
 
-    // Collect bridge coordinate points
-    // Filter to the section across Durgam Cheruvu (rel x ~ 700 to 1250, rel y ~ 700 to 900)
-    const primaryBridge = waterData.bridges[0];
-    const pts = primaryBridge.coordinates.map(([x, y]) => new THREE.Vector3(x * SCALE, deckY, -y * SCALE));
+    // Pick the longest bridge segment for the iconic structural span / cable stayed landmark
+    let primaryBridge: RoadSegment = bridgeRoads[0];
+    for (const b of bridgeRoads) {
+      if ((b.length || 0) > (primaryBridge.length || 0)) {
+        primaryBridge = b;
+      }
+    }
 
-    // Sample the lake crossing span across Durgam Cheruvu
-    const lakeSpanPts = pts.filter((p) => p.x >= 800 && p.x <= 1650 && p.z >= 200 && p.z <= 700);
-    const spanPts = lakeSpanPts.length >= 4 ? lakeSpanPts : pts.slice(0, 15);
+    if (!primaryBridge.coords || primaryBridge.coords.length < 2) return null;
 
-    if (spanPts.length < 2) return null;
+    // Convert coords [rx, elev, ry] into 3D world coordinates dynamically
+    const pts = primaryBridge.coords.map(([rx, elev, ry]) => {
+      const y = getTerrainY(elev, centerElevation) + 0.6;
+      return new THREE.Vector3(rx * SCALE, y, -ry * SCALE);
+    });
 
-    // Create curve along bridge deck
-    const curve = new THREE.CatmullRomCurve3(spanPts);
+    if (pts.length < 2) return null;
+
+    // Create curve along dynamic bridge deck
+    const curve = new THREE.CatmullRomCurve3(pts);
     const tubeGeometry = new THREE.TubeGeometry(curve, 32, 2.2, 8, false);
 
     // Central pylon tower position (at middle of curve)
     const midPoint = curve.getPoint(0.5);
-    const pylonHeight = 32;
+    const pylonHeight = Math.max(20, Math.min(45, (primaryBridge.length || 100) * 0.25));
     const pylonTop = new THREE.Vector3(midPoint.x, midPoint.y + pylonHeight, midPoint.z);
 
     // Cable stays
@@ -64,7 +75,7 @@ export default function Bridge({ centerElevation }: BridgeProps) {
       pylonTop,
       cableGeometry,
     };
-  }, [waterData, centerElevation]);
+  }, [roadData, centerElevation]);
 
   if (!bridgeModel) return null;
 
