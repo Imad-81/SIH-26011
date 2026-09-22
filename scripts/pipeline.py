@@ -107,17 +107,30 @@ CITY_PRESETS = {
     "delhi": {"lat": 28.4986, "lon": 77.0878, "name": "Gurugram / NCR (Cyber City)"}
 }
 
-# Key Urban High-Rise Clusters (UTM Zone 44N for Hyderabad fallback)
-URBAN_ZONES = [
-    ("Financial District", 215500, 219500, 1925000, 1929000, 2.5),
-    ("Old Mumbai Highway", 218000, 221500, 1928000, 1932500, 2.0),
-    ("HITEC City Core", 220500, 223800, 1930000, 1933500, 2.0),
-    ("Knowledge City / Raidurg", 220500, 223500, 1928000, 1930800, 2.0),
-    ("Gachibowli Tech Corridor", 217000, 221000, 1928000, 1931500, 1.8),
-    ("Kondapur High-Rise", 218000, 222000, 1932000, 1935500, 1.5),
-    ("Kukatpally / Moosapet", 222500, 226000, 1933500, 1937500, 1.3),
-    ("Jubilee Hills Commercial", 223500, 226500, 1928000, 1930500, 1.3),
-]
+# Key Urban High-Rise Clusters by City (UTM Projected Coordinates)
+URBAN_ZONES_BY_CITY = {
+    "hyderabad": [
+        ("Financial District", 215500, 219500, 1925000, 1929000, 2.5),
+        ("Old Mumbai Highway", 218000, 221500, 1928000, 1932500, 2.0),
+        ("HITEC City Core", 220500, 223800, 1930000, 1933500, 2.0),
+        ("Knowledge City / Raidurg", 220500, 223500, 1928000, 1930800, 2.0),
+        ("Gachibowli Tech Corridor", 217000, 221000, 1928000, 1931500, 1.8),
+        ("Kondapur High-Rise", 218000, 222000, 1932000, 1935500, 1.5),
+        ("Kukatpally / Moosapet", 222500, 226000, 1933500, 1937500, 1.3),
+        ("Jubilee Hills Commercial", 223500, 226500, 1928000, 1930500, 1.3),
+    ],
+    "mumbai": [
+        ("Bandra Kurla Complex (BKC)", 273000, 278000, 2107000, 2112000, 2.5),
+        ("Lower Parel / Worli", 270000, 275000, 2099000, 2104000, 2.5),
+        ("Nariman Point", 269000, 273000, 2092000, 2096000, 2.5),
+    ],
+    "bangalore": [
+        ("Whitefield Tech Corridor", 795000, 802000, 1432000, 1438000, 2.2),
+        ("Electronic City", 780000, 786000, 1420000, 1426000, 2.0),
+        ("Outer Ring Road (Bellandur)", 779000, 785000, 1430000, 1436000, 2.2),
+    ],
+}
+URBAN_ZONES = URBAN_ZONES_BY_CITY["hyderabad"]
 
 # Height estimation
 FLOOR_HEIGHT_M = 3.0
@@ -227,7 +240,7 @@ def query_overpass(query: str, timeout: int = 120, user_agent: str = "SIH26011-P
 # STAGE 1: AOI DEFINITION
 # ═══════════════════════════════════════════════════════════════════
 
-def compute_aoi(lat=None, lon=None, half_size_km=None, crs_utm=None):
+def compute_aoi(lat=None, lon=None, half_size_km=None, crs_utm=None, city=None):
     """Compute the Area of Interest bounding box with dynamic center and size."""
     banner("STAGE 1: AOI Definition")
 
@@ -235,6 +248,14 @@ def compute_aoi(lat=None, lon=None, half_size_km=None, crs_utm=None):
     target_lon = lon if lon is not None else CENTER_LON
     target_half_size = half_size_km if half_size_km is not None else HALF_SIZE_KM
     target_utm = crs_utm if crs_utm is not None else get_utm_crs(target_lat, target_lon)
+
+    # Infer or retain active city name
+    active_city = city
+    if not active_city:
+        for c_key, c_val in CITY_PRESETS.items():
+            if abs(target_lat - c_val["lat"]) < 0.3 and abs(target_lon - c_val["lon"]) < 0.3:
+                active_city = c_key
+                break
 
     # Convert km offset to degrees (approximate)
     lat_offset = target_half_size / 111.32
@@ -246,6 +267,7 @@ def compute_aoi(lat=None, lon=None, half_size_km=None, crs_utm=None):
     east = target_lon + lon_offset
 
     aoi = {
+        "city": active_city,
         "center": {"lat": round(target_lat, 6), "lon": round(target_lon, 6)},
         "bbox": {
             "south": round(south, 6),
@@ -259,7 +281,7 @@ def compute_aoi(lat=None, lon=None, half_size_km=None, crs_utm=None):
         "crs_projected": target_utm,
     }
 
-    info(f"Center: {target_lat:.4f}°N, {target_lon:.4f}°E | Projected CRS: {target_utm}")
+    info(f"City: {active_city or 'custom'} | Center: {target_lat:.4f}°N, {target_lon:.4f}°E | Projected CRS: {target_utm}")
     info(f"Bbox: S={aoi['bbox']['south']}, N={aoi['bbox']['north']}, "
          f"W={aoi['bbox']['west']}, E={aoi['bbox']['east']}")
     info(f"Size: {aoi['size_km']} km × {aoi['size_km']} km = ~{aoi['area_km2']:.1f} km²")
@@ -1273,9 +1295,20 @@ def estimate_building_heights(aoi, buildings_path, dem_path, dsm_path, dem_same_
                         zone_mult = 1.0
                         zone_label = "osm_residential"
 
-        # Fallback to coordinate-based high-rise urban clusters
-        if zone_mult == 1.0 and centroid is not None:
-            for z_name, min_x, max_x, min_y, max_y, mult in URBAN_ZONES:
+        # Check financial district & tech cluster keyword patterns across India
+        name_lower = name.lower()
+        if any(k in name_lower for k in [
+            "bkc", "bandra kurla", "whitefield", "cyber city", "hinjawadi",
+            "financial district", "tech park", "it park", "mindspace", "cyber gateway"
+        ]):
+            if zone_mult < 2.0:
+                zone_mult = 2.0
+                zone_label = "osm_financial_district"
+
+        # Fallback to coordinate-based high-rise urban clusters only for configured city
+        active_city = (aoi.get("city") or "").lower()
+        if zone_mult == 1.0 and centroid is not None and active_city in URBAN_ZONES_BY_CITY:
+            for z_name, min_x, max_x, min_y, max_y, mult in URBAN_ZONES_BY_CITY[active_city]:
                 if min_x <= centroid.x <= max_x and min_y <= centroid.y <= max_y:
                     zone_mult = mult
                     zone_label = z_name
@@ -2311,7 +2344,7 @@ def main():
     crs_utm = get_utm_crs(lat, lon)
 
     # Stage 1: AOI
-    aoi = compute_aoi(lat=lat, lon=lon, half_size_km=half_size, crs_utm=crs_utm)
+    aoi = compute_aoi(lat=lat, lon=lon, half_size_km=half_size, crs_utm=crs_utm, city=args.city)
 
     # Stage 2: OSM Buildings
     buildings_path = download_osm_buildings(aoi)
