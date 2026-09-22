@@ -20,14 +20,20 @@ export default function Water({ centerElevation, floodLevelMeters, timeOfDay = '
 
   useEffect(() => {
     fetch('/data/water.json')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then((data) => setWaterData(data))
-      .catch((err) => console.error('Failed to load water data:', err));
+      .catch((err) => {
+        console.warn('Water data not available, running without water layer:', err);
+        setWaterData({ water: [], bridges: [] });
+      });
   }, []);
 
-  // Calculate 3D water surface Y level
-  // Base lake surface elevation is ~533m
-  const waterElevation = Math.max(533, floodLevelMeters);
+  // Calculate 3D water surface Y level relative to centerElevation
+  const baseElev = waterData?.baseElevation ?? (centerElevation - 36.0);
+  const waterElevation = floodLevelMeters !== undefined ? floodLevelMeters : baseElev;
   const waterY = getTerrainY(waterElevation, centerElevation) + 0.3;
 
   // Build high-performance merged 3D lake geometries (Consolidates 198 draw calls into 2)

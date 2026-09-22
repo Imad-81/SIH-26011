@@ -2014,7 +2014,7 @@ def generate_terrain_data(aoi, dem_path):
         warn(f"Terrain data generation failed: {e}")
 
 
-def generate_water_data(aoi):
+def generate_water_data(aoi, dem_path=None):
     """Synchronize water bodies and bridge deck alignment to AOI center for the viewer."""
     banner("STAGE 8b: Water & Bridge Synchronization")
 
@@ -2096,14 +2096,31 @@ out skel qt;
                 elif is_bridge:
                     bridge_items.append(item)
 
+    base_water_elev = None
+    if dem_path and Path(dem_path).exists() and water_items:
+        try:
+            import rasterio
+            with rasterio.open(dem_path) as dem_src:
+                sample_pts = []
+                for w in water_items[:5]:
+                    for rx, ry in w["coordinates"][:6]:
+                        sample_pts.append((rx + center_x, ry + center_y))
+                if sample_pts:
+                    vals = [float(val[0]) for val in dem_src.sample(sample_pts) if val[0] > -100]
+                    if vals:
+                        base_water_elev = round(float(np.percentile(vals, 15)), 1)
+        except Exception as err:
+            warn(f"Could not sample water base elevation from DEM: {err}")
+
     water_data = {
+        "baseElevation": base_water_elev if base_water_elev is not None else 533.0,
         "water": water_items,
         "bridges": bridge_items,
     }
     water_out = VIEWER_DATA_DIR / "water.json"
     with open(water_out, "w") as f:
         json.dump(water_data, f, indent=2)
-    info(f"Water & bridge data synchronized → {water_out.name} ({len(water_items)} water bodies, {len(bridge_items)} bridges)")
+    info(f"Water & bridge data synchronized → {water_out.name} ({len(water_items)} water bodies, base elev: {water_data['baseElevation']}m, {len(bridge_items)} bridges)")
 
 
 def generate_road_data(aoi, dem_path):
@@ -2487,7 +2504,7 @@ def main():
     generate_terrain_data(aoi, dem_clipped)
 
     # Stage 8b: Water & Bridge Data
-    generate_water_data(aoi)
+    generate_water_data(aoi, dem_clipped)
 
     # Stage 8c: Road Network & Elevated Flyovers
     generate_road_data(aoi, dem_clipped)

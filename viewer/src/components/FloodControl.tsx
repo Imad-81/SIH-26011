@@ -4,18 +4,43 @@ import { useMemo } from 'react';
 import { BuildingData } from '@/lib/types';
 
 interface FloodControlProps {
-  floodLevel: number;
-  onFloodLevelChange: (level: number) => void;
+  baseWaterElevation?: number;
+  floodRise?: number;
+  onFloodRiseChange?: (rise: number) => void;
+  floodLevel?: number;
+  onFloodLevelChange?: (level: number) => void;
   buildings: BuildingData[];
   onClose: () => void;
+  cityName?: string;
 }
 
 export default function FloodControl({
+  baseWaterElevation = 533.0,
+  floodRise,
+  onFloodRiseChange,
   floodLevel,
   onFloodLevelChange,
   buildings,
   onClose,
+  cityName,
 }: FloodControlProps) {
+  // Determine effective rise delta and total MSL level
+  const riseDelta = floodRise !== undefined 
+    ? floodRise 
+    : floodLevel !== undefined 
+      ? Math.max(0, floodLevel - baseWaterElevation) 
+      : 0;
+  const currentFloodLevel = baseWaterElevation + riseDelta;
+
+  const handleSliderChange = (newRise: number) => {
+    if (onFloodRiseChange) {
+      onFloodRiseChange(newRise);
+    }
+    if (onFloodLevelChange) {
+      onFloodLevelChange(baseWaterElevation + newRise);
+    }
+  };
+
   // Compute real-time inundated metrics
   const { submergedCount, submergedPercent, affectedPop, commercialCount } = useMemo(() => {
     let count = 0;
@@ -23,7 +48,7 @@ export default function FloodControl({
     let totalGfa = 0;
 
     for (const b of buildings) {
-      if (b.baseElevation !== undefined && b.baseElevation <= floodLevel) {
+      if (b.baseElevation !== undefined && b.baseElevation <= currentFloodLevel) {
         count++;
         if (b.buildingType === 'commercial' || b.buildingType === 'retail' || b.buildingType === 'office') {
           commercial++;
@@ -43,9 +68,7 @@ export default function FloodControl({
       affectedPop: pop,
       commercialCount: commercial,
     };
-  }, [buildings, floodLevel]);
-
-  const riseDelta = floodLevel - 533;
+  }, [buildings, currentFloodLevel]);
 
   const severityBadge = useMemo(() => {
     if (riseDelta === 0) return { text: 'BASELINE SAFE', color: '#00e676', bg: 'rgba(0, 230, 118, 0.15)' };
@@ -71,7 +94,7 @@ export default function FloodControl({
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-white text-sm font-bold tracking-wide">
-                Durgam Cheruvu Flood Inundation Simulator
+                {cityName ? `${cityName} Flood Inundation Simulator` : 'Flood Inundation Simulator'}
               </h3>
               <span
                 className="text-[10px] font-mono px-2 py-0.5 rounded-full font-semibold"
@@ -81,7 +104,9 @@ export default function FloodControl({
               </span>
             </div>
             <p className="text-gray-400 text-xs">
-              Simulate reservoir overflow impact on surrounding HITEC City terrain
+              {cityName 
+                ? `Simulate reservoir overflow impact on surrounding ${cityName} terrain`
+                : 'Simulate reservoir and water overflow impact on surrounding urban terrain'}
             </p>
           </div>
         </div>
@@ -97,7 +122,7 @@ export default function FloodControl({
       <div className="space-y-1.5 mb-4">
         <div className="flex justify-between items-center text-xs">
           <span className="text-gray-400 font-mono">
-            Lake Surface Level: <strong className="text-cyan-400 font-bold">{floodLevel.toFixed(1)}m MSL</strong>
+            Water Surface Level: <strong className="text-cyan-400 font-bold">{currentFloodLevel.toFixed(1)}m MSL</strong>
           </span>
           <span className="text-amber-400 font-mono font-semibold">
             {riseDelta > 0 ? `+${riseDelta.toFixed(1)}m Water Rise` : 'Normal Baseline'}
@@ -105,17 +130,18 @@ export default function FloodControl({
         </div>
         <input
           type="range"
-          min="533"
-          max="560"
+          min="0"
+          max="25"
           step="0.5"
-          value={floodLevel}
-          onChange={(e) => onFloodLevelChange(parseFloat(e.target.value))}
+          value={riseDelta}
+          onChange={(e) => handleSliderChange(parseFloat(e.target.value))}
           className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-cyan-400 bg-gray-700"
         />
         <div className="flex justify-between text-[10px] text-gray-500 font-mono">
-          <span>533m (Lake Base)</span>
-          <span>545m (Bridge Deck)</span>
-          <span>560m (Valley Rim)</span>
+          <span>+0m (Baseline)</span>
+          <span>+5m (Advisory)</span>
+          <span>+12m (Warning)</span>
+          <span>+25m (Severe Flood)</span>
         </div>
       </div>
 

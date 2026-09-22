@@ -1,7 +1,7 @@
 'use client';
 
 import '@/lib/three-config';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { useBuildingData } from '@/hooks/useBuildingData';
 import { useCadastreData } from '@/hooks/useCadastreData';
@@ -38,7 +38,16 @@ export default function Home() {
   // Advanced Visual & Simulation States
   const [renderMode, setRenderMode] = useState<RenderMode>('height');
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('night');
-  const [floodLevelMeters, setFloodLevelMeters] = useState(533.0);
+  const [floodRise, setFloodRise] = useState(0.0);
+
+  const baseWaterElevation = useMemo(() => {
+    const centerElev = terrain?.centerElevation ?? 569.0;
+    return terrain?.minElevation && terrain.minElevation > 0 && Math.abs(centerElev - terrain.minElevation) < 80
+      ? terrain.minElevation
+      : Math.max(0, centerElev - 36.0);
+  }, [terrain]);
+
+  const floodLevelMeters = baseWaterElevation + floodRise;
   const [floodControlOpen, setFloodControlOpen] = useState(false);
   const [analyticsOpen, setAnalyticsOpen] = useState(false);
   const [isTourActive, setIsTourActive] = useState(false);
@@ -233,10 +242,14 @@ export default function Home() {
       {/* Interactive Flood Inundation Simulator Panel */}
       {loadingComplete && floodControlOpen && buildings && (
         <FloodControl
+          baseWaterElevation={baseWaterElevation}
+          floodRise={floodRise}
+          onFloodRiseChange={setFloodRise}
           floodLevel={floodLevelMeters}
-          onFloodLevelChange={setFloodLevelMeters}
+          onFloodLevelChange={(lvl) => setFloodRise(Math.max(0, lvl - baseWaterElevation))}
           buildings={buildings.buildings}
           onClose={() => setFloodControlOpen(false)}
+          cityName={buildings.aoi?.name}
         />
       )}
 

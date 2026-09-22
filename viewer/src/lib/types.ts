@@ -68,6 +68,8 @@ export interface BuildingCadastreRecord {
 export type Ulpin3DDataset = Record<string, BuildingCadastreRecord>;
 
 export interface AOIData {
+  name?: string;
+  city?: string;
   center: { lat: number; lon: number };
   centerUtm: { x: number; y: number };
   bbox: {
@@ -140,6 +142,7 @@ export interface BridgeFeature {
 }
 
 export interface WaterDataset {
+  baseElevation?: number;
   water: WaterFeature[];
   bridges: BridgeFeature[];
 }
