@@ -10,7 +10,7 @@ with realistic elevation profiles:
     * Layer 2 viaducts: +15.0m clearance
     * Layer 3 overpasses: +22.5m clearance
     * Layer -1 underpasses: -5.0m depression
-    * Durgam Cheruvu bridge: +15.0m lake clearance (deck at 548.0m)
+    * Water/lake bridges: standard layer clearances smoothly ramping from ground elevation
 - Applies smooth Hermite ramp easing on approaches to eliminate cliff drop-offs
 - Computes cylindrical support pier locations along elevated spans
 - Merges into optimized viewer/public/data/roads.json
@@ -207,11 +207,6 @@ def main(aoi=None, dem_path=None):
         tier_lengths[tier] += total_way_len
 
         # Determine target clearance
-        is_durgam_lake_crossing = (
-            "Durgam Cheruvu Bridge" in name
-            and any(800 <= p["rx"] <= 1400 and 400 <= -p["ry"] <= 700 for p in way_pts)
-        )
-
         if is_underpass:
             target_clearance = -5.0
         elif is_bridge:
@@ -232,13 +227,7 @@ def main(aoi=None, dem_path=None):
             s = dists[i]
             g_elev = pt["ground_elev"]
 
-            if is_durgam_lake_crossing:
-                # Durgam Cheruvu cable-stayed bridge maintains a level deck at 548.0m across lake
-                t_in = smoothstep(0, ramp_len, s)
-                t_out = smoothstep(0, ramp_len, total_way_len - s)
-                alpha = min(t_in, t_out)
-                final_elev = (1.0 - alpha) * g_elev + alpha * 548.0
-            elif target_clearance != 0.0:
+            if target_clearance != 0.0:
                 t_in = smoothstep(0, ramp_len, s)
                 t_out = smoothstep(0, ramp_len, total_way_len - s)
                 alpha = min(t_in, t_out)
@@ -271,10 +260,7 @@ def main(aoi=None, dem_path=None):
                         t_out = smoothstep(0, ramp_len, total_way_len - curr_d)
                         alpha = min(t_in, t_out)
 
-                        if is_durgam_lake_crossing:
-                            p_deck = (1.0 - alpha) * p_ground + alpha * 548.0
-                        else:
-                            p_deck = p_ground + alpha * target_clearance
+                        p_deck = p_ground + alpha * target_clearance
                         
                         pier_h = p_deck - p_ground
                         # Only place piers when vertical clearance is significant
