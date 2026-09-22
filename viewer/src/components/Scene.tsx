@@ -17,6 +17,7 @@ import ParallaxSky from './ParallaxSky';
 import SkyParallaxTracker from './SkyParallaxTracker';
 import PerformanceHUD, { PerformanceTracker } from './PerformanceMonitor';
 import FloorVisualizer from './FloorVisualizer';
+import CanvasErrorBoundary from './CanvasErrorBoundary';
 import {
   BuildingData,
   BuildingsDataset,
@@ -167,34 +168,36 @@ export default function Scene(props: SceneProps) {
       {/* Live WebGL Performance Telemetry HUD */}
       <PerformanceHUD />
 
-      {/* High-Performance 3D Canvas Layer */}
-      <Canvas
-        shadows="percentage"
-        dpr={[1, 1.5]}
-        gl={{
-          antialias: true,
-          alpha: true,
-          powerPreference: 'high-performance',
-          toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: props.timeOfDay === 'day' ? 1.35 : 1.1,
-        }}
-        onCreated={({ gl }) => {
-          gl.setClearColor(0x000000, 0);
-          if (gl.shadowMap) {
-            gl.shadowMap.type = THREE.PCFShadowMap;
-          }
-        }}
-        style={{
-          background: 'transparent',
-          position: 'relative',
-          zIndex: 1,
-          width: '100%',
-          height: '100%',
-        }}
-        onPointerMissed={() => props.onBuildingSelect(null)}
-      >
-        <SceneContent {...props} />
-      </Canvas>
+      {/* High-Performance 3D Canvas Layer with WebGL Context & Crash Boundary */}
+      <CanvasErrorBoundary>
+        <Canvas
+          shadows="percentage"
+          dpr={[1, 1.5]}
+          gl={{
+            antialias: true,
+            alpha: true,
+            powerPreference: 'high-performance',
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: props.timeOfDay === 'day' ? 1.35 : 1.1,
+          }}
+          onCreated={({ gl }) => {
+            gl.setClearColor(0x000000, 0);
+            if (gl.shadowMap) {
+              gl.shadowMap.type = THREE.PCFShadowMap;
+            }
+          }}
+          style={{
+            background: 'transparent',
+            position: 'relative',
+            zIndex: 1,
+            width: '100%',
+            height: '100%',
+          }}
+          onPointerMissed={() => props.onBuildingSelect(null)}
+        >
+          <SceneContent {...props} />
+        </Canvas>
+      </CanvasErrorBoundary>
     </div>
   );
 }

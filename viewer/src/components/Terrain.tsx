@@ -17,7 +17,18 @@ export default function Terrain({ terrain, areaSize, timeOfDay = 'night' }: Terr
   // Create terrain mesh from elevation data with hypsometric altitude tinting
   const terrainGeometry = useMemo(() => {
     if (!terrain || !terrain.grid || terrain.grid.length === 0) {
-      return new THREE.PlaneGeometry(halfSize * 2, halfSize * 2, 1, 1);
+      const flatGeom = new THREE.PlaneGeometry(halfSize * 2, halfSize * 2, 1, 1);
+      const flatColors = new Float32Array(4 * 3);
+      const isNight = timeOfDay === 'night';
+      const c = new THREE.Color(isNight ? '#0d2238' : '#2a4868');
+      for (let i = 0; i < 4; i++) {
+        flatColors[i * 3] = c.r;
+        flatColors[i * 3 + 1] = c.g;
+        flatColors[i * 3 + 2] = c.b;
+      }
+      flatGeom.setAttribute('color', new THREE.BufferAttribute(flatColors, 3));
+      flatGeom.computeVertexNormals();
+      return flatGeom;
     }
 
     const rows = terrain.grid.length;

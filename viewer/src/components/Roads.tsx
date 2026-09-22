@@ -164,7 +164,10 @@ export default function Roads({
         return res.json();
       })
       .then((data: RoadDataset) => setRoadData(data))
-      .catch((err) => console.error('Failed to load roads dataset:', err));
+      .catch((err) => {
+        console.warn('Roads data not available, running without road layer:', err);
+        setRoadData(null);
+      });
   }, []);
 
   const isNight = timeOfDay === 'night';
@@ -558,7 +561,7 @@ export default function Roads({
     mesh.instanceMatrix.needsUpdate = true;
   });
 
-  if (!showRoads) return null;
+  if (!showRoads || !roadData) return null;
 
   const bridgeConcreteColor = isNight ? '#253040' : '#8896a8';
 
