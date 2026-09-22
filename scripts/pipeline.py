@@ -2103,23 +2103,36 @@ out skel qt;
                     bridge_items.append(item)
 
     base_water_elev = None
-    if dem_path and Path(dem_path).exists() and water_items:
+    if dem_path and Path(dem_path).exists():
         try:
             import rasterio
             with rasterio.open(dem_path) as dem_src:
+                dem_nodata = dem_src.nodata
                 sample_pts = []
                 for w in water_items[:5]:
                     for rx, ry in w["coordinates"][:6]:
                         sample_pts.append((rx + center_x, ry + center_y))
                 if sample_pts:
-                    vals = [float(val[0]) for val in dem_src.sample(sample_pts) if val[0] > -100]
+                    vals = [float(val[0]) for val in dem_src.sample(sample_pts)
+                            if (dem_nodata is None or val[0] != dem_nodata) and -500 < val[0] < 9000]
                     if vals:
                         base_water_elev = round(float(np.percentile(vals, 15)), 1)
+
+                # If no water features in AOI or sampling was empty, sample center elevation and offset
+                if base_water_elev is None:
+                    center_sample = list(dem_src.sample([(center_x, center_y)]))
+                    if center_sample and (dem_nodata is None or center_sample[0][0] != dem_nodata) and -500 < center_sample[0][0] < 9000:
+                        base_water_elev = round(float(center_sample[0][0]) - 25.0, 1)
         except Exception as err:
             warn(f"Could not sample water base elevation from DEM: {err}")
 
+    # Final fallback if DEM was not provided or sampling failed
+    if base_water_elev is None:
+        aoi_elev = aoi.get("center", {}).get("elevation")
+        base_water_elev = round(float(aoi_elev) - 25.0, 1) if aoi_elev is not None else 533.0
+
     water_data = {
-        "baseElevation": base_water_elev if base_water_elev is not None else 533.0,
+        "baseElevation": base_water_elev,
         "water": water_items,
         "bridges": bridge_items,
     }

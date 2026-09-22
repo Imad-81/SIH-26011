@@ -24,20 +24,23 @@ export default function FloodControl({
   onClose,
   cityName,
 }: FloodControlProps) {
-  // Determine effective rise delta and total MSL level
-  const riseDelta = floodRise !== undefined 
+  // Determine safe effective rise delta and total MSL level
+  const safeBaseElev = Number.isFinite(baseWaterElevation) ? baseWaterElevation : 533.0;
+  const rawRise = floodRise !== undefined 
     ? floodRise 
     : floodLevel !== undefined 
-      ? Math.max(0, floodLevel - baseWaterElevation) 
+      ? Math.max(0, floodLevel - safeBaseElev) 
       : 0;
-  const currentFloodLevel = baseWaterElevation + riseDelta;
+  const riseDelta = Number.isFinite(rawRise) ? rawRise : 0;
+  const currentFloodLevel = safeBaseElev + riseDelta;
 
   const handleSliderChange = (newRise: number) => {
+    const val = Number.isFinite(newRise) ? newRise : 0;
     if (onFloodRiseChange) {
-      onFloodRiseChange(newRise);
+      onFloodRiseChange(val);
     }
     if (onFloodLevelChange) {
-      onFloodLevelChange(baseWaterElevation + newRise);
+      onFloodLevelChange(safeBaseElev + val);
     }
   };
 

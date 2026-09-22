@@ -388,7 +388,7 @@ export default function ParallaxSky({ timeOfDay }: ParallaxSkyProps) {
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* LAYER 5: Distant Hyderabad Topography / Deccan Ridge Silhouette*/}
+      {/* LAYER 5: Distant Regional Topography / Horizon Ridge Silhouette*/}
       {/* ------------------------------------------------------------- */}
       <div
         id="sky-layer-hills"

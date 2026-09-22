@@ -11,14 +11,24 @@ interface WaterProps {
   centerElevation: number;
   floodLevelMeters: number; // e.g. 533 (base) up to 560
   timeOfDay?: 'dawn' | 'day' | 'dusk' | 'night';
+  waterData?: WaterDataset | null;
 }
 
-export default function Water({ centerElevation, floodLevelMeters, timeOfDay = 'night' }: WaterProps) {
-  const [waterData, setWaterData] = useState<WaterDataset | null>(null);
+export default function Water({
+  centerElevation,
+  floodLevelMeters,
+  timeOfDay = 'night',
+  waterData: propWaterData,
+}: WaterProps) {
+  const [waterData, setWaterData] = useState<WaterDataset | null>(propWaterData ?? null);
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.MeshStandardMaterial>(null);
 
   useEffect(() => {
+    if (propWaterData) {
+      setWaterData(propWaterData);
+      return;
+    }
     fetch('/data/water.json')
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -29,7 +39,7 @@ export default function Water({ centerElevation, floodLevelMeters, timeOfDay = '
         console.warn('Water data not available, running without water layer:', err);
         setWaterData({ water: [], bridges: [] });
       });
-  }, []);
+  }, [propWaterData]);
 
   // Calculate 3D water surface Y level relative to centerElevation
   const baseElev = waterData?.baseElevation ?? (centerElevation - 36.0);

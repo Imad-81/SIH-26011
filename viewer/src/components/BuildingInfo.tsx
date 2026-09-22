@@ -36,6 +36,8 @@ interface BuildingInfoProps {
   onSelectUnit?: (unitId: string | null) => void;
   isFloorIsolated?: boolean;
   onToggleFloorIsolation?: () => void;
+  cityName?: string;
+  solarGhi?: number;
 }
 
 function getSourceBadge(source: string): { label: string; color: string; icon: string } {
@@ -88,6 +90,8 @@ export default function BuildingInfo({
   onSelectUnit,
   isFloorIsolated = false,
   onToggleFloorIsolation,
+  cityName,
+  solarGhi,
 }: BuildingInfoProps) {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'cadastre' | 'spatial'>('cadastre');
@@ -100,14 +104,15 @@ export default function BuildingInfo({
 
   // True polygon footprint area with Shoelace formula fallback
   const estFootprint = building.footprintArea ?? Math.round(computeShoelaceArea(building.coordinates) * 10) / 10;
-  const dailySolarKwh = (estFootprint * 0.75 * 5.5 * 0.18).toFixed(1);
+  const ghi = solarGhi ?? 5.5;
+  const dailySolarKwh = (estFootprint * 0.75 * ghi * 0.18).toFixed(1);
 
   // Cadastral data resolution
   const ulpin2d = cadastreRecord?.ulpin2d || building.ulpin2d || '36210501021001';
   const surveyNo = cadastreRecord?.surveyNumber || building.surveyNumber || '64';
-  const villageName = cadastreRecord?.villageName || building.villageName || 'Madhapur';
-  const mandalName = cadastreRecord?.mandalName || 'Serilingampally';
-  const districtName = cadastreRecord?.districtName || 'Ranga Reddy';
+  const villageName = cadastreRecord?.villageName || building.villageName || (cityName ? `${cityName} Sector` : 'Urban Sector');
+  const mandalName = cadastreRecord?.mandalName || 'Central Zone';
+  const districtName = cadastreRecord?.districtName || cityName || 'Metropolitan Region';
   const floorsCount = Math.max(1, cadastreRecord?.totalFloors || building.estimatedFloors || 1);
   const hasFloorPlan = cadastreRecord?.hasFloorPlan || building.hasFloorPlan || false;
 

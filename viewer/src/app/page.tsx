@@ -23,7 +23,7 @@ const Scene = dynamic(() => import('@/components/Scene'), {
 });
 
 export default function Home() {
-  const { buildings, terrain, loading, error, progress } = useBuildingData();
+  const { buildings, terrain, water, loading, error, progress } = useBuildingData();
   const { cadastreData, getBuildingCadastre } = useCadastreData();
   const [selectedBuilding, setSelectedBuilding] = useState<SelectedBuilding | null>(null);
   const [selectedLandmark, setSelectedLandmark] = useState<LandmarkData | null>(null);
@@ -41,11 +41,22 @@ export default function Home() {
   const [floodRise, setFloodRise] = useState(0.0);
 
   const baseWaterElevation = useMemo(() => {
+    if (water?.baseElevation !== undefined && Number.isFinite(water.baseElevation)) {
+      return water.baseElevation;
+    }
     const centerElev = terrain?.centerElevation ?? 569.0;
-    return terrain?.minElevation && terrain.minElevation > 0 && Math.abs(centerElev - terrain.minElevation) < 80
-      ? terrain.minElevation
-      : Math.max(0, centerElev - 36.0);
-  }, [terrain]);
+    if (terrain?.minElevation && Number.isFinite(terrain.minElevation) && terrain.minElevation > 0 && Math.abs(centerElev - terrain.minElevation) < 80) {
+      return terrain.minElevation;
+    }
+    return Math.max(0, centerElev - 36.0);
+  }, [water, terrain]);
+
+  const solarGhi = useMemo(() => {
+    if (buildings?.aoi?.center?.lat !== undefined) {
+      return Math.round((5.5 - 0.03 * Math.abs(buildings.aoi.center.lat - 23.5)) * 10) / 10;
+    }
+    return 5.5;
+  }, [buildings]);
 
   const floodLevelMeters = baseWaterElevation + floodRise;
   const [floodControlOpen, setFloodControlOpen] = useState(false);
@@ -162,6 +173,7 @@ export default function Home() {
           <Scene
             data={buildings}
             terrain={terrain}
+            waterData={water}
             renderMode={renderMode}
             timeOfDay={timeOfDay}
             floodLevelMeters={floodLevelMeters}
@@ -226,6 +238,8 @@ export default function Home() {
           onSelectUnit={setSelectedUnitId}
           isFloorIsolated={isFloorIsolated}
           onToggleFloorIsolation={() => setIsFloorIsolated((prev) => !prev)}
+          cityName={buildings?.aoi?.name || buildings?.aoi?.city}
+          solarGhi={solarGhi}
         />
       )}
 

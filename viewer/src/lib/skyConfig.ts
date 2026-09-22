@@ -41,7 +41,7 @@ export interface SkyPalette {
     rimLightColor: string;
   };
 
-  // Distant Horizon Topography (Hyderabad Deccan Ridge & Far Skyline)
+  // Distant Horizon Topography (Regional Ridges & Far Skyline)
   distantHills: {
     fillColor: string;
     opacity: number;

@@ -27,11 +27,13 @@ import {
   RenderMode,
   TimeOfDay,
   BuildingCadastreRecord,
+  WaterDataset,
 } from '@/lib/types';
 
 interface SceneProps {
   data: BuildingsDataset;
   terrain: TerrainData | null;
+  waterData?: WaterDataset | null;
   renderMode: RenderMode;
   timeOfDay: TimeOfDay;
   floodLevelMeters: number;
@@ -56,6 +58,7 @@ interface SceneProps {
 function SceneContent({
   data,
   terrain,
+  waterData,
   renderMode,
   timeOfDay,
   floodLevelMeters,
@@ -111,11 +114,12 @@ function SceneContent({
       {/* Topography Terrain */}
       <Terrain terrain={terrain} areaSize={areaSize} timeOfDay={timeOfDay} />
 
-      {/* Durgam Cheruvu Animated Water Surface & Dynamic Flood Plane */}
+      {/* Animated Water Surface & Dynamic Flood Plane */}
       <Water
         centerElevation={centerElev}
         floodLevelMeters={floodLevelMeters}
         timeOfDay={timeOfDay}
+        waterData={waterData}
       />
 
       {/* Durgam Cheruvu Cable-Stayed Bridge */}

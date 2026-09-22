@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { BuildingsDataset, TerrainData } from '@/lib/types';
+import { BuildingsDataset, TerrainData, WaterDataset } from '@/lib/types';
 
 interface DataState {
   buildings: BuildingsDataset | null;
   terrain: TerrainData | null;
+  water: WaterDataset | null;
   loading: boolean;
   error: string | null;
   progress: number;
@@ -15,6 +16,7 @@ export function useBuildingData(): DataState {
   const [state, setState] = useState<DataState>({
     buildings: null,
     terrain: null,
+    water: null,
     loading: true,
     error: null,
     progress: 0,
@@ -44,6 +46,17 @@ export function useBuildingData(): DataState {
           }
         } catch {
           console.warn('Terrain data not available');
+        }
+
+        // Load water data (optional)
+        try {
+          const waterResp = await fetch('/data/water.json');
+          if (waterResp.ok) {
+            const waterData: WaterDataset = await waterResp.json();
+            setState(prev => ({ ...prev, water: waterData }));
+          }
+        } catch {
+          console.warn('Water data not available');
         }
 
         setState(prev => ({
