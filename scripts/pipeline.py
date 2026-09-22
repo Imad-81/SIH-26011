@@ -538,6 +538,61 @@ out skel qt;
         error("No building footprints found!")
         return None
 
+    # Deduplicate overlapping building footprints (e.g. way + relation representing same physical building)
+    from shapely.geometry import shape
+    from shapely.strtree import STRtree
+
+    info("Indexing building footprints for spatial deduplication...")
+    geoms = [shape(f["geometry"]) for f in features]
+    tree = STRtree(geoms)
+
+    def tag_richness(feat):
+        p = feat.get("properties", {})
+        return sum(1 for k, v in p.items() if v is not None and v != "" and v != "yes")
+
+    keep = [True] * len(features)
+    dedup_count = 0
+
+    for i in range(len(features)):
+        if not keep[i]:
+            continue
+        geom_i = geoms[i]
+        if geom_i.is_empty or geom_i.area <= 0:
+            continue
+
+        candidates = tree.query(geom_i)
+        for cand_idx in candidates:
+            j = int(cand_idx)
+            if j <= i or not keep[j]:
+                continue
+            geom_j = geoms[j]
+            if geom_j.is_empty or geom_j.area <= 0:
+                continue
+
+            try:
+                inter = geom_i.intersection(geom_j)
+                if inter.is_empty:
+                    continue
+                inter_area = inter.area
+                min_area = min(geom_i.area, geom_j.area)
+                if min_area > 0 and (inter_area / min_area) > 0.8:
+                    # >80% footprint overlap: keep the one with richer tags, drop the duplicate
+                    r_i = tag_richness(features[i])
+                    r_j = tag_richness(features[j])
+                    if r_i >= r_j:
+                        keep[j] = False
+                        dedup_count += 1
+                    else:
+                        keep[i] = False
+                        dedup_count += 1
+                        break
+            except Exception:
+                continue
+
+    if dedup_count > 0:
+        features = [f for idx, f in enumerate(features) if keep[idx]]
+    info(f"Deduplicated {dedup_count} overlapping building footprints")
+
     # Create GeoJSON
     geojson = {
         "type": "FeatureCollection",
