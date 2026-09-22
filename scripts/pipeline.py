@@ -129,6 +129,15 @@ URBAN_ZONES_BY_CITY = {
         ("Electronic City", 780000, 786000, 1420000, 1426000, 2.0),
         ("Outer Ring Road (Bellandur)", 779000, 785000, 1430000, 1436000, 2.2),
     ],
+    "pune": [
+        ("Hinjawadi Phase 1 & 2", 364000, 370000, 2054000, 2058000, 2.0),
+        ("Magarpatta / Kharadi", 385000, 392000, 2047000, 2052000, 2.0),
+    ],
+    "delhi": [
+        ("DLF Cyber City / Phase 2", 702000, 707000, 3152000, 3157000, 2.5),
+        ("Golf Course Road / Horizon", 704000, 709000, 3148000, 3153000, 2.2),
+        ("Aerocity Commercial", 712000, 716000, 3159000, 3163000, 2.0),
+    ],
 }
 URBAN_ZONES = URBAN_ZONES_BY_CITY["hyderabad"]
 
@@ -579,6 +588,14 @@ out skel qt;
                     # >80% footprint overlap: keep the one with richer tags, drop the duplicate
                     r_i = tag_richness(features[i])
                     r_j = tag_richness(features[j])
+                    winner = features[i] if r_i >= r_j else features[j]
+                    loser = features[j] if r_i >= r_j else features[i]
+
+                    # Enrich winner with any valuable non-empty properties from loser
+                    for k, v in loser.get("properties", {}).items():
+                        if v is not None and v != "" and (k not in winner["properties"] or winner["properties"][k] is None or winner["properties"][k] == ""):
+                            winner["properties"][k] = v
+
                     if r_i >= r_j:
                         keep[j] = False
                         dedup_count += 1
@@ -825,6 +842,8 @@ def download_dem(aoi):
         elif dsm_path.exists() and output_path.stat().st_size == dsm_path.stat().st_size:
             warn("Cached dem.tif is an identical copy of dsm.tif. Re-downloading bare-earth SRTM DEM...")
             output_path.unlink(missing_ok=True)
+            (PROCESSED_DIR / "dem_clipped.tif").unlink(missing_ok=True)
+            (PROCESSED_DIR / "ndsm_clipped.tif").unlink(missing_ok=True)
         else:
             info("Cached DEM covers AOI ✅")
             info(f"Using cached DEM: {output_path.name} ({output_path.stat().st_size / 1024:.1f} KB)")
@@ -886,7 +905,7 @@ def download_dem(aoi):
     if dsm_path.exists():
         info("Applying morphological ground filter to DSM to generate bare-earth DEM approximation...")
         try:
-            from scipy.ndimage import minimum_filter
+            from scipy.ndimage import minimum_filter, gaussian_filter
             with rasterio.open(dsm_path) as src:
                 dsm_data = src.read(1)
                 meta = src.meta.copy()
@@ -897,8 +916,11 @@ def download_dem(aoi):
             if np.any(valid_mask):
                 max_val = float(np.nanmax(dsm_data[valid_mask]))
                 filter_input[~valid_mask] = max_val
-                # 30-pixel window captures bare earth below building clusters
-                ground_approx = minimum_filter(filter_input, size=30)
+                # 30-pixel window captures bare earth below building clusters; smooth with gaussian to remove terracing
+                ground_min = minimum_filter(filter_input, size=30)
+                ground_approx = gaussian_filter(ground_min, sigma=5)
+                # Ensure bare earth does not exceed surface DSM
+                ground_approx = np.minimum(ground_approx, filter_input)
                 if nodata is not None:
                     ground_approx[~valid_mask] = nodata
             else:
@@ -1351,10 +1373,11 @@ def estimate_building_heights(aoi, buildings_path, dem_path, dsm_path, dem_same_
                         zone_label = "osm_residential"
 
         # Check financial district & tech cluster keyword patterns across India
-        name_lower = name.lower()
-        if any(k in name_lower for k in [
+        search_text = f"{name} {row.get('addr_street', '')} {row.get('office', '')} {row.get('operator', '')}".lower()
+        if any(k in search_text for k in [
             "bkc", "bandra kurla", "whitefield", "cyber city", "hinjawadi",
-            "financial district", "tech park", "it park", "mindspace", "cyber gateway"
+            "financial district", "tech park", "it park", "mindspace", "cyber gateway",
+            "world trade center", "wtc", "business park", "electronic city", "manyata"
         ]):
             if zone_mult < 2.0:
                 zone_mult = 2.0
