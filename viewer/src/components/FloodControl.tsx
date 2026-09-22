@@ -28,7 +28,8 @@ export default function FloodControl({
         if (b.buildingType === 'commercial' || b.buildingType === 'retail' || b.buildingType === 'office') {
           commercial++;
         }
-        totalGfa += (b.coordinates?.length || 4) * 20 * b.estimatedFloors;
+        const footprint = b.footprintArea ?? ((b.coordinates?.length || 4) * 25);
+        totalGfa += footprint * b.estimatedFloors;
       }
     }
 

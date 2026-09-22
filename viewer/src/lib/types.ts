@@ -6,6 +6,7 @@ export interface BuildingData {
   coordinates: [number, number][];
   holes?: [number, number][][];
   height: number;
+  footprintArea?: number;
   estimatedFloors: number;
   osmLevels: number | null;
   buildingType: string;

@@ -1722,6 +1722,7 @@ def generate_3d_buildings(gdf, aoi, dem_path=None):
                 "coordinates": [[round(x, 2), round(y, 2)] for x, y in rel_coords],
                 "holes": rel_holes,
                 "height": round(height, 2),
+                "footprintArea": round(float(poly.area), 1),
                 "estimatedFloors": int(row.get("estimated_floors", 1)),
                 "osmLevels": int(row["osm_levels"]) if row.get("osm_levels") and not pd.isna(row.get("osm_levels")) else None,
                 "buildingType": row.get("building_type", "yes"),

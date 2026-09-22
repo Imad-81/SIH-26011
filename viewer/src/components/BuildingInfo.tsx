@@ -65,6 +65,18 @@ function getSourceBadge(source: string): { label: string; color: string; icon: s
   }
 }
 
+function computeShoelaceArea(coords?: [number, number][]): number {
+  if (!coords || coords.length < 3) return 50.0;
+  let area = 0;
+  const n = coords.length;
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n;
+    area += coords[i][0] * coords[j][1];
+    area -= coords[j][0] * coords[i][1];
+  }
+  return Math.abs(area) / 2.0;
+}
+
 export default function BuildingInfo({
   building,
   onClose,
@@ -86,8 +98,8 @@ export default function BuildingInfo({
   const baseElev = building.baseElevation ?? 569.0;
   const roofElev = baseElev + building.height;
 
-  // Approximate footprint area in m²
-  const estFootprint = (building.coordinates?.length || 4) * 25;
+  // True polygon footprint area with Shoelace formula fallback
+  const estFootprint = building.footprintArea ?? Math.round(computeShoelaceArea(building.coordinates) * 10) / 10;
   const dailySolarKwh = (estFootprint * 0.75 * 5.5 * 0.18).toFixed(1);
 
   // Cadastral data resolution
