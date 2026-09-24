@@ -1,0 +1,45 @@
+{
+  "cityName": "Hyderabad (HITEC City)",
+  "areaSizeKm": 3.0,
+  "totalBuildings": 4641,
+  "totalFootprintAreaM2": 1584220.0,
+  "totalBuiltVolumeM3": 60374287.5,
+  "grossFloorAreaM2": 17520500.8,
+  "heightBuckets": {
+    "0-5m": 769,
+    "5-15m": 2132,
+    "15-30m": 1362,
+    "30-60m": 296,
+    "60m+": 82
+  },
+  "typeBreakdown": {
+    "commercial": 111,
+    "retail": 3,
+    "yes": 3966,
+    "apartments": 78,
+    "office": 8,
+    "roof": 11,
+    "residential": 447,
+    "school": 2,
+    "water_tower": 3,
+    "hospital": 5,
+    "house": 1,
+    "shed": 3,
+    "cowshed": 1,
+    "construction": 1,
+    "train_station": 1
+  },
+  "cadastre": {
+    "total2DParcels": 4641,
+    "total3DVerticalParcels": 22761,
+    "buildingsWithFloorPlans": 9,
+    "verticalDensityRatio": 4.9
+  },
+  "solar": {
+    "usableRooftopAreaM2": 1188165.0,
+    "dailyGenerationKwh": 1176283.3,
+    "annualGenerationMwh": 429343.4,
+    "annualCo2OffsetTons": 352061.6,
+    "ghiAverage": 5.5
+  }
+}

@@ -19,6 +19,7 @@ import math
 import os
 import random
 import re
+import shutil
 import sys
 import time
 import warnings
@@ -102,11 +103,11 @@ CRS_UTM = get_utm_crs(CENTER_LAT, CENTER_LON)
 
 # City Presets for Universal Exploration
 CITY_PRESETS = {
-    "hyderabad": {"lat": 17.4370, "lon": 78.3800, "name": "Hyderabad (HITEC City / Financial District)"},
-    "mumbai": {"lat": 19.0657, "lon": 72.8687, "name": "Mumbai (Bandra Kurla Complex)"},
-    "bangalore": {"lat": 12.9352, "lon": 77.6946, "name": "Bengaluru (Bellandur / Outer Ring Road)"},
-    "pune": {"lat": 18.5913, "lon": 73.7389, "name": "Pune (Hinjawadi IT Park)"},
-    "delhi": {"lat": 28.4986, "lon": 77.0878, "name": "Gurugram / NCR (Cyber City)"}
+    "hyderabad": {"lat": 17.4370, "lon": 78.3800, "name": "Hyderabad (HITEC City / Financial District)", "state": "Telangana", "defaultElev": 569.0},
+    "mumbai": {"lat": 19.0657, "lon": 72.8687, "name": "Mumbai (Bandra Kurla Complex)", "state": "Maharashtra", "defaultElev": 12.0},
+    "bangalore": {"lat": 12.9352, "lon": 77.6946, "name": "Bengaluru (Bellandur / Outer Ring Road)", "state": "Karnataka", "defaultElev": 870.0},
+    "pune": {"lat": 18.5913, "lon": 73.7389, "name": "Pune (Hinjawadi IT Park)", "state": "Maharashtra", "defaultElev": 570.0},
+    "delhi": {"lat": 28.4986, "lon": 77.0878, "name": "Gurugram / NCR (Cyber City)", "state": "Haryana", "defaultElev": 220.0}
 }
 
 # Key Urban High-Rise Clusters by City (UTM Projected Coordinates)
@@ -1754,7 +1755,7 @@ def _sample_raster(src, geometry, buffer_m=5):
 # STAGE 7: 3D EXTRUSION & VIEWER DATA GENERATION
 # ═══════════════════════════════════════════════════════════════════
 
-def generate_3d_buildings(gdf, aoi, dem_path=None):
+def generate_3d_buildings(gdf, aoi, dem_path=None, city_dir=None):
     """Generate 3D building extrusions and synchronized viewer datasets."""
     banner("STAGE 7: 3D Building Extrusion & Analytics")
 
@@ -1874,7 +1875,7 @@ def generate_3d_buildings(gdf, aoi, dem_path=None):
     cadastre_stats = {}
     if HAS_CADASTRE:
         try:
-            _, _, cadastre_stats = generate_3d_cadastre(gdf_utm, aoi, buildings_json, dem_path=check_dem)
+            _, _, cadastre_stats = generate_3d_cadastre(gdf_utm, aoi, buildings_json, dem_path=check_dem, output_viewer_dir=city_dir)
         except Exception as e:
             warn(f"3D Cadastre generation encountered issue: {e}")
 
@@ -1899,7 +1900,7 @@ def generate_3d_buildings(gdf, aoi, dem_path=None):
         json.dump(geojson_3d, f)
     info(f"3D GeoJSON → {geojson_path.name} ({len(features_3d)} features)")
 
-    # Save buildings.json for viewer
+    # Save buildings.json for viewer (both active root and city_dir)
     viewer_data = {
         "aoi": {
             "center": {"lat": aoi["center"]["lat"], "lon": aoi["center"]["lon"]},
@@ -1929,10 +1930,17 @@ def generate_3d_buildings(gdf, aoi, dem_path=None):
     viewer_path = VIEWER_DATA_DIR / "buildings.json"
     with open(viewer_path, "w") as f:
         json.dump(viewer_data, f)
-    info(f"Viewer data → viewer/public/data/buildings.json ({len(buildings_json)} buildings)")
+    if city_dir and city_dir != VIEWER_DATA_DIR:
+        city_dir.mkdir(parents=True, exist_ok=True)
+        with open(city_dir / "buildings.json", "w") as f:
+            json.dump(viewer_data, f)
+    info(f"Viewer data → {viewer_path.name} ({len(buildings_json)} buildings)")
+
+    # Auto-generate synchronized Landmarks (Issue #15)
+    generate_landmarks(buildings_json, aoi, city_dir=city_dir)
 
     # Generate synchronized Analytics JSON
-    generate_analytics(gdf_utm, buildings_json, aoi=aoi)
+    generate_analytics(gdf_utm, buildings_json, aoi=aoi, city_dir=city_dir)
 
     # Export GLB
     glb_path = OUTPUTS_DIR / "buildings_3d.glb"
@@ -1952,7 +1960,7 @@ def generate_3d_buildings(gdf, aoi, dem_path=None):
     return geojson_path
 
 
-def generate_analytics(gdf, buildings_json, aoi=None):
+def generate_analytics(gdf, buildings_json, aoi=None, city_dir=None):
     """Generate analytics.json matching the viewer's AnalyticsModal schema."""
     total_buildings = len(buildings_json)
     
@@ -2040,8 +2048,247 @@ def generate_analytics(gdf, buildings_json, aoi=None):
     analytics_path = VIEWER_DATA_DIR / "analytics.json"
     with open(analytics_path, "w") as f:
         json.dump(analytics_data, f, indent=2)
+    if city_dir and city_dir != VIEWER_DATA_DIR:
+        city_dir.mkdir(parents=True, exist_ok=True)
+        with open(city_dir / "analytics.json", "w") as f:
+            json.dump(analytics_data, f, indent=2)
     info(f"Analytics data → {analytics_path.name} (GHI: {ghi} kWh/m²/day)")
     return analytics_data
+
+
+def generate_landmarks(buildings_json: list, aoi: dict, city_dir: Path = None) -> list:
+    """
+    Auto-generate landmarks.json with Three.js camera presets and badges from building data.
+    Implements Issue #15:
+      - Sorts buildings by height and name prominence
+      - Selects top 5-8 prominent/tallest buildings
+      - Calculates pos [cx, height, cz], cameraPos [cx + 100, height + 60, cz + 120], target [cx, height * 0.5, cz]
+      - Computes badges '🏢 {height}m · {name}'
+      - Writes to city data directory and root viewer/public/data
+    """
+    banner("Auto-Generating Landmarks & Camera Presets")
+
+    city_id = aoi.get("city") or "urban"
+    city_name = CITY_PRESETS.get(city_id, {}).get("name", city_id.replace("_", " ").title())
+
+    # Candidate scoring: combine height, verified name prominence, and typology
+    scored = []
+    for b in buildings_json:
+        name = b.get("name")
+        has_name = bool(name and len(str(name).strip()) > 2 and str(name).strip().lower() not in ["yes", "building", "none", "nan"])
+        h = float(b.get("height", 0))
+        # Named buildings get a prominence bonus
+        score = h + (60.0 if has_name else 0.0)
+        scored.append((score, has_name, b))
+
+    # Sort descending by prominence score
+    scored.sort(key=lambda x: x[0], reverse=True)
+
+    landmarks = []
+    seen_prefixes = set()
+
+    for score, has_name, b in scored:
+        centroid = b.get("centroid", [0, 0])
+        cx = float(centroid[0])
+        cy = float(centroid[1])
+        # In Three.js coordinates, World Z is -UTM_relative_Y
+        cz = -cy
+        h = float(b.get("height", 10.0))
+
+        b_name = (str(b.get("name")).strip() if has_name else "")
+        # Normalize name prefix to prevent multiple adjacent towers of the same complex from dominating
+        prefix = re.sub(r'[\(\[].*?[\)\]]', '', b_name).strip()[:12].lower() if has_name else ""
+        if prefix and prefix in seen_prefixes:
+            continue
+
+        # Spatial spacing check: ensure landmarks are distributed across the city (>= 120m apart)
+        too_close = False
+        for lm in landmarks:
+            scx, scz = lm["pos"][0], lm["pos"][2]
+            if math.hypot(cx - scx, cz - scz) < 120.0:
+                too_close = True
+                break
+        if too_close and len(landmarks) >= 4:
+            continue
+
+        display_name = b_name if has_name else f"{city_name.split('(')[0].strip()} Tower {len(landmarks) + 1}"
+        category = (
+            "Skyscraper" if h >= 80
+            else "Corporate Skyscraper" if h >= 50
+            else "High-Rise Tower" if h >= 30
+            else "Retail & Commerce" if "mall" in display_name.lower() or b.get("buildingType") == "retail"
+            else "Academic Campus" if any(w in display_name.lower() for w in ["school", "college", "institute", "university"])
+            else "Urban Landmark"
+        )
+
+        badge_name = display_name if len(display_name) <= 24 else display_name[:22] + "…"
+        badge = f"🏢 {int(round(h))}m · {badge_name}"
+
+        # Generate slugified ID
+        slug_id = re.sub(r'[^a-z0-9]+', '_', display_name.lower()).strip('_')
+        if not slug_id or any(l["id"] == slug_id for l in landmarks):
+            slug_id = f"{b.get('id', 'lm')}_{len(landmarks)+1}"
+
+        village = b.get("villageName") or aoi.get("city") or "Central"
+        desc = f"{int(round(h))}m tall {category.lower()} with {b.get('estimatedFloors', 1)} floors in {village.title()}."
+
+        landmark_entry = {
+            "id": slug_id,
+            "name": display_name,
+            "category": category,
+            "description": desc,
+            "pos": [round(cx, 2), round(h, 2), round(cz, 2)],
+            "cameraPos": [round(cx + 100.0, 2), round(h + 60.0, 2), round(cz + 120.0, 2)],
+            "target": [round(cx, 2), round(h * 0.5, 2), round(cz, 2)],
+            "height": round(h, 1),
+            "badge": badge,
+        }
+        landmarks.append(landmark_entry)
+        if prefix:
+            seen_prefixes.add(prefix)
+
+        if len(landmarks) >= 8:
+            break
+
+    # Fallback to at least 5 landmarks if available
+    if len(landmarks) < 5:
+        for score, has_name, b in scored:
+            b_id = b.get("id")
+            if any(l["id"] == b_id for l in landmarks):
+                continue
+            centroid = b.get("centroid", [0, 0])
+            cx, cy = float(centroid[0]), float(centroid[1])
+            cz = -cy
+            h = float(b.get("height", 10.0))
+            display_name = b.get("name") or f"{city_name.split('(')[0].strip()} Structure {len(landmarks)+1}"
+            landmark_entry = {
+                "id": f"landmark_{len(landmarks)+1}",
+                "name": display_name,
+                "category": "Urban Landmark",
+                "description": f"{int(round(h))}m tall structure.",
+                "pos": [round(cx, 2), round(h, 2), round(cz, 2)],
+                "cameraPos": [round(cx + 100.0, 2), round(h + 60.0, 2), round(cz + 120.0, 2)],
+                "target": [round(cx, 2), round(h * 0.5, 2), round(cz, 2)],
+                "height": round(h, 1),
+                "badge": f"🏢 {int(round(h))}m · {display_name[:20]}",
+            }
+            landmarks.append(landmark_entry)
+            if len(landmarks) >= 5:
+                break
+
+    # Write landmarks.json
+    out_paths = [VIEWER_DATA_DIR / "landmarks.json"]
+    if city_dir and city_dir != VIEWER_DATA_DIR:
+        out_paths.append(city_dir / "landmarks.json")
+
+    for p in out_paths:
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with open(p, "w", encoding="utf-8") as f:
+            json.dump(landmarks, f, indent=2)
+
+    info(f"Landmarks auto-generated → {len(landmarks)} landmarks exported to {[p.name for p in out_paths]}")
+    return landmarks
+
+
+def update_cities_manifest(
+    city_id: str,
+    aoi: dict,
+    building_count: int,
+    default_elev: float,
+    city_dir: Path = None,
+    city_name: str = None,
+    state: str = None
+) -> list:
+    """Register or update city metadata in viewer/public/data/cities.json."""
+    manifest_path = VIEWER_DATA_DIR / "cities.json"
+    manifest = []
+    if manifest_path.exists():
+        try:
+            with open(manifest_path, "r", encoding="utf-8") as f:
+                manifest = json.load(f)
+        except Exception as e:
+            warn(f"Failed to read existing cities.json manifest: {e}")
+            manifest = []
+
+    # Resolve display name
+    if not city_name:
+        if city_id in CITY_PRESETS:
+            city_name = CITY_PRESETS[city_id]["name"]
+        elif aoi.get("city") and aoi["city"] in CITY_PRESETS:
+            city_name = CITY_PRESETS[aoi["city"]]["name"]
+        else:
+            city_name = city_id.replace("_", " ").title()
+
+    # Resolve state name
+    if not state:
+        if city_id in CITY_PRESETS and "state" in CITY_PRESETS[city_id]:
+            state = CITY_PRESETS[city_id]["state"]
+        else:
+            try:
+                from cadastre_ulpin import NationalLGDResolver
+                lgd = NationalLGDResolver.resolve(aoi["center"]["lat"], aoi["center"]["lon"])
+                state = lgd.get("state_name", "India")
+            except Exception:
+                state = "India"
+
+    city_entry = {
+        "id": city_id,
+        "name": city_name,
+        "state": state,
+        "center": [round(float(aoi["center"]["lon"]), 6), round(float(aoi["center"]["lat"]), 6)],
+        "centerCoords": {"lat": round(float(aoi["center"]["lat"]), 6), "lon": round(float(aoi["center"]["lon"]), 6)},
+        "sizeKm": round(float(aoi.get("size_km", 3.0)), 2),
+        "buildingCount": building_count,
+        "defaultElev": round(float(default_elev), 1),
+        "generatedAt": datetime.now(timezone.utc).isoformat(),
+    }
+
+    found = False
+    for i, c in enumerate(manifest):
+        if c.get("id") == city_id:
+            manifest[i] = city_entry
+            found = True
+            break
+    if not found:
+        manifest.append(city_entry)
+
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(manifest_path, "w", encoding="utf-8") as f:
+        json.dump(manifest, f, indent=2)
+
+    # Sync manifest to city_dir if applicable
+    if city_dir and city_dir != VIEWER_DATA_DIR:
+        city_dir.mkdir(parents=True, exist_ok=True)
+        with open(city_dir / "city_meta.json", "w", encoding="utf-8") as f:
+            json.dump(city_entry, f, indent=2)
+
+    info(f"Cities manifest updated → {manifest_path.name} ({len(manifest)} cities registered)")
+    return manifest
+
+
+def sync_city_dataset(city_dir: Path):
+    """Ensure all viewer dataset files are synchronized between city_dir and root VIEWER_DATA_DIR."""
+    if not city_dir or city_dir == VIEWER_DATA_DIR:
+        return
+    city_dir.mkdir(parents=True, exist_ok=True)
+    VIEWER_DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+    dataset_files = [
+        "buildings.json",
+        "ulpins_3d.json",
+        "analytics.json",
+        "landmarks.json",
+        "terrain.json",
+        "water.json",
+        "roads.json",
+    ]
+    for fname in dataset_files:
+        src = city_dir / fname
+        dst = VIEWER_DATA_DIR / fname
+        if src.exists() and (not dst.exists() or src.stat().st_mtime > dst.stat().st_mtime):
+            shutil.copy2(src, dst)
+        elif dst.exists() and not src.exists():
+            shutil.copy2(dst, src)
 
 
 def _extrude_polygon(poly_or_coords, height):
@@ -2075,7 +2322,7 @@ def _extrude_polygon(poly_or_coords, height):
 # STAGE 8: TERRAIN DATA FOR VIEWER
 # ═══════════════════════════════════════════════════════════════════
 
-def generate_terrain_data(aoi, dem_path):
+def generate_terrain_data(aoi, dem_path, city_dir=None):
     """Generate terrain elevation grid for the Three.js viewer."""
     banner("STAGE 8: Terrain Data for Viewer")
 
@@ -2135,6 +2382,10 @@ def generate_terrain_data(aoi, dem_path):
             terrain_path = VIEWER_DATA_DIR / "terrain.json"
             with open(terrain_path, "w") as f:
                 json.dump(terrain_data, f)
+            if city_dir and city_dir != VIEWER_DATA_DIR:
+                city_dir.mkdir(parents=True, exist_ok=True)
+                with open(city_dir / "terrain.json", "w") as f:
+                    json.dump(terrain_data, f)
 
             info(f"Terrain grid: {data.shape[1]}×{data.shape[0]}")
             info(f"Elevation range: {terrain_data['minElevation']}m – {terrain_data['maxElevation']}m")
@@ -2144,7 +2395,7 @@ def generate_terrain_data(aoi, dem_path):
         warn(f"Terrain data generation failed: {e}")
 
 
-def generate_water_data(aoi, dem_path=None):
+def generate_water_data(aoi, dem_path=None, city_dir=None):
     """Synchronize water bodies and bridge deck alignment to AOI center for the viewer."""
     banner("STAGE 8b: Water & Bridge Synchronization")
 
@@ -2263,10 +2514,14 @@ out skel qt;
     water_out = VIEWER_DATA_DIR / "water.json"
     with open(water_out, "w") as f:
         json.dump(water_data, f, indent=2)
+    if city_dir and city_dir != VIEWER_DATA_DIR:
+        city_dir.mkdir(parents=True, exist_ok=True)
+        with open(city_dir / "water.json", "w") as f:
+            json.dump(water_data, f, indent=2)
     info(f"Water & bridge data synchronized → {water_out.name} ({len(water_items)} water bodies, base elev: {water_data['baseElevation']}m, {len(bridge_items)} bridges)")
 
 
-def generate_road_data(aoi, dem_path):
+def generate_road_data(aoi, dem_path, city_dir=None):
     """Generate 3D road network with elevated bridges, flyovers, ramps and support piers."""
     banner("STAGE 8c: 3D Road Network & Flyover Generation")
 
@@ -2306,7 +2561,11 @@ out skel qt;
 
     try:
         from build_roads import main as run_build_roads
-        run_build_roads(aoi=aoi, dem_path=dem_path)
+        run_build_roads(aoi=aoi, dem_path=dem_path, output_dir=city_dir)
+        if city_dir and city_dir != VIEWER_DATA_DIR and (VIEWER_DATA_DIR / "roads.json").exists():
+            city_dir.mkdir(parents=True, exist_ok=True)
+            if not (city_dir / "roads.json").exists():
+                shutil.copy2(VIEWER_DATA_DIR / "roads.json", city_dir / "roads.json")
     except Exception as e:
         warn(f"Failed to generate road data via build_roads: {e}")
 
@@ -2426,7 +2685,7 @@ def generate_preview(gdf, aoi):
 # STAGE 10: METADATA & SUMMARY
 # ═══════════════════════════════════════════════════════════════════
 
-def save_metadata(aoi, gdf, dem_same_as_dsm):
+def save_metadata(aoi, gdf, dem_same_as_dsm, city_dir=None, city_id=None):
     """Save comprehensive metadata about data sources."""
     banner("STAGE 10: Metadata & Summary")
 
@@ -2498,6 +2757,24 @@ def save_metadata(aoi, gdf, dem_same_as_dsm):
         json.dump(metadata, f, indent=2)
 
     info(f"Metadata → {metadata_path.name}")
+
+    # Update cities manifest (Issue #14)
+    if city_id:
+        default_elev = 500.0
+        if aoi.get("city") and aoi["city"] in CITY_PRESETS:
+            default_elev = CITY_PRESETS[aoi["city"]].get("defaultElev", 500.0)
+        elif "base_elevation" in gdf.columns:
+            default_elev = float(gdf["base_elevation"].median())
+        update_cities_manifest(
+            city_id=city_id,
+            aoi=aoi,
+            building_count=len(gdf),
+            default_elev=default_elev,
+            city_dir=city_dir
+        )
+    if city_dir:
+        sync_city_dataset(city_dir)
+
     return metadata
 
 
@@ -2555,6 +2832,8 @@ def parse_args():
                         help="AOI box size in km (default: 3.0 km, producing 3km × 3km)")
     parser.add_argument("--half-size", type=float, default=None,
                         help="AOI half-size in km (overrides --size)")
+    parser.add_argument("--city-id", type=str, default=None,
+                        help="Identifier for city data subfolder in viewer/public/data/cities/{city_id} (defaults to --city or 'custom')")
     parser.add_argument("--force-download", action="store_true",
                         help="Force re-download of raw OSM, DEM, and DSM data")
     parser.add_argument("--verbose", action="store_true",
@@ -2612,6 +2891,13 @@ def main():
     aoi = compute_aoi(lat=lat, lon=lon, half_size_km=half_size, crs_utm=crs_utm, city=args.city)
     checkpoint_mgr = PipelineCheckpointManager(aoi["bbox"], resume=args.resume, from_stage=args.from_stage)
     checkpoint_mgr.save_stage(1, "compute_aoi")
+
+    # Determine city_id and dedicated city dataset directory (Issue #14)
+    raw_city_id = args.city_id or args.city or (aoi.get("city") or "custom")
+    city_id = re.sub(r'[^a-z0-9_-]+', '', str(raw_city_id).lower().strip()) or "custom"
+    city_dir = VIEWER_DATA_DIR / "cities" / city_id
+    city_dir.mkdir(parents=True, exist_ok=True)
+    info(f"Target City Dataset Directory: {city_dir.relative_to(PROJECT_ROOT)}")
 
     # Stage 2: OSM Buildings
     buildings_path = RAW_DIR / "buildings.osm"
@@ -2677,19 +2963,20 @@ def main():
         checkpoint_mgr.save_stage(6, "estimate_building_heights")
 
     # Stage 7: 3D Extrusion
-    if checkpoint_mgr.should_skip(7) and (PROCESSED_DIR / "buildings_3d.geojson").exists():
+    if checkpoint_mgr.should_skip(7) and (PROCESSED_DIR / "buildings_3d.geojson").exists() and (city_dir / "buildings.json").exists():
         info("Stage 7 skipped via checkpoint — 3D buildings already generated")
     else:
-        generate_3d_buildings(gdf, aoi, dem_clipped)
+        generate_3d_buildings(gdf, aoi, dem_clipped, city_dir=city_dir)
         checkpoint_mgr.save_stage(7, "generate_3d_buildings")
 
     # Stage 8: Terrain & Layers
-    if checkpoint_mgr.should_skip(8) and (VIEWER_DATA_DIR / "terrain.bin").exists():
+    if checkpoint_mgr.should_skip(8) and ((VIEWER_DATA_DIR / "terrain.json").exists() or (city_dir / "terrain.json").exists()):
         info("Stage 8 skipped via checkpoint — terrain, water, and road layers already generated")
     else:
-        generate_terrain_data(aoi, dem_clipped)
-        generate_water_data(aoi, dem_clipped)
-        generate_road_data(aoi, dem_clipped)
+        generate_terrain_data(aoi, dem_clipped, city_dir=city_dir)
+        generate_water_data(aoi, dem_clipped, city_dir=city_dir)
+        generate_road_data(aoi, dem_clipped, city_dir=city_dir)
+        sync_city_dataset(city_dir)
         checkpoint_mgr.save_stage(8, "generate_terrain_and_layers")
 
     # Stage 9: Preview
@@ -2700,8 +2987,9 @@ def main():
         checkpoint_mgr.save_stage(9, "generate_preview")
 
     # Stage 10: Metadata & Summary
-    metadata = save_metadata(aoi, gdf, dem_same_as_dsm)
+    metadata = save_metadata(aoi, gdf, dem_same_as_dsm, city_dir=city_dir, city_id=city_id)
     print_summary(metadata, gdf)
+    sync_city_dataset(city_dir)
     checkpoint_mgr.save_stage(10, "save_metadata_and_summary")
 
     elapsed = time.time() - start_time

@@ -687,6 +687,7 @@ def generate_3d_cadastre(
     aoi: dict,
     buildings_json: List[dict],
     dem_path: Optional[Path] = None,
+    output_viewer_dir: Optional[Path] = None,
 ) -> Tuple[dict, dict, dict]:
     """
     Master generator for 3D ULPIN (Bhu-Aadhaar) Cadastral Datasets.
@@ -989,11 +990,17 @@ def generate_3d_cadastre(
         json.dump(geojson_3d_cadastre, f)
     print(f"  💾 3D Cadastre GeoJSON → data/processed/cadastre_3d_ulpins.geojson ({len(features_3d_geojson)} vertical parcels)")
 
-    # Save ulpins_3d.json for Viewer
-    output_viewer_json = VIEWER_DATA_DIR / "ulpins_3d.json"
+    # Save ulpins_3d.json for Viewer (support multi-city output directory)
+    target_viewer_dir = output_viewer_dir if output_viewer_dir is not None else VIEWER_DATA_DIR
+    target_viewer_dir.mkdir(parents=True, exist_ok=True)
+    output_viewer_json = target_viewer_dir / "ulpins_3d.json"
     with open(output_viewer_json, "w") as f:
         json.dump(ulpins_3d_dataset, f)
-    print(f"  💾 Viewer 3D ULPINs → viewer/public/data/ulpins_3d.json ({len(ulpins_3d_dataset)} buildings mapped)")
+    print(f"  💾 Viewer 3D ULPINs → {output_viewer_json} ({len(ulpins_3d_dataset)} buildings mapped)")
+    if target_viewer_dir != VIEWER_DATA_DIR:
+        VIEWER_DATA_DIR.mkdir(parents=True, exist_ok=True)
+        with open(VIEWER_DATA_DIR / "ulpins_3d.json", "w") as f:
+            json.dump(ulpins_3d_dataset, f)
 
     primary_state = features_3d_geojson[0]["properties"].get("state_name", "Telangana") if features_3d_geojson else "Telangana"
     primary_state_code = features_3d_geojson[0]["properties"].get("state_code", "36") if features_3d_geojson else "36"
