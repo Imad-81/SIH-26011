@@ -119,6 +119,8 @@ interface CameraControllerProps {
   isTourActive: boolean;
   onTourEnd?: () => void;
   autoRotate: boolean;
+  isPitchMode?: boolean;
+  pitchPaused?: boolean;
 }
 
 export default function CameraController({
@@ -127,6 +129,8 @@ export default function CameraController({
   isTourActive,
   onTourEnd,
   autoRotate,
+  isPitchMode = false,
+  pitchPaused = false,
 }: CameraControllerProps) {
   const controlsRef = useRef<ComponentRef<typeof OrbitControls>>(null);
   const { camera } = useThree();
@@ -214,8 +218,8 @@ export default function CameraController({
       maxPolarAngle={Math.PI / 2.05}
       minDistance={20}
       maxDistance={25000}
-      autoRotate={autoRotate && !isTourActive}
-      autoRotateSpeed={0.7}
+      autoRotate={((autoRotate || (isPitchMode && !pitchPaused))) && !isTourActive}
+      autoRotateSpeed={isPitchMode ? 1.1 : 0.7}
     />
   );
 }

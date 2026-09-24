@@ -28,6 +28,7 @@ interface TopBarProps {
   cities?: CityManifestEntry[];
   selectedCityId?: string;
   onSelectCity?: (cityId: string) => void;
+  onTogglePitchMode?: () => void;
 }
 
 export default function TopBar({
@@ -54,6 +55,7 @@ export default function TopBar({
   cities = [],
   selectedCityId = 'hyderabad',
   onSelectCity,
+  onTogglePitchMode,
 }: TopBarProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
@@ -491,6 +493,18 @@ export default function TopBar({
           <span>📊</span>
           <span>Analytics</span>
         </button>
+
+        {/* 1-Click Pitch Mode Button */}
+        {onTogglePitchMode && (
+          <button
+            onClick={onTogglePitchMode}
+            className="px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-purple-600/40 via-indigo-600/40 to-cyan-500/40 hover:from-purple-600/60 hover:via-indigo-600/60 hover:to-cyan-500/60 border border-cyan-400/40 hover:border-cyan-400/80 shadow-[0_0_15px_rgba(0,245,255,0.25)] transition-all flex items-center gap-1.5 cursor-pointer"
+            title="Launch Conference Pitch Mode (Full Screen Cinematic HUD)"
+          >
+            <span className="text-sm">🎬</span>
+            <span>Pitch Mode</span>
+          </button>
+        )}
       </div>
     </header>
   );

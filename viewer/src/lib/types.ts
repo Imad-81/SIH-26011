@@ -200,6 +200,12 @@ export interface AnalyticsData {
   grossFloorAreaM2: number;
   heightBuckets: Record<string, number>;
   typeBreakdown: Record<string, number>;
+  cadastre?: {
+    total2DParcels: number;
+    total3DVerticalParcels: number;
+    buildingsWithFloorPlans: number;
+    verticalDensityRatio: number;
+  };
   solar: {
     usableRooftopAreaM2: number;
     dailyGenerationKwh: number;
