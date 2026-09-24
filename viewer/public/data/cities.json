@@ -15,5 +15,22 @@
     "buildingCount": 4641,
     "defaultElev": 569.0,
     "generatedAt": "2026-09-24T06:32:26.009023+00:00"
+  },
+  {
+    "id": "mumbai",
+    "name": "Mumbai (Bandra Kurla Complex)",
+    "state": "Maharashtra",
+    "center": [
+      72.8687,
+      19.0657
+    ],
+    "centerCoords": {
+      "lat": 19.0657,
+      "lon": 72.8687
+    },
+    "sizeKm": 2.5,
+    "buildingCount": 30,
+    "defaultElev": 12.0,
+    "generatedAt": "2026-09-24T07:38:01.321389+00:00"
   }
 ]

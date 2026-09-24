@@ -11,6 +11,7 @@ interface RoadsProps {
   timeOfDay?: TimeOfDay;
   showRoads?: boolean;
   showTraffic?: boolean;
+  cityId?: string | null;
 }
 
 interface TrafficParticle {
@@ -152,13 +153,21 @@ export default function Roads({
   timeOfDay = 'night',
   showRoads = true,
   showTraffic = true,
+  cityId,
 }: RoadsProps) {
   const [roadData, setRoadData] = useState<RoadDataset | null>(null);
   const trafficMeshRef = useRef<THREE.InstancedMesh>(null);
   const trafficParticlesRef = useRef<TrafficParticle[]>([]);
 
   useEffect(() => {
-    fetch('/data/roads.json')
+    const url = cityId ? `/data/cities/${cityId}/roads.json` : '/data/roads.json';
+    fetch(url)
+      .then((res) => {
+        if (!res.ok && cityId) {
+          return fetch('/data/roads.json');
+        }
+        return res;
+      })
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
@@ -168,7 +177,7 @@ export default function Roads({
         console.warn('Roads data not available, running without road layer:', err);
         setRoadData(null);
       });
-  }, []);
+  }, [cityId]);
 
   const isNight = timeOfDay === 'night';
 

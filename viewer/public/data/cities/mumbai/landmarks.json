@@ -1,0 +1,194 @@
+[
+  {
+    "id": "lm_b_mum_001",
+    "name": "Jio World Centre & Convention Centre",
+    "badge": "Convention & Cultural Hub",
+    "buildingId": "b_mum_001",
+    "height": 98.0,
+    "floors": 26,
+    "centroid": [
+      60.0,
+      40.0
+    ],
+    "ulpin2d": "1972.86927026902258027102K528",
+    "description": "Premier international exhibition and convention centre in Bandra Kurla Complex with state-of-the-art multi-tier halls.",
+    "cameraPreset": {
+      "dist": 220,
+      "pitch": 32,
+      "bearing": 215,
+      "targetOffset": [
+        0,
+        45,
+        0
+      ]
+    }
+  },
+  {
+    "id": "lm_b_mum_008",
+    "name": "Godrej BKC",
+    "badge": "Platinum LEED Commercial",
+    "buildingId": "b_mum_008",
+    "height": 88.0,
+    "floors": 23,
+    "centroid": [
+      140.0,
+      120.0
+    ],
+    "ulpin2d": "1972.87003062771936027102K528",
+    "description": "Gold-standard sustainable corporate commercial tower with high-density vertical cadastre units.",
+    "cameraPreset": {
+      "dist": 190,
+      "pitch": 30,
+      "bearing": 45,
+      "targetOffset": [
+        0,
+        42,
+        0
+      ]
+    }
+  },
+  {
+    "id": "lm_b_mum_002",
+    "name": "BKC One (The Capital)",
+    "badge": "Signature Corporate HQ",
+    "buildingId": "b_mum_002",
+    "height": 84.0,
+    "floors": 22,
+    "centroid": [
+      -120.0,
+      80.0
+    ],
+    "ulpin2d": "1972.86755946195485027102K528",
+    "description": "Iconic energy-efficient commercial high-rise housing global investment banks and technology leaders.",
+    "cameraPreset": {
+      "dist": 180,
+      "pitch": 35,
+      "bearing": 135,
+      "targetOffset": [
+        0,
+        40,
+        0
+      ]
+    }
+  },
+  {
+    "id": "lm_b_mum_006",
+    "name": "National Stock Exchange (NSE) HQ",
+    "badge": "Financial Institution",
+    "buildingId": "b_mum_006",
+    "height": 75.0,
+    "floors": 19,
+    "centroid": [
+      20.0,
+      -120.0
+    ],
+    "ulpin2d": "1972.8688900896742027102K528",
+    "description": "Primary financial exchange headquarters anchored in the central financial enclave of Mumbai.",
+    "cameraPreset": {
+      "dist": 170,
+      "pitch": 34,
+      "bearing": 310,
+      "targetOffset": [
+        0,
+        36,
+        0
+      ]
+    }
+  },
+  {
+    "id": "lm_b_mum_004",
+    "name": "IL&FS Financial Centre",
+    "badge": "Financial Hub",
+    "buildingId": "b_mum_004",
+    "height": 72.0,
+    "floors": 18,
+    "centroid": [
+      -80.0,
+      -60.0
+    ],
+    "ulpin2d": "1972.86793964130324027102K528",
+    "description": "Landmark high-density corporate tower pioneering BKC's transition into India's premier financial center.",
+    "cameraPreset": {
+      "dist": 160,
+      "pitch": 30,
+      "bearing": 270,
+      "targetOffset": [
+        0,
+        35,
+        0
+      ]
+    }
+  },
+  {
+    "id": "lm_b_mum_005",
+    "name": "Securities and Exchange Board of India (SEBI) Bhavan",
+    "badge": "Regulator Headquarters",
+    "buildingId": "b_mum_005",
+    "height": 68.0,
+    "floors": 17,
+    "centroid": [
+      -180.0,
+      -40.0
+    ],
+    "ulpin2d": "1972.86698919293227027102K528",
+    "description": "National capital market regulator headquarters with advanced digital infrastructure and security.",
+    "cameraPreset": {
+      "dist": 150,
+      "pitch": 32,
+      "bearing": 180,
+      "targetOffset": [
+        0,
+        32,
+        0
+      ]
+    }
+  },
+  {
+    "id": "lm_b_mum_007",
+    "name": "Bharat Diamond Bourse (Tower A-B)",
+    "badge": "Diamond Exchange Hub",
+    "buildingId": "b_mum_007",
+    "height": 65.0,
+    "floors": 16,
+    "centroid": [
+      220.0,
+      -50.0
+    ],
+    "ulpin2d": "1972.87079098641613027102K528",
+    "description": "The world's largest diamond trading hub spanning multiple interlinked towers with high-security cadastre units.",
+    "cameraPreset": {
+      "dist": 240,
+      "pitch": 32,
+      "bearing": 330,
+      "targetOffset": [
+        0,
+        32,
+        0
+      ]
+    }
+  },
+  {
+    "id": "lm_b_mum_017",
+    "name": "Kotak Mahindra Bank HQ",
+    "badge": "Commercial Landmark",
+    "buildingId": "b_mum_017",
+    "height": 64.0,
+    "floors": 16,
+    "centroid": [
+      180,
+      -170
+    ],
+    "ulpin2d": "1972.87041080706774027102K528",
+    "description": "Prominent 64m tower located in Bandra Kurla Complex.",
+    "cameraPreset": {
+      "dist": 180,
+      "pitch": 32,
+      "bearing": 45,
+      "targetOffset": [
+        0,
+        32.0,
+        0
+      ]
+    }
+  }
+]

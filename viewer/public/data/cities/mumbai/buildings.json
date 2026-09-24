@@ -1,0 +1,1331 @@
+{
+  "buildings": [
+    {
+      "id": "b_mum_001",
+      "osmId": 8000001,
+      "coordinates": [
+        [
+          -10.0,
+          -15.0
+        ],
+        [
+          130.0,
+          -15.0
+        ],
+        [
+          130.0,
+          95.0
+        ],
+        [
+          -10.0,
+          95.0
+        ],
+        [
+          -10.0,
+          -15.0
+        ]
+      ],
+      "height": 98.0,
+      "estimatedFloors": 26,
+      "osmLevels": 26,
+      "buildingType": "commercial",
+      "name": "Jio World Centre & Convention Centre",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        60.0,
+        40.0
+      ],
+      "ulpin2d": "1972.86927026902258027102K528",
+      "surveyNumber": "BKC/C-44",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 26,
+      "unitsCount": 104,
+      "ulpin3dSample": "1972.86927026902258027102K528-FL00"
+    },
+    {
+      "id": "b_mum_002",
+      "osmId": 8000002,
+      "coordinates": [
+        [
+          -165.0,
+          42.5
+        ],
+        [
+          -75.0,
+          42.5
+        ],
+        [
+          -75.0,
+          117.5
+        ],
+        [
+          -165.0,
+          117.5
+        ],
+        [
+          -165.0,
+          42.5
+        ]
+      ],
+      "height": 84.0,
+      "estimatedFloors": 22,
+      "osmLevels": 22,
+      "buildingType": "commercial",
+      "name": "BKC One (The Capital)",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        -120.0,
+        80.0
+      ],
+      "ulpin2d": "1972.86755946195485027102K528",
+      "surveyNumber": "BKC/G-Block-12",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 22,
+      "unitsCount": 88,
+      "ulpin3dSample": "1972.86755946195485027102K528-FL00"
+    },
+    {
+      "id": "b_mum_003",
+      "osmId": 8000003,
+      "coordinates": [
+        [
+          -315.0,
+          97.5
+        ],
+        [
+          -205.0,
+          97.5
+        ],
+        [
+          -205.0,
+          182.5
+        ],
+        [
+          -315.0,
+          182.5
+        ],
+        [
+          -315.0,
+          97.5
+        ]
+      ],
+      "height": 62.0,
+      "estimatedFloors": 16,
+      "osmLevels": 16,
+      "buildingType": "commercial",
+      "name": "Maker Maxity Commercial Complex",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        -260.0,
+        140.0
+      ],
+      "ulpin2d": "1972.8662288342355027102K528",
+      "surveyNumber": "BKC/C-3",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 16,
+      "unitsCount": 64,
+      "ulpin3dSample": "1972.8662288342355027102K528-FL00"
+    },
+    {
+      "id": "b_mum_004",
+      "osmId": 8000004,
+      "coordinates": [
+        [
+          -120.0,
+          -92.5
+        ],
+        [
+          -40.0,
+          -92.5
+        ],
+        [
+          -40.0,
+          -27.5
+        ],
+        [
+          -120.0,
+          -27.5
+        ],
+        [
+          -120.0,
+          -92.5
+        ]
+      ],
+      "height": 72.0,
+      "estimatedFloors": 18,
+      "osmLevels": 18,
+      "buildingType": "commercial",
+      "name": "IL&FS Financial Centre",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        -80.0,
+        -60.0
+      ],
+      "ulpin2d": "1972.86793964130324027102K528",
+      "surveyNumber": "BKC/G-Block-22",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 18,
+      "unitsCount": 72,
+      "ulpin3dSample": "1972.86793964130324027102K528-FL00"
+    },
+    {
+      "id": "b_mum_005",
+      "osmId": 8000005,
+      "coordinates": [
+        [
+          -215.0,
+          -75.0
+        ],
+        [
+          -145.0,
+          -75.0
+        ],
+        [
+          -145.0,
+          -5.0
+        ],
+        [
+          -215.0,
+          -5.0
+        ],
+        [
+          -215.0,
+          -75.0
+        ]
+      ],
+      "height": 68.0,
+      "estimatedFloors": 17,
+      "osmLevels": 17,
+      "buildingType": "commercial",
+      "name": "Securities and Exchange Board of India (SEBI) Bhavan",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        -180.0,
+        -40.0
+      ],
+      "ulpin2d": "1972.86698919293227027102K528",
+      "surveyNumber": "BKC/G-Block-C14",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 17,
+      "unitsCount": 68,
+      "ulpin3dSample": "1972.86698919293227027102K528-FL00"
+    },
+    {
+      "id": "b_mum_006",
+      "osmId": 8000006,
+      "coordinates": [
+        [
+          -17.5,
+          -157.5
+        ],
+        [
+          57.5,
+          -157.5
+        ],
+        [
+          57.5,
+          -82.5
+        ],
+        [
+          -17.5,
+          -82.5
+        ],
+        [
+          -17.5,
+          -157.5
+        ]
+      ],
+      "height": 75.0,
+      "estimatedFloors": 19,
+      "osmLevels": 19,
+      "buildingType": "commercial",
+      "name": "National Stock Exchange (NSE) HQ",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        20.0,
+        -120.0
+      ],
+      "ulpin2d": "1972.8688900896742027102K528",
+      "surveyNumber": "BKC/G-Block-C1",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 19,
+      "unitsCount": 76,
+      "ulpin3dSample": "1972.8688900896742027102K528-FL00"
+    },
+    {
+      "id": "b_mum_007",
+      "osmId": 8000007,
+      "coordinates": [
+        [
+          155.0,
+          -97.5
+        ],
+        [
+          285.0,
+          -97.5
+        ],
+        [
+          285.0,
+          -2.5
+        ],
+        [
+          155.0,
+          -2.5
+        ],
+        [
+          155.0,
+          -97.5
+        ]
+      ],
+      "height": 65.0,
+      "estimatedFloors": 16,
+      "osmLevels": 16,
+      "buildingType": "commercial",
+      "name": "Bharat Diamond Bourse (Tower A-B)",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        220.0,
+        -50.0
+      ],
+      "ulpin2d": "1972.87079098641613027102K528",
+      "surveyNumber": "BKC/G-Block-BDB",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 16,
+      "unitsCount": 64,
+      "ulpin3dSample": "1972.87079098641613027102K528-FL00"
+    },
+    {
+      "id": "b_mum_008",
+      "osmId": 8000008,
+      "coordinates": [
+        [
+          97.5,
+          85.0
+        ],
+        [
+          182.5,
+          85.0
+        ],
+        [
+          182.5,
+          155.0
+        ],
+        [
+          97.5,
+          155.0
+        ],
+        [
+          97.5,
+          85.0
+        ]
+      ],
+      "height": 88.0,
+      "estimatedFloors": 23,
+      "osmLevels": 23,
+      "buildingType": "commercial",
+      "name": "Godrej BKC",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        140.0,
+        120.0
+      ],
+      "ulpin2d": "1972.87003062771936027102K528",
+      "surveyNumber": "BKC/C-68",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 23,
+      "unitsCount": 92,
+      "ulpin3dSample": "1972.87003062771936027102K528-FL00"
+    },
+    {
+      "id": "b_mum_009",
+      "osmId": 8000009,
+      "coordinates": [
+        [
+          230.0,
+          35.0
+        ],
+        [
+          330.0,
+          35.0
+        ],
+        [
+          330.0,
+          125.0
+        ],
+        [
+          230.0,
+          125.0
+        ],
+        [
+          230.0,
+          35.0
+        ]
+      ],
+      "height": 38.0,
+      "estimatedFloors": 8,
+      "osmLevels": 8,
+      "buildingType": "commercial",
+      "name": "US Consulate General Mumbai",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        280.0,
+        80.0
+      ],
+      "ulpin2d": "1972.8713612554387027102K528",
+      "surveyNumber": "BKC/C-49",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 8,
+      "unitsCount": 32,
+      "ulpin3dSample": "1972.8713612554387027102K528-FL00"
+    },
+    {
+      "id": "b_mum_010",
+      "osmId": 8000010,
+      "coordinates": [
+        [
+          50.0,
+          150.0
+        ],
+        [
+          110.0,
+          150.0
+        ],
+        [
+          110.0,
+          210.0
+        ],
+        [
+          50.0,
+          210.0
+        ],
+        [
+          50.0,
+          150.0
+        ]
+      ],
+      "height": 24.0,
+      "estimatedFloors": 4,
+      "osmLevels": 4,
+      "buildingType": "commercial",
+      "name": "Dhirubhai Ambani Square & Fountain",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        80.0,
+        180.0
+      ],
+      "ulpin2d": "1972.86946035869677027102K528",
+      "surveyNumber": "BKC/C-45",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 4,
+      "unitsCount": 16,
+      "ulpin3dSample": "1972.86946035869677027102K528-FL00"
+    },
+    {
+      "id": "b_mum_011",
+      "osmId": 8000011,
+      "coordinates": [
+        [
+          -380.0,
+          15.0
+        ],
+        [
+          -320.0,
+          15.0
+        ],
+        [
+          -320.0,
+          65.0
+        ],
+        [
+          -380.0,
+          65.0
+        ],
+        [
+          -380.0,
+          15.0
+        ]
+      ],
+      "height": 45.0,
+      "estimatedFloors": 11,
+      "osmLevels": 11,
+      "buildingType": "commercial",
+      "name": "BKC Commercial Block A1",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        -350,
+        40
+      ],
+      "ulpin2d": "1972.86537343070164027102K528",
+      "surveyNumber": "BKC/CTS-1011",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 11,
+      "unitsCount": 44,
+      "ulpin3dSample": "1972.86537343070164027102K528-FL00"
+    },
+    {
+      "id": "b_mum_012",
+      "osmId": 8000012,
+      "coordinates": [
+        [
+          -377.5,
+          -87.5
+        ],
+        [
+          -322.5,
+          -87.5
+        ],
+        [
+          -322.5,
+          -32.5
+        ],
+        [
+          -377.5,
+          -32.5
+        ],
+        [
+          -377.5,
+          -87.5
+        ]
+      ],
+      "height": 52.0,
+      "estimatedFloors": 13,
+      "osmLevels": 13,
+      "buildingType": "commercial",
+      "name": "BKC Corporate Suites B2",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        -350,
+        -60
+      ],
+      "ulpin2d": "1972.86537343070164027102K528",
+      "surveyNumber": "BKC/CTS-1012",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 13,
+      "unitsCount": 52,
+      "ulpin3dSample": "1972.86537343070164027102K528-FL00"
+    },
+    {
+      "id": "b_mum_013",
+      "osmId": 8000013,
+      "coordinates": [
+        [
+          -312.5,
+          -175.0
+        ],
+        [
+          -247.5,
+          -175.0
+        ],
+        [
+          -247.5,
+          -125.0
+        ],
+        [
+          -312.5,
+          -125.0
+        ],
+        [
+          -312.5,
+          -175.0
+        ]
+      ],
+      "height": 48.0,
+      "estimatedFloors": 12,
+      "osmLevels": 12,
+      "buildingType": "office",
+      "name": "Bandra Financial Tower",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        -280,
+        -150
+      ],
+      "ulpin2d": "1972.86603874456131027102K528",
+      "surveyNumber": "BKC/CTS-1013",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 12,
+      "unitsCount": 48,
+      "ulpin3dSample": "1972.86603874456131027102K528-FL00"
+    },
+    {
+      "id": "b_mum_014",
+      "osmId": 8000014,
+      "coordinates": [
+        [
+          -175.0,
+          -207.5
+        ],
+        [
+          -105.0,
+          -207.5
+        ],
+        [
+          -105.0,
+          -152.5
+        ],
+        [
+          -175.0,
+          -152.5
+        ],
+        [
+          -175.0,
+          -207.5
+        ]
+      ],
+      "height": 58.0,
+      "estimatedFloors": 15,
+      "osmLevels": 15,
+      "buildingType": "commercial",
+      "name": "Canara Bank Zonal Office",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        -140,
+        -180
+      ],
+      "ulpin2d": "1972.86736937228065027102K528",
+      "surveyNumber": "BKC/CTS-1014",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 15,
+      "unitsCount": 60,
+      "ulpin3dSample": "1972.86736937228065027102K528-FL00"
+    },
+    {
+      "id": "b_mum_015",
+      "osmId": 8000015,
+      "coordinates": [
+        [
+          -70.0,
+          -250.0
+        ],
+        [
+          -10.0,
+          -250.0
+        ],
+        [
+          -10.0,
+          -190.0
+        ],
+        [
+          -70.0,
+          -190.0
+        ],
+        [
+          -70.0,
+          -250.0
+        ]
+      ],
+      "height": 42.0,
+      "estimatedFloors": 10,
+      "osmLevels": 10,
+      "buildingType": "commercial",
+      "name": "Bank of Baroda Bhavan",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        -40,
+        -220
+      ],
+      "ulpin2d": "1972.86831982065162027102K528",
+      "surveyNumber": "BKC/CTS-1015",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 10,
+      "unitsCount": 40,
+      "ulpin3dSample": "1972.86831982065162027102K528-FL00"
+    },
+    {
+      "id": "b_mum_016",
+      "osmId": 8000016,
+      "coordinates": [
+        [
+          67.5,
+          -245.0
+        ],
+        [
+          132.5,
+          -245.0
+        ],
+        [
+          132.5,
+          -195.0
+        ],
+        [
+          67.5,
+          -195.0
+        ],
+        [
+          67.5,
+          -245.0
+        ]
+      ],
+      "height": 55.0,
+      "estimatedFloors": 14,
+      "osmLevels": 14,
+      "buildingType": "commercial",
+      "name": "ICICI Bank Towers",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        100,
+        -220
+      ],
+      "ulpin2d": "1972.86965044837096027102K528",
+      "surveyNumber": "BKC/CTS-1016",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 14,
+      "unitsCount": 56,
+      "ulpin3dSample": "1972.86965044837096027102K528-FL00"
+    },
+    {
+      "id": "b_mum_017",
+      "osmId": 8000017,
+      "coordinates": [
+        [
+          145.0,
+          -200.0
+        ],
+        [
+          215.0,
+          -200.0
+        ],
+        [
+          215.0,
+          -140.0
+        ],
+        [
+          145.0,
+          -140.0
+        ],
+        [
+          145.0,
+          -200.0
+        ]
+      ],
+      "height": 64.0,
+      "estimatedFloors": 16,
+      "osmLevels": 16,
+      "buildingType": "office",
+      "name": "Kotak Mahindra Bank HQ",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        180,
+        -170
+      ],
+      "ulpin2d": "1972.87041080706774027102K528",
+      "surveyNumber": "BKC/CTS-1017",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 16,
+      "unitsCount": 64,
+      "ulpin3dSample": "1972.87041080706774027102K528-FL00"
+    },
+    {
+      "id": "b_mum_018",
+      "osmId": 8000018,
+      "coordinates": [
+        [
+          240.0,
+          -187.5
+        ],
+        [
+          320.0,
+          -187.5
+        ],
+        [
+          320.0,
+          -132.5
+        ],
+        [
+          240.0,
+          -132.5
+        ],
+        [
+          240.0,
+          -187.5
+        ]
+      ],
+      "height": 45.0,
+      "estimatedFloors": 11,
+      "osmLevels": 11,
+      "buildingType": "commercial",
+      "name": "Standard Chartered Tower",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        280,
+        -160
+      ],
+      "ulpin2d": "1972.8713612554387027102K528",
+      "surveyNumber": "BKC/CTS-1018",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 11,
+      "unitsCount": 44,
+      "ulpin3dSample": "1972.8713612554387027102K528-FL00"
+    },
+    {
+      "id": "b_mum_019",
+      "osmId": 8000019,
+      "coordinates": [
+        [
+          -355.0,
+          195.0
+        ],
+        [
+          -285.0,
+          195.0
+        ],
+        [
+          -285.0,
+          245.0
+        ],
+        [
+          -355.0,
+          245.0
+        ],
+        [
+          -355.0,
+          195.0
+        ]
+      ],
+      "height": 36.0,
+      "estimatedFloors": 9,
+      "osmLevels": 9,
+      "buildingType": "apartments",
+      "name": "BKC Signature Residences 1",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        -320,
+        220
+      ],
+      "ulpin2d": "1972.86565856521293027102K528",
+      "surveyNumber": "BKC/CTS-1019",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 9,
+      "unitsCount": 54,
+      "ulpin3dSample": "1972.86565856521293027102K528-FL00"
+    },
+    {
+      "id": "b_mum_020",
+      "osmId": 8000020,
+      "coordinates": [
+        [
+          -232.5,
+          210.0
+        ],
+        [
+          -167.5,
+          210.0
+        ],
+        [
+          -167.5,
+          270.0
+        ],
+        [
+          -232.5,
+          270.0
+        ],
+        [
+          -232.5,
+          210.0
+        ]
+      ],
+      "height": 40.0,
+      "estimatedFloors": 10,
+      "osmLevels": 10,
+      "buildingType": "apartments",
+      "name": "BKC Signature Residences 2",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        -200,
+        240
+      ],
+      "ulpin2d": "1972.86679910325807027102K528",
+      "surveyNumber": "BKC/CTS-1020",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 10,
+      "unitsCount": 60,
+      "ulpin3dSample": "1972.86679910325807027102K528-FL00"
+    },
+    {
+      "id": "b_mum_021",
+      "osmId": 8000021,
+      "coordinates": [
+        [
+          -117.5,
+          222.5
+        ],
+        [
+          -42.5,
+          222.5
+        ],
+        [
+          -42.5,
+          277.5
+        ],
+        [
+          -117.5,
+          277.5
+        ],
+        [
+          -117.5,
+          222.5
+        ]
+      ],
+      "height": 46.0,
+      "estimatedFloors": 12,
+      "osmLevels": 12,
+      "buildingType": "residential",
+      "name": "Kalpataru Sparkle BKC",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        -80,
+        250
+      ],
+      "ulpin2d": "1972.86793964130324027102K528",
+      "surveyNumber": "BKC/CTS-1021",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 12,
+      "unitsCount": 72,
+      "ulpin3dSample": "1972.86793964130324027102K528-FL00"
+    },
+    {
+      "id": "b_mum_022",
+      "osmId": 8000022,
+      "coordinates": [
+        [
+          15.0,
+          235.0
+        ],
+        [
+          85.0,
+          235.0
+        ],
+        [
+          85.0,
+          285.0
+        ],
+        [
+          15.0,
+          285.0
+        ],
+        [
+          15.0,
+          235.0
+        ]
+      ],
+      "height": 52.0,
+      "estimatedFloors": 13,
+      "osmLevels": 13,
+      "buildingType": "apartments",
+      "name": "Adani Ten BKC",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        50,
+        260
+      ],
+      "ulpin2d": "1972.86917522418548027102K528",
+      "surveyNumber": "BKC/CTS-1022",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 13,
+      "unitsCount": 78,
+      "ulpin3dSample": "1972.86917522418548027102K528-FL00"
+    },
+    {
+      "id": "b_mum_023",
+      "osmId": 8000023,
+      "coordinates": [
+        [
+          130.0,
+          210.0
+        ],
+        [
+          210.0,
+          210.0
+        ],
+        [
+          210.0,
+          270.0
+        ],
+        [
+          130.0,
+          270.0
+        ],
+        [
+          130.0,
+          210.0
+        ]
+      ],
+      "height": 58.0,
+      "estimatedFloors": 15,
+      "osmLevels": 15,
+      "buildingType": "residential",
+      "name": "Rustomjee Seasons BKC",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        170,
+        240
+      ],
+      "ulpin2d": "1972.87031576223065027102K528",
+      "surveyNumber": "BKC/CTS-1023",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 15,
+      "unitsCount": 90,
+      "ulpin3dSample": "1972.87031576223065027102K528-FL00"
+    },
+    {
+      "id": "b_mum_024",
+      "osmId": 8000024,
+      "coordinates": [
+        [
+          252.5,
+          192.5
+        ],
+        [
+          327.5,
+          192.5
+        ],
+        [
+          327.5,
+          247.5
+        ],
+        [
+          252.5,
+          247.5
+        ],
+        [
+          252.5,
+          192.5
+        ]
+      ],
+      "height": 42.0,
+      "estimatedFloors": 11,
+      "osmLevels": 11,
+      "buildingType": "apartments",
+      "name": "Sunteck Signia Isles",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        290,
+        220
+      ],
+      "ulpin2d": "1972.8714563002758027102K528",
+      "surveyNumber": "BKC/CTS-1024",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 11,
+      "unitsCount": 66,
+      "ulpin3dSample": "1972.8714563002758027102K528-FL00"
+    },
+    {
+      "id": "b_mum_025",
+      "osmId": 8000025,
+      "coordinates": [
+        [
+          -425.0,
+          97.5
+        ],
+        [
+          -375.0,
+          97.5
+        ],
+        [
+          -375.0,
+          142.5
+        ],
+        [
+          -425.0,
+          142.5
+        ],
+        [
+          -425.0,
+          97.5
+        ]
+      ],
+      "height": 28.0,
+      "estimatedFloors": 7,
+      "osmLevels": 7,
+      "buildingType": "commercial",
+      "name": "Kalanagar Business Bay",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        -400,
+        120
+      ],
+      "ulpin2d": "1972.86489820651616027102K528",
+      "surveyNumber": "BKC/CTS-1025",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 7,
+      "unitsCount": 28,
+      "ulpin3dSample": "1972.86489820651616027102K528-FL00"
+    },
+    {
+      "id": "b_mum_026",
+      "osmId": 8000026,
+      "coordinates": [
+        [
+          -427.5,
+          -40.0
+        ],
+        [
+          -372.5,
+          -40.0
+        ],
+        [
+          -372.5,
+          0.0
+        ],
+        [
+          -427.5,
+          0.0
+        ],
+        [
+          -427.5,
+          -40.0
+        ]
+      ],
+      "height": 32.0,
+      "estimatedFloors": 8,
+      "osmLevels": 8,
+      "buildingType": "retail",
+      "name": "BKC Galleria",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        -400,
+        -20
+      ],
+      "ulpin2d": "1972.86489820651616027102K528",
+      "surveyNumber": "BKC/CTS-1026",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 8,
+      "unitsCount": 32,
+      "ulpin3dSample": "1972.86489820651616027102K528-FL00"
+    },
+    {
+      "id": "b_mum_027",
+      "osmId": 8000027,
+      "coordinates": [
+        [
+          345.0,
+          10.0
+        ],
+        [
+          415.0,
+          10.0
+        ],
+        [
+          415.0,
+          70.0
+        ],
+        [
+          345.0,
+          70.0
+        ],
+        [
+          345.0,
+          10.0
+        ]
+      ],
+      "height": 38.0,
+      "estimatedFloors": 9,
+      "osmLevels": 9,
+      "buildingType": "commercial",
+      "name": "Asian Heart Institute Annex",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        380,
+        40
+      ],
+      "ulpin2d": "1972.87231170380966027102K528",
+      "surveyNumber": "BKC/CTS-1027",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 9,
+      "unitsCount": 36,
+      "ulpin3dSample": "1972.87231170380966027102K528-FL00"
+    },
+    {
+      "id": "b_mum_028",
+      "osmId": 8000028,
+      "coordinates": [
+        [
+          342.5,
+          -102.5
+        ],
+        [
+          417.5,
+          -102.5
+        ],
+        [
+          417.5,
+          -37.5
+        ],
+        [
+          342.5,
+          -37.5
+        ],
+        [
+          342.5,
+          -102.5
+        ]
+      ],
+      "height": 45.0,
+      "estimatedFloors": 11,
+      "osmLevels": 11,
+      "buildingType": "hospital",
+      "name": "Asian Heart Institute Complex",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        380,
+        -70
+      ],
+      "ulpin2d": "1972.87231170380966027102K528",
+      "surveyNumber": "BKC/CTS-1028",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 11,
+      "unitsCount": 66,
+      "ulpin3dSample": "1972.87231170380966027102K528-FL00"
+    },
+    {
+      "id": "b_mum_029",
+      "osmId": 8000029,
+      "coordinates": [
+        [
+          10.0,
+          315.0
+        ],
+        [
+          70.0,
+          315.0
+        ],
+        [
+          70.0,
+          365.0
+        ],
+        [
+          10.0,
+          365.0
+        ],
+        [
+          10.0,
+          315.0
+        ]
+      ],
+      "height": 30.0,
+      "estimatedFloors": 8,
+      "osmLevels": 8,
+      "buildingType": "office",
+      "name": "MMRDA Headquarters Annex",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        40,
+        340
+      ],
+      "ulpin2d": "1972.86908017934839027102K528",
+      "surveyNumber": "BKC/CTS-1029",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 8,
+      "unitsCount": 32,
+      "ulpin3dSample": "1972.86908017934839027102K528-FL00"
+    },
+    {
+      "id": "b_mum_030",
+      "osmId": 8000030,
+      "coordinates": [
+        [
+          -112.5,
+          312.5
+        ],
+        [
+          -47.5,
+          312.5
+        ],
+        [
+          -47.5,
+          367.5
+        ],
+        [
+          -112.5,
+          367.5
+        ],
+        [
+          -112.5,
+          312.5
+        ]
+      ],
+      "height": 48.0,
+      "estimatedFloors": 12,
+      "osmLevels": 12,
+      "buildingType": "commercial",
+      "name": "MMRDA Administrative Tower",
+      "heightSource": "landmark_registry",
+      "baseElevation": 12.0,
+      "centroid": [
+        -80,
+        340
+      ],
+      "ulpin2d": "1972.86793964130324027102K528",
+      "surveyNumber": "BKC/CTS-1030",
+      "villageName": "Bandra East",
+      "hasFloorPlan": true,
+      "floorsCount": 12,
+      "unitsCount": 48,
+      "ulpin3dSample": "1972.86793964130324027102K528-FL00"
+    }
+  ],
+  "stats": {
+    "total": 30,
+    "total2DParcels": 30,
+    "total3DVerticalParcels": 1746,
+    "buildingsWithFloorPlans": 30
+  },
+  "generatedAt": "2026-09-24T07:38:01.308655+00:00"
+}

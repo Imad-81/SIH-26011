@@ -5,17 +5,25 @@ import { AnalyticsData } from '@/lib/types';
 
 interface AnalyticsModalProps {
   onClose: () => void;
+  cityId?: string | null;
 }
 
-export default function AnalyticsModal({ onClose }: AnalyticsModalProps) {
+export default function AnalyticsModal({ onClose, cityId }: AnalyticsModalProps) {
   const [data, setData] = useState<AnalyticsData | null>(null);
 
   useEffect(() => {
-    fetch('/data/analytics.json')
+    const url = cityId ? `/data/cities/${cityId}/analytics.json` : '/data/analytics.json';
+    fetch(url)
+      .then((res) => {
+        if (!res.ok && cityId) {
+          return fetch('/data/analytics.json');
+        }
+        return res;
+      })
       .then((res) => res.json())
       .then((json) => setData(json))
       .catch((err) => console.error('Failed to load analytics:', err));
-  }, []);
+  }, [cityId]);
 
   const handleExportCSV = () => {
     if (!data) return;

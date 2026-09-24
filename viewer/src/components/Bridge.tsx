@@ -7,20 +7,28 @@ import { SCALE, getTerrainY } from '@/lib/geo';
 
 interface BridgeProps {
   centerElevation: number;
+  cityId?: string | null;
 }
 
-export default function Bridge({ centerElevation }: BridgeProps) {
+export default function Bridge({ centerElevation, cityId }: BridgeProps) {
   const [roadData, setRoadData] = useState<RoadDataset | null>(null);
 
   useEffect(() => {
-    fetch('/data/roads.json')
+    const url = cityId ? `/data/cities/${cityId}/roads.json` : '/data/roads.json';
+    fetch(url)
+      .then((res) => {
+        if (!res.ok && cityId) {
+          return fetch('/data/roads.json');
+        }
+        return res;
+      })
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
       .then((data: RoadDataset) => setRoadData(data))
       .catch((err) => console.error('Failed to load bridge road data:', err));
-  }, []);
+  }, [cityId]);
 
   const bridgeModel = useMemo(() => {
     if (!roadData || !roadData.roads || roadData.roads.length === 0) return null;

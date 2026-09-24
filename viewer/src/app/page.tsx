@@ -1,11 +1,11 @@
 'use client';
 
 import '@/lib/three-config';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useBuildingData } from '@/hooks/useBuildingData';
 import { useCadastreData } from '@/hooks/useCadastreData';
-import { SelectedBuilding, LandmarkData, RenderMode, TimeOfDay, BuildingData } from '@/lib/types';
+import { SelectedBuilding, LandmarkData, RenderMode, TimeOfDay, BuildingData, CityManifestEntry } from '@/lib/types';
 import LoadingScreen from '@/components/LoadingScreen';
 import BuildingInfo from '@/components/BuildingInfo';
 import LandmarkModal from '@/components/LandmarkModal';
@@ -23,8 +23,50 @@ const Scene = dynamic(() => import('@/components/Scene'), {
 });
 
 export default function Home() {
-  const { buildings, terrain, water, loading, error, progress } = useBuildingData();
-  const { cadastreData, getBuildingCadastre } = useCadastreData();
+  const [selectedCityId, setSelectedCityId] = useState<string>('hyderabad');
+  const [cities, setCities] = useState<CityManifestEntry[]>([]);
+
+  // Fetch available cities manifest
+  useEffect(() => {
+    fetch('/data/cities.json')
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to load cities manifest');
+        return res.json();
+      })
+      .then((data: CityManifestEntry[]) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setCities(data);
+        }
+      })
+      .catch((err) => {
+        console.warn('Could not fetch cities manifest, using fallback:', err);
+        setCities([
+          {
+            id: 'hyderabad',
+            name: 'Hyderabad (HITEC City / Financial District)',
+            state: 'Telangana',
+            center: [78.38, 17.437],
+            centerCoords: { lat: 17.437, lon: 78.38 },
+            sizeKm: 3.0,
+            buildingCount: 4641,
+            defaultElev: 569.0,
+          },
+          {
+            id: 'mumbai',
+            name: 'Mumbai (Bandra Kurla Complex)',
+            state: 'Maharashtra',
+            center: [72.8687, 19.0657],
+            centerCoords: { lat: 19.0657, lon: 72.8687 },
+            sizeKm: 2.5,
+            buildingCount: 30,
+            defaultElev: 12.0,
+          },
+        ]);
+      });
+  }, []);
+
+  const { buildings, terrain, water, loading, error, progress } = useBuildingData(selectedCityId);
+  const { cadastreData, getBuildingCadastre } = useCadastreData(selectedCityId);
   const [selectedBuilding, setSelectedBuilding] = useState<SelectedBuilding | null>(null);
   const [selectedLandmark, setSelectedLandmark] = useState<LandmarkData | null>(null);
   const [legendVisible, setLegendVisible] = useState(true);
@@ -111,6 +153,17 @@ export default function Home() {
     }
   }, []);
 
+  const handleSelectCity = useCallback((cityId: string) => {
+    setSelectedCityId(cityId);
+    setSelectedBuilding(null);
+    setSelectedLandmark(null);
+    setSelectedFloorIndex(0);
+    setSelectedUnitId(null);
+    setIsFloorIsolated(false);
+    setCameraTargetPos([0, 350, 450]);
+    setCameraLookAt([0, 0, 0]);
+  }, []);
+
   const handleSelectPreset = useCallback((key: string) => {
     const preset = CAMERA_PRESETS[key];
     if (preset) {
@@ -192,6 +245,7 @@ export default function Home() {
             selectedFloorIndex={selectedFloorIndex}
             selectedUnitId={selectedUnitId}
             isFloorIsolated={isFloorIsolated}
+            cityId={selectedCityId}
           />
         </div>
       )}
@@ -222,6 +276,9 @@ export default function Home() {
           onToggleFloodControl={handleToggleFlood}
           cityName={buildings.aoi?.name || buildings.aoi?.city}
           areaSizeKm={buildings.aoi?.sizeKm}
+          cities={cities}
+          selectedCityId={selectedCityId}
+          onSelectCity={handleSelectCity}
         />
       )}
 
@@ -272,7 +329,7 @@ export default function Home() {
 
       {/* Urban Analytics & Solar Clean Energy Modal */}
       {analyticsOpen && (
-        <AnalyticsModal onClose={() => setAnalyticsOpen(false)} />
+        <AnalyticsModal onClose={() => setAnalyticsOpen(false)} cityId={selectedCityId} />
       )}
 
       {/* Dynamic Render Mode Legend */}

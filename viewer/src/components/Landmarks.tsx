@@ -8,18 +8,26 @@ import { LandmarkData } from '@/lib/types';
 interface LandmarksProps {
   onSelectLandmark: (landmark: LandmarkData) => void;
   selectedLandmarkId?: string | null;
+  cityId?: string | null;
 }
 
-export default function Landmarks({ onSelectLandmark, selectedLandmarkId }: LandmarksProps) {
+export default function Landmarks({ onSelectLandmark, selectedLandmarkId, cityId }: LandmarksProps) {
   const [landmarks, setLandmarks] = useState<LandmarkData[]>([]);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/data/landmarks.json')
+    const url = cityId ? `/data/cities/${cityId}/landmarks.json` : '/data/landmarks.json';
+    fetch(url)
+      .then((res) => {
+        if (!res.ok && cityId) {
+          return fetch('/data/landmarks.json');
+        }
+        return res;
+      })
       .then((res) => res.json())
       .then((data) => setLandmarks(data))
       .catch((err) => console.error('Failed to load landmarks:', err));
-  }, []);
+  }, [cityId]);
 
   // High-performance Instanced Laser Beams and Ground Rings (Consolidates 30 draw calls into 2)
   const { laserMesh, ringMesh } = useMemo(() => {
