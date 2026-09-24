@@ -13,6 +13,7 @@ import Legend from '@/components/Legend';
 import TopBar from '@/components/TopBar';
 import FloodControl from '@/components/FloodControl';
 import AnalyticsModal from '@/components/AnalyticsModal';
+import PitchModeHUD from '@/components/PitchModeHUD';
 import { CAMERA_PRESETS } from '@/components/CameraController';
 import { SCALE } from '@/lib/geo';
 
@@ -81,6 +82,8 @@ export default function Home() {
   const [renderMode, setRenderMode] = useState<RenderMode>('height');
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('night');
   const [floodRise, setFloodRise] = useState(0.0);
+  const [isPitchMode, setIsPitchMode] = useState<boolean>(false);
+  const [pitchPaused, setPitchPaused] = useState<boolean>(false);
 
   const baseWaterElevation = useMemo(() => {
     if (water?.baseElevation !== undefined && Number.isFinite(water.baseElevation)) {
@@ -192,6 +195,27 @@ export default function Home() {
     }
   }, []);
 
+  const handleLaunchPitchMode = useCallback(() => {
+    setIsPitchMode(true);
+    setPitchPaused(false);
+    setSelectedBuilding(null);
+    setSelectedLandmark(null);
+    setAnalyticsOpen(false);
+    setFloodControlOpen(false);
+    setIsTourActive(false);
+    setCameraTargetPos([1200, 480, 1200]);
+    setCameraLookAt([0, 50, 0]);
+  }, []);
+
+  const handleExitPitchMode = useCallback(() => {
+    setIsPitchMode(false);
+    setPitchPaused(false);
+  }, []);
+
+  const handleTogglePitchPause = useCallback(() => {
+    setPitchPaused((prev) => !prev);
+  }, []);
+
   if (error) {
     return (
       <div className="h-screen flex items-center justify-center" style={{ background: '#0a0a1a' }}>
@@ -246,12 +270,33 @@ export default function Home() {
             selectedUnitId={selectedUnitId}
             isFloorIsolated={isFloorIsolated}
             cityId={selectedCityId}
+            isPitchMode={isPitchMode}
+            pitchPaused={pitchPaused}
           />
         </div>
       )}
 
+      {/* 🎬 Conference-Ready Pitch Mode Presentation HUD */}
+      {loadingComplete && isPitchMode && buildings && (
+        <PitchModeHUD
+          cityName={buildings.aoi?.name || (selectedCityId === 'mumbai' ? 'Mumbai (Bandra Kurla Complex)' : 'Hyderabad (HITEC City)')}
+          buildingCount={buildings.buildings.length}
+          pitchPaused={pitchPaused}
+          onTogglePause={handleTogglePitchPause}
+          renderMode={renderMode}
+          onSelectRenderMode={(mode) => {
+            handleRenderModeChange(mode);
+            if (mode === 'flood' && floodRise === 0) {
+              setFloodRise(3.5);
+            }
+          }}
+          onExit={handleExitPitchMode}
+          cityId={selectedCityId}
+        />
+      )}
+
       {/* Top HUD Navigation & Control Bar */}
-      {loadingComplete && buildings && (
+      {loadingComplete && !isPitchMode && buildings && (
         <TopBar
           buildings={buildings.buildings}
           renderMode={renderMode}
@@ -279,11 +324,12 @@ export default function Home() {
           cities={cities}
           selectedCityId={selectedCityId}
           onSelectCity={handleSelectCity}
+          onTogglePitchMode={handleLaunchPitchMode}
         />
       )}
 
       {/* Building Inspection Dossier & 3D ULPIN Cadastre Panel */}
-      {loadingComplete && (
+      {loadingComplete && !isPitchMode && (
         <BuildingInfo
           building={selectedBuilding}
           onClose={() => setSelectedBuilding(null)}
@@ -301,7 +347,7 @@ export default function Home() {
       )}
 
       {/* Landmark Briefing Card */}
-      {loadingComplete && (
+      {loadingComplete && !isPitchMode && (
         <LandmarkModal
           landmark={selectedLandmark}
           onClose={() => setSelectedLandmark(null)}
@@ -314,7 +360,7 @@ export default function Home() {
       )}
 
       {/* Interactive Flood Inundation Simulator Panel */}
-      {loadingComplete && floodControlOpen && buildings && (
+      {loadingComplete && !isPitchMode && floodControlOpen && buildings && (
         <FloodControl
           baseWaterElevation={baseWaterElevation}
           floodRise={floodRise}
@@ -328,12 +374,12 @@ export default function Home() {
       )}
 
       {/* Urban Analytics & Solar Clean Energy Modal */}
-      {analyticsOpen && (
+      {analyticsOpen && !isPitchMode && (
         <AnalyticsModal onClose={() => setAnalyticsOpen(false)} cityId={selectedCityId} />
       )}
 
       {/* Dynamic Render Mode Legend */}
-      {loadingComplete && (
+      {loadingComplete && !isPitchMode && (
         <Legend
           stats={buildings?.stats || null}
           renderMode={renderMode}
@@ -343,7 +389,7 @@ export default function Home() {
       )}
 
       {/* Controls HUD Hint */}
-      {loadingComplete && (
+      {loadingComplete && !isPitchMode && (
         <div className="controls-hint flex items-center gap-2">
           <span>orbit: drag</span> · <span>zoom: scroll</span> · <span>pan: right-click</span> ·{' '}
           <span className="text-cyan-400">drone: top bar</span>

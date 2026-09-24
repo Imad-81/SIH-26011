@@ -54,6 +54,8 @@ interface SceneProps {
   selectedUnitId?: string | null;
   isFloorIsolated?: boolean;
   cityId?: string | null;
+  isPitchMode?: boolean;
+  pitchPaused?: boolean;
 }
 
 function SceneContent({
@@ -80,6 +82,8 @@ function SceneContent({
   selectedFloorIndex = 0,
   selectedUnitId = null,
   isFloorIsolated = false,
+  isPitchMode = false,
+  pitchPaused = false,
 }: SceneProps) {
   const areaSize = data.aoi.sizeKm;
   const centerElev = terrain?.centerElevation ?? 569.0;
@@ -108,6 +112,8 @@ function SceneContent({
         isTourActive={isTourActive}
         onTourEnd={onTourEnd}
         autoRotate={autoRotate}
+        isPitchMode={isPitchMode}
+        pitchPaused={pitchPaused}
       />
 
       {/* Dynamic Sun, Sky, Lighting & Fog */}
