@@ -14,6 +14,7 @@ Author: SIH Power Rangers
 
 import hashlib
 import json
+import logging
 import math
 import os
 import random
@@ -23,6 +24,7 @@ import time
 import warnings
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Optional, Union, Dict, Any, Tuple
 
 import geopandas as gpd
 import matplotlib
@@ -171,31 +173,153 @@ SOLAR_GHI_LOOKUP = {
     "ahmedabad": 5.7,
 }
 
-# UTILITIES
+# UTILITIES & LOGGING FRAMEWORK
 # ═══════════════════════════════════════════════════════════════════
 
+logger = logging.getLogger("pipeline")
+
+
+def setup_logging(verbose: bool = False):
+    """Configure dual-handler logging: console (with emojis) and outputs/pipeline.log."""
+    OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
+    log_level = logging.DEBUG if verbose else logging.INFO
+    logger.setLevel(log_level)
+
+    # Avoid duplicate handlers if called multiple times
+    logger.handlers.clear()
+
+    # Console stream handler
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(log_level)
+    console_handler.setFormatter(logging.Formatter("%(message)s"))
+    logger.addHandler(console_handler)
+
+    # Structured file log handler
+    log_file = OUTPUTS_DIR / "pipeline.log"
+    file_handler = logging.FileHandler(log_file, mode="a", encoding="utf-8")
+    file_handler.setLevel(log_level)
+    file_formatter = logging.Formatter(
+        "%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)d] %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S"
+    )
+    file_handler.setFormatter(file_formatter)
+    logger.addHandler(file_handler)
+
+    return logger
+
+
 def banner(text, char="═"):
-    """Print a styled banner."""
+    """Print/log a styled banner."""
     width = 60
-    print(f"\n{'':>{2}}{char * width}")
-    print(f"{'':>{2}}  {text}")
-    print(f"{'':>{2}}{char * width}\n")
+    b_str = f"\n{'':>{2}}{char * width}\n{'':>{2}}  {text}\n{'':>{2}}{char * width}\n"
+    logger.info(b_str)
 
 
 def info(msg):
-    print(f"  ✅ {msg}")
+    logger.info(f"  ✅ {msg}")
 
 
 def warn(msg):
-    print(f"  ⚠️  {msg}")
+    logger.warning(f"  ⚠️  {msg}")
 
 
 def error(msg):
-    print(f"  ❌ {msg}")
+    logger.error(f"  ❌ {msg}")
 
 
 def progress(msg):
-    print(f"  🔄 {msg}")
+    logger.info(f"  🔄 {msg}")
+
+
+class PipelineCheckpointManager:
+    """
+    Manages stage checkpoints for robust pause and resume execution.
+    Checkpoints are saved to data/processed/.checkpoint.json after each stage completes.
+    """
+    CHECKPOINT_FILE = PROCESSED_DIR / ".checkpoint.json"
+
+    STAGE_NAMES = {
+        1: "compute_aoi",
+        2: "download_osm_buildings",
+        3: "download_copernicus_dsm",
+        4: "download_dem",
+        5: "clip_and_align_rasters",
+        6: "estimate_building_heights",
+        7: "generate_3d_buildings",
+        8: "generate_terrain_and_layers",
+        9: "generate_preview",
+        10: "save_metadata_and_summary",
+    }
+
+    def __init__(self, aoi_bbox: dict, resume: bool = False, from_stage: Optional[int] = None):
+        self.aoi_bbox = aoi_bbox
+        self.aoi_hash = hashlib.sha256(json.dumps(aoi_bbox, sort_keys=True).encode()).hexdigest()[:16]
+        self.resume = resume
+        self.from_stage = from_stage
+        self.checkpoint = self._load()
+
+        if self.from_stage is not None:
+            info(f"Stage override enabled: starting execution from Stage {self.from_stage}")
+        elif self.resume:
+            if self.checkpoint:
+                if self.checkpoint.get("aoi_hash") == self.aoi_hash:
+                    last_st = self.checkpoint.get("last_completed_stage", 0)
+                    info(f"Checkpoint resume enabled: skipping stages 1–{last_st} (AOI hash: {self.aoi_hash})")
+                else:
+                    warn(f"Checkpoint AOI mismatch (saved {self.checkpoint.get('aoi_hash')}, current {self.aoi_hash}) — invalidating checkpoint and running from Stage 1")
+                    self.invalidate()
+            else:
+                info("No previous checkpoint found — executing from Stage 1")
+
+    def _load(self) -> Optional[dict]:
+        if self.CHECKPOINT_FILE.exists():
+            try:
+                with open(self.CHECKPOINT_FILE, "r") as f:
+                    return json.load(f)
+            except Exception as e:
+                warn(f"Failed to read checkpoint file: {e}")
+        return None
+
+    def invalidate(self):
+        """Remove checkpoint file."""
+        self.CHECKPOINT_FILE.unlink(missing_ok=True)
+        self.checkpoint = None
+
+    def save_stage(self, stage_num: int, stage_name: Optional[str] = None):
+        """Record stage completion in checkpoint file."""
+        PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+        data = {
+            "last_completed_stage": stage_num,
+            "stage_name": stage_name or self.STAGE_NAMES.get(stage_num, f"stage_{stage_num}"),
+            "aoi_hash": self.aoi_hash,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+        try:
+            with open(self.CHECKPOINT_FILE, "w") as f:
+                json.dump(data, f, indent=2)
+            self.checkpoint = data
+            info(f"Stage {stage_num} ({data['stage_name']}) checkpointed → .checkpoint.json")
+        except Exception as e:
+            warn(f"Failed to write stage checkpoint: {e}")
+
+    def should_skip(self, stage_num: int) -> bool:
+        """Determine if a stage should be skipped."""
+        if stage_num == 1:
+            return False
+
+        if self.from_stage is not None:
+            if stage_num < self.from_stage:
+                info(f"Skipping Stage {stage_num} ({self.STAGE_NAMES.get(stage_num, '')}) — below requested starting stage {self.from_stage}")
+                return True
+            return False
+
+        if self.resume and self.checkpoint:
+            last_st = self.checkpoint.get("last_completed_stage", 0)
+            if stage_num <= last_st:
+                info(f"Skipping Stage {stage_num} ({self.STAGE_NAMES.get(stage_num, '')}) — already completed in checkpoint")
+                return True
+
+        return False
 
 
 def ensure_dirs():
@@ -2420,7 +2544,7 @@ def print_summary(metadata, gdf):
 # ═══════════════════════════════════════════════════════════════════
 
 def parse_args():
-    """Parse CLI arguments for universal location and AOI configuration."""
+    """Parse CLI arguments for universal location, AOI configuration, logging, and checkpointing."""
     import argparse
     parser = argparse.ArgumentParser(description="SIH26011 — Autonomous 3D Building & City Pipeline")
     parser.add_argument("--city", type=str, choices=list(CITY_PRESETS.keys()), default=None,
@@ -2433,6 +2557,12 @@ def parse_args():
                         help="AOI half-size in km (overrides --size)")
     parser.add_argument("--force-download", action="store_true",
                         help="Force re-download of raw OSM, DEM, and DSM data")
+    parser.add_argument("--verbose", action="store_true",
+                        help="Enable verbose debug logging (sets level to DEBUG)")
+    parser.add_argument("--resume", action="store_true",
+                        help="Resume pipeline execution from last completed stage checkpoint")
+    parser.add_argument("--from-stage", type=int, default=None,
+                        help="Explicitly start pipeline execution from stage N (1-10)")
     return parser.parse_args()
 
 
@@ -2441,15 +2571,14 @@ def parse_args():
 # ═══════════════════════════════════════════════════════════════════
 
 def main():
-    """Run the complete autonomous 3D building pipeline."""
-    print()
-    print("  ╔══════════════════════════════════════════════════════════╗")
-    print("  ║  🚀 SIH26011 — Autonomous 3D Building City Pipeline 🚀   ║")
-    print("  ║  Multi-Tier Geospatial Data Acquisition & 3D Extrusion   ║")
-    print("  ╚══════════════════════════════════════════════════════════╝")
-    print()
-
+    """Run the complete autonomous 3D building pipeline with checkpointing and structured logging."""
     args = parse_args()
+    setup_logging(verbose=args.verbose)
+
+    print()
+    banner("🚀 SIH26011 — Autonomous 3D Building City Pipeline 🚀")
+    info("Initializing Multi-Tier Geospatial Data Acquisition & 3D Extrusion...")
+
     start_time = time.time()
     ensure_dirs()
 
@@ -2479,61 +2608,101 @@ def main():
     half_size = (args.size / 2.0) if args.half_size is None else args.half_size
     crs_utm = get_utm_crs(lat, lon)
 
-    # Stage 1: AOI
+    # Stage 1: AOI (always evaluated to establish bounding box and spatial references)
     aoi = compute_aoi(lat=lat, lon=lon, half_size_km=half_size, crs_utm=crs_utm, city=args.city)
+    checkpoint_mgr = PipelineCheckpointManager(aoi["bbox"], resume=args.resume, from_stage=args.from_stage)
+    checkpoint_mgr.save_stage(1, "compute_aoi")
 
     # Stage 2: OSM Buildings
-    buildings_path = download_osm_buildings(aoi)
-    if buildings_path is None:
-        error("FATAL: OSM building download failed. Cannot continue.")
-        sys.exit(1)
+    buildings_path = RAW_DIR / "buildings.osm"
+    if checkpoint_mgr.should_skip(2) and buildings_path.exists():
+        info(f"Stage 2 skipped via checkpoint — using cached OSM buildings: {buildings_path.name}")
+    else:
+        buildings_path = download_osm_buildings(aoi)
+        if buildings_path is None:
+            error("FATAL: OSM building download failed. Cannot continue.")
+            sys.exit(1)
+        checkpoint_mgr.save_stage(2, "download_osm_buildings")
 
     # Stage 2b: OSM Landuse & Zoning
     landuse_gdf = download_osm_landuse(aoi)
 
     # Stage 3: DSM
-    dsm_path = download_copernicus_dsm(aoi)
-    if dsm_path is None:
-        error("FATAL: DSM download failed. Cannot continue.")
-        sys.exit(1)
+    dsm_path = RAW_DIR / "dsm.tif"
+    if checkpoint_mgr.should_skip(3) and dsm_path.exists():
+        info(f"Stage 3 skipped via checkpoint — using cached Copernicus DSM: {dsm_path.name}")
+    else:
+        dsm_path = download_copernicus_dsm(aoi)
+        if dsm_path is None:
+            error("FATAL: DSM download failed. Cannot continue.")
+            sys.exit(1)
+        checkpoint_mgr.save_stage(3, "download_copernicus_dsm")
 
     # Stage 4: DEM
-    dem_path = download_dem(aoi)
-    if dem_path is None:
-        error("FATAL: DEM download failed. Cannot continue.")
-        sys.exit(1)
+    dem_path = RAW_DIR / "dem.tif"
+    if checkpoint_mgr.should_skip(4) and dem_path.exists():
+        info(f"Stage 4 skipped via checkpoint — using cached DEM: {dem_path.name}")
+    else:
+        dem_path = download_dem(aoi)
+        if dem_path is None:
+            error("FATAL: DEM download failed. Cannot continue.")
+            sys.exit(1)
+        checkpoint_mgr.save_stage(4, "download_dem")
 
     # Stage 5: Clip & Align
-    result = clip_and_align_rasters(aoi, dem_path, dsm_path)
-    if result is None or result[0] is None:
-        error("FATAL: Raster alignment failed. Cannot continue.")
-        sys.exit(1)
+    dem_clipped = PROCESSED_DIR / "dem_clipped.tif"
+    dsm_clipped = PROCESSED_DIR / "dsm_clipped.tif"
+    ndsm_clipped = PROCESSED_DIR / "ndsm_clipped.tif"
+    dem_same_as_dsm = False
 
-    dem_clipped, dsm_clipped, dem_same_as_dsm, ndsm_clipped = result
+    if checkpoint_mgr.should_skip(5) and dem_clipped.exists():
+        info("Stage 5 skipped via checkpoint — using aligned rasters from data/processed/")
+    else:
+        result = clip_and_align_rasters(aoi, dem_path, dsm_path)
+        if result is None or result[0] is None:
+            error("FATAL: Raster alignment failed. Cannot continue.")
+            sys.exit(1)
+        dem_clipped, dsm_clipped, dem_same_as_dsm, ndsm_clipped = result
+        checkpoint_mgr.save_stage(5, "clip_and_align_rasters")
 
     # Stage 6: Height Estimation
-    processed_path, gdf = estimate_building_heights(
-        aoi, buildings_path, dem_clipped, dsm_clipped, dem_same_as_dsm, ndsm_clipped, landuse_gdf
-    )
+    processed_path = PROCESSED_DIR / "buildings.geojson"
+    if checkpoint_mgr.should_skip(6) and processed_path.exists():
+        info(f"Stage 6 skipped via checkpoint — loading estimated buildings from {processed_path.name}")
+        gdf = gpd.read_file(processed_path)
+    else:
+        processed_path, gdf = estimate_building_heights(
+            aoi, buildings_path, dem_clipped, dsm_clipped, dem_same_as_dsm, ndsm_clipped, landuse_gdf
+        )
+        checkpoint_mgr.save_stage(6, "estimate_building_heights")
 
     # Stage 7: 3D Extrusion
-    generate_3d_buildings(gdf, aoi, dem_clipped)
+    if checkpoint_mgr.should_skip(7) and (PROCESSED_DIR / "buildings_3d.geojson").exists():
+        info("Stage 7 skipped via checkpoint — 3D buildings already generated")
+    else:
+        generate_3d_buildings(gdf, aoi, dem_clipped)
+        checkpoint_mgr.save_stage(7, "generate_3d_buildings")
 
-    # Stage 8: Terrain Data
-    generate_terrain_data(aoi, dem_clipped)
-
-    # Stage 8b: Water & Bridge Data
-    generate_water_data(aoi, dem_clipped)
-
-    # Stage 8c: Road Network & Elevated Flyovers
-    generate_road_data(aoi, dem_clipped)
+    # Stage 8: Terrain & Layers
+    if checkpoint_mgr.should_skip(8) and (VIEWER_DATA_DIR / "terrain.bin").exists():
+        info("Stage 8 skipped via checkpoint — terrain, water, and road layers already generated")
+    else:
+        generate_terrain_data(aoi, dem_clipped)
+        generate_water_data(aoi, dem_clipped)
+        generate_road_data(aoi, dem_clipped)
+        checkpoint_mgr.save_stage(8, "generate_terrain_and_layers")
 
     # Stage 9: Preview
-    generate_preview(gdf, aoi)
+    if checkpoint_mgr.should_skip(9) and (OUTPUTS_DIR / "buildings_preview.png").exists():
+        info("Stage 9 skipped via checkpoint — preview image already exists")
+    else:
+        generate_preview(gdf, aoi)
+        checkpoint_mgr.save_stage(9, "generate_preview")
 
     # Stage 10: Metadata & Summary
     metadata = save_metadata(aoi, gdf, dem_same_as_dsm)
     print_summary(metadata, gdf)
+    checkpoint_mgr.save_stage(10, "save_metadata_and_summary")
 
     elapsed = time.time() - start_time
     info(f"Pipeline completed in {elapsed:.1f} seconds")
