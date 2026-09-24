@@ -296,8 +296,10 @@ export default function BuildingInfo({
                   <span className="text-[10px] uppercase font-semibold text-slate-400 tracking-wider mb-1">
                     State / Dist
                   </span>
-                  <span className="font-semibold text-cyan-200 truncate">
-                    TS-36 / RR-21
+                  <span className="font-semibold text-cyan-200 truncate" title={`${cadastreRecord?.stateName || 'Telangana'} / ${cadastreRecord?.districtName || 'Rangareddy'}`}>
+                    {cadastreRecord?.districtName
+                      ? `${(cadastreRecord.stateName || 'TS').slice(0, 2).toUpperCase()} / ${cadastreRecord.districtName.split(' ')[0]}`
+                      : "TS-36 / RR-21"}
                   </span>
                 </div>
                 <div className="bg-slate-950/50 rounded-xl p-2.5 border border-white/[0.06] flex flex-col justify-between">
@@ -310,28 +312,30 @@ export default function BuildingInfo({
                 </div>
                 <div className="bg-slate-950/50 rounded-xl p-2.5 border border-white/[0.06] flex flex-col justify-between">
                   <span className="text-[10px] uppercase font-semibold text-slate-400 tracking-wider mb-1">
-                    Village Code
+                    {cadastreRecord?.municipalBody ? "Body / Locality" : "Village Code"}
                   </span>
-                  <span className="font-semibold text-amber-300 truncate">
-                    {villageName}
+                  <span className="font-semibold text-amber-300 truncate" title={villageName}>
+                    {cadastreRecord?.municipalBody ? `${cadastreRecord.municipalBody} · ${villageName}` : villageName}
                   </span>
                 </div>
               </div>
 
-              {/* Verified TS-RERA / PTIN Credentials */}
-              {(cadastreRecord?.reraId || cadastreRecord?.ptinGhmc) && (
+              {/* Dynamic Verified RERA / Property Tax Credentials */}
+              {(cadastreRecord?.reraId || cadastreRecord?.propertyTaxId || cadastreRecord?.ptinGhmc) && (
                 <div className="mt-3 pt-2.5 border-t border-white/[0.08] flex items-center justify-between gap-2 flex-wrap text-[11px] text-slate-300">
                   {cadastreRecord.reraId && (
                     <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-300">
                       <ShieldCheck size={13} className="text-emerald-400 shrink-0" />
-                      <span className="text-slate-400">TS-RERA:</span>
+                      {!cadastreRecord.reraId.includes(":") && (
+                        <span className="text-slate-400">{cadastreRecord.reraLabel ? `${cadastreRecord.reraLabel}:` : "RERA:"}</span>
+                      )}
                       <span className="font-mono font-semibold">{cadastreRecord.reraId}</span>
                     </div>
                   )}
-                  {cadastreRecord.ptinGhmc && (
+                  {(cadastreRecord.propertyTaxId || cadastreRecord.ptinGhmc) && (
                     <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/[0.06] text-slate-400 font-mono text-[10px]">
                       <FileText size={11} className="text-cyan-400 shrink-0" />
-                      <span>PTIN: {cadastreRecord.ptinGhmc}</span>
+                      <span>{cadastreRecord.taxLabel || "Property Tax ID"}: {cadastreRecord.propertyTaxId || cadastreRecord.ptinGhmc}</span>
                     </div>
                   )}
                 </div>

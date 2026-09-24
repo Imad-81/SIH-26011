@@ -57,9 +57,14 @@ export interface BuildingCadastreRecord {
   villageName: string;
   mandalName: string;
   districtName: string;
+  stateName?: string;
+  municipalBody?: string;
   khataNumber: string;
   ptinGhmc: string;
+  propertyTaxId?: string;
+  taxLabel?: string;
   reraId: string;
+  reraLabel?: string;
   totalFloors: number;
   totalUnits: number;
   floors: FloorCadastre[];
