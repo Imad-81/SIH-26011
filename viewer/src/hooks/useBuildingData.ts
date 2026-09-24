@@ -12,7 +12,7 @@ interface DataState {
   progress: number;
 }
 
-export function useBuildingData(): DataState {
+export function useBuildingData(cityId?: string | null): DataState {
   const [state, setState] = useState<DataState>({
     buildings: null,
     terrain: null,
@@ -23,40 +23,65 @@ export function useBuildingData(): DataState {
   });
 
   useEffect(() => {
+    let isCancelled = false;
+
     async function loadData() {
       try {
-        setState(prev => ({ ...prev, progress: 10 }));
+        setState(prev => ({ ...prev, loading: true, progress: 10, error: null }));
 
-        // Load buildings data
-        const buildingsResp = await fetch('/data/buildings.json');
+        const buildingsUrl = cityId ? `/data/cities/${cityId}/buildings.json` : '/data/buildings.json';
+        const terrainUrl = cityId ? `/data/cities/${cityId}/terrain.json` : '/data/terrain.json';
+        const waterUrl = cityId ? `/data/cities/${cityId}/water.json` : '/data/water.json';
+
+        // Load buildings data with fallback
+        let buildingsResp = await fetch(buildingsUrl);
+        if (!buildingsResp.ok && cityId) {
+          buildingsResp = await fetch('/data/buildings.json');
+        }
         if (!buildingsResp.ok) {
           throw new Error(`Failed to load buildings: ${buildingsResp.status}`);
         }
+        if (isCancelled) return;
         setState(prev => ({ ...prev, progress: 40 }));
         
         const buildingsData: BuildingsDataset = await buildingsResp.json();
+        if (isCancelled) return;
         setState(prev => ({ ...prev, progress: 60, buildings: buildingsData }));
 
         // Load terrain data (optional)
+        let terrainData: TerrainData | null = null;
         try {
-          const terrainResp = await fetch('/data/terrain.json');
+          let terrainResp = await fetch(terrainUrl);
+          if (!terrainResp.ok && cityId) {
+            terrainResp = await fetch('/data/terrain.json');
+          }
           if (terrainResp.ok) {
-            const terrainData: TerrainData = await terrainResp.json();
-            setState(prev => ({ ...prev, terrain: terrainData, progress: 80 }));
+            terrainData = await terrainResp.json();
           }
         } catch {
           console.warn('Terrain data not available');
         }
+        if (isCancelled) return;
+        if (terrainData) {
+          setState(prev => ({ ...prev, terrain: terrainData, progress: 80 }));
+        }
 
         // Load water data (optional)
+        let waterData: WaterDataset | null = null;
         try {
-          const waterResp = await fetch('/data/water.json');
+          let waterResp = await fetch(waterUrl);
+          if (!waterResp.ok && cityId) {
+            waterResp = await fetch('/data/water.json');
+          }
           if (waterResp.ok) {
-            const waterData: WaterDataset = await waterResp.json();
-            setState(prev => ({ ...prev, water: waterData }));
+            waterData = await waterResp.json();
           }
         } catch {
           console.warn('Water data not available');
+        }
+        if (isCancelled) return;
+        if (waterData) {
+          setState(prev => ({ ...prev, water: waterData }));
         }
 
         setState(prev => ({
@@ -65,16 +90,21 @@ export function useBuildingData(): DataState {
           progress: 100,
         }));
       } catch (err) {
-        setState(prev => ({
-          ...prev,
-          loading: false,
-          error: err instanceof Error ? err.message : 'Unknown error',
-        }));
+        if (!isCancelled) {
+          setState(prev => ({
+            ...prev,
+            loading: false,
+            error: err instanceof Error ? err.message : 'Unknown error',
+          }));
+        }
       }
     }
 
     loadData();
-  }, []);
+    return () => {
+      isCancelled = true;
+    };
+  }, [cityId]);
 
   return state;
 }

@@ -53,12 +53,14 @@ interface SceneProps {
   selectedFloorIndex?: number;
   selectedUnitId?: string | null;
   isFloorIsolated?: boolean;
+  cityId?: string | null;
 }
 
 function SceneContent({
   data,
   terrain,
   waterData,
+  cityId,
   renderMode,
   timeOfDay,
   floodLevelMeters,
@@ -123,7 +125,7 @@ function SceneContent({
       />
 
       {/* Durgam Cheruvu Cable-Stayed Bridge */}
-      <Bridge centerElevation={centerElev} />
+      <Bridge centerElevation={centerElev} cityId={cityId} />
 
       {/* 3D Road Network & Multi-Level Elevated Flyovers */}
       <Roads
@@ -131,6 +133,7 @@ function SceneContent({
         timeOfDay={timeOfDay}
         showRoads={showRoads}
         showTraffic={showTraffic}
+        cityId={cityId}
       />
 
       {/* 🚀 Ultra-Optimized Batched 3D Buildings (Single Draw Call) */}
@@ -158,6 +161,7 @@ function SceneContent({
       <Landmarks
         onSelectLandmark={onSelectLandmark}
         selectedLandmarkId={selectedLandmarkId}
+        cityId={cityId}
       />
     </>
   );

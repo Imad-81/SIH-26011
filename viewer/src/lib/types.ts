@@ -211,3 +211,16 @@ export interface AnalyticsData {
 
 export type RenderMode = 'height' | 'type' | 'quality' | 'xray' | 'solar' | 'flood';
 export type TimeOfDay = 'dawn' | 'day' | 'dusk' | 'night';
+
+export interface CityManifestEntry {
+  id: string;
+  name: string;
+  state: string;
+  center: [number, number];
+  centerCoords?: { lat: number; lon: number };
+  sizeKm: number;
+  buildingCount: number;
+  defaultElev: number;
+  generatedAt?: string;
+}
+

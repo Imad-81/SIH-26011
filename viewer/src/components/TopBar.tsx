@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { BuildingData, RenderMode, TimeOfDay } from '@/lib/types';
+import { BuildingData, CityManifestEntry, RenderMode, TimeOfDay } from '@/lib/types';
 import { CAMERA_PRESETS } from './CameraController';
 
 interface TopBarProps {
@@ -25,6 +25,9 @@ interface TopBarProps {
   onToggleFloodControl: () => void;
   cityName?: string;
   areaSizeKm?: number;
+  cities?: CityManifestEntry[];
+  selectedCityId?: string;
+  onSelectCity?: (cityId: string) => void;
 }
 
 export default function TopBar({
@@ -48,12 +51,21 @@ export default function TopBar({
   onToggleFloodControl,
   cityName,
   areaSizeKm,
+  cities = [],
+  selectedCityId = 'hyderabad',
+  onSelectCity,
 }: TopBarProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
   const [presetsOpen, setPresetsOpen] = useState(false);
   const [modesOpen, setModesOpen] = useState(false);
+  const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const cityDropdownRef = useRef<HTMLDivElement>(null);
+
+  const currentCity = useMemo(() => {
+    return cities.find((c) => c.id === selectedCityId) || cities[0];
+  }, [cities, selectedCityId]);
 
   // Filter search results
   const searchResults = useMemo(() => {
@@ -95,6 +107,9 @@ export default function TopBar({
         setPresetsOpen(false);
         setModesOpen(false);
       }
+      if (cityDropdownRef.current && !cityDropdownRef.current.contains(e.target as Node)) {
+        setCityDropdownOpen(false);
+      }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -102,7 +117,7 @@ export default function TopBar({
 
   return (
     <header className="fixed top-3 left-4 right-4 z-40 flex items-center justify-between pointer-events-none">
-      {/* Left: Branding & Status */}
+      {/* Left: Branding, City Selector & Status */}
       <div
         className="pointer-events-auto flex items-center gap-3 px-3.5 py-2 rounded-2xl"
         style={{
@@ -113,7 +128,7 @@ export default function TopBar({
         }}
       >
         <div
-          className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-lg"
+          className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-lg shrink-0"
           style={{
             background: 'linear-gradient(135deg, rgba(0, 245, 255, 0.2), rgba(0, 128, 255, 0.2))',
             border: '1px solid rgba(0, 245, 255, 0.4)',
@@ -130,12 +145,76 @@ export default function TopBar({
           </div>
           <p className="text-[10px] text-gray-400 tracking-wider uppercase font-medium">
             {[
-              cityName || 'Urban',
-              areaSizeKm ? `${areaSizeKm} km² Digital Twin` : 'Digital Twin',
+              cityName || currentCity?.name || 'Urban',
+              areaSizeKm ? `${areaSizeKm} km² Digital Twin` : (currentCity?.sizeKm ? `${currentCity.sizeKm} km²` : 'Digital Twin'),
               buildings.length > 0 ? `${buildings.length.toLocaleString()} Buildings` : ''
             ].filter(Boolean).join(' · ')}
           </p>
         </div>
+
+        {/* Multi-City Selector Dropdown */}
+        {cities && cities.length > 0 && (
+          <div className="relative border-l border-white/10 pl-3 ml-1" ref={cityDropdownRef}>
+            <button
+              onClick={() => setCityDropdownOpen(!cityDropdownOpen)}
+              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-gray-100 bg-white/5 hover:bg-white/10 border border-white/10 transition-all flex items-center gap-1.5 group"
+              title="Switch City Digital Twin"
+            >
+              <span className="text-cyan-400 group-hover:scale-110 transition-transform">📍</span>
+              <span className="font-medium text-white max-w-[130px] truncate">
+                {currentCity?.name.split(' (')[0] || selectedCityId || 'Select City'}
+              </span>
+              <span className="text-[10px] text-gray-400 group-hover:text-cyan-400 transition-colors">▾</span>
+            </button>
+
+            {cityDropdownOpen && (
+              <div
+                className="absolute top-11 left-0 w-64 rounded-xl overflow-hidden z-50 py-1.5"
+                style={{
+                  background: 'rgba(10, 15, 32, 0.96)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(0, 245, 255, 0.3)',
+                  boxShadow: '0 12px 36px rgba(0, 0, 0, 0.7)',
+                }}
+              >
+                <div className="px-3 py-1.5 border-b border-white/10 flex items-center justify-between text-[10px] uppercase tracking-wider text-gray-400 font-mono">
+                  <span>Digital Twin Cities</span>
+                  <span className="text-cyan-400">{cities.length} Available</span>
+                </div>
+                {cities.map((c) => {
+                  const isSelected = (selectedCityId || 'hyderabad') === c.id;
+                  return (
+                    <button
+                      key={c.id}
+                      onClick={() => {
+                        onSelectCity?.(c.id);
+                        setCityDropdownOpen(false);
+                      }}
+                      className={`w-full px-3 py-2 text-left text-xs transition-colors flex items-center justify-between group ${
+                        isSelected
+                          ? 'bg-cyan-500/20 text-cyan-300 font-semibold'
+                          : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                      }`}
+                    >
+                      <div className="min-w-0 pr-2">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs">📍</span>
+                          <span className="truncate">{c.name}</span>
+                        </div>
+                        <div className="text-[10px] text-gray-400 pl-4">
+                          {c.state} · {c.sizeKm} km² · {c.buildingCount.toLocaleString()} bldgs
+                        </div>
+                      </div>
+                      {isSelected && (
+                        <span className="text-cyan-400 text-xs shrink-0 font-bold">✓</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Middle: Search Bar */}

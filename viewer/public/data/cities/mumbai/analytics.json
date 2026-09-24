@@ -1,0 +1,35 @@
+{
+  "cityName": "Mumbai (Bandra Kurla Complex)",
+  "areaSizeKm": 2.5,
+  "totalBuildings": 30,
+  "totalFootprintAreaM2": 150750.0,
+  "totalBuiltVolumeM3": 8887850.0,
+  "grossFloorAreaM2": 1869300.0,
+  "heightBuckets": {
+    "0-5m": 0,
+    "5-15m": 0,
+    "15-30m": 3,
+    "30-60m": 19,
+    "60m+": 8
+  },
+  "typeBreakdown": {
+    "commercial": 20,
+    "office": 3,
+    "apartments": 4,
+    "residential": 2,
+    "retail": 1
+  },
+  "cadastre": {
+    "total2DParcels": 30,
+    "total3DVerticalParcels": 1746,
+    "buildingsWithFloorPlans": 30,
+    "verticalDensityRatio": 58.2
+  },
+  "solar": {
+    "usableRooftopAreaM2": 113062.5,
+    "dailyGenerationKwh": 105826.5,
+    "annualGenerationMwh": 38626.7,
+    "annualCo2OffsetTons": 31673.9,
+    "ghiAverage": 5.2
+  }
+}

@@ -9,7 +9,7 @@ interface CadastreState {
   error: string | null;
 }
 
-export function useCadastreData() {
+export function useCadastreData(cityId?: string | null) {
   const [state, setState] = useState<CadastreState>({
     data: null,
     loading: true,
@@ -21,7 +21,12 @@ export function useCadastreData() {
 
     async function loadCadastre() {
       try {
-        const resp = await fetch('/data/ulpins_3d.json');
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const url = cityId ? `/data/cities/${cityId}/ulpins_3d.json` : '/data/ulpins_3d.json';
+        let resp = await fetch(url);
+        if (!resp.ok && cityId) {
+          resp = await fetch('/data/ulpins_3d.json');
+        }
         if (!resp.ok) {
           throw new Error(`Failed to load 3D ULPIN cadastre: ${resp.status}`);
         }
@@ -49,7 +54,7 @@ export function useCadastreData() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [cityId]);
 
   const getBuildingCadastre = useCallback(
     (buildingId: string): BuildingCadastreRecord | null => {
