@@ -10,6 +10,9 @@ data/raw/*.tiff
 data/processed/*.tif
 data/processed/*.tiff
 outputs/*.glb
+outputs/*.log
+*.checkpoint.json
+.checkpoint.json
 *.tif
 
 # Environment
