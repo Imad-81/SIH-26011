@@ -61,7 +61,7 @@ def smoothstep(edge0: float, edge1: float, x: float) -> float:
     t = max(0.0, min(1.0, (x - edge0) / (edge1 - edge0)))
     return t * t * (3.0 - 2.0 * t)
 
-def main(aoi=None, dem_path=None):
+def main(aoi=None, dem_path=None, output_dir=None):
     print("🛣️  Processing 3D Road Network & Flyovers...")
     
     if not RAW_HIGHWAYS.exists():
@@ -341,12 +341,18 @@ def main(aoi=None, dem_path=None):
         "roads": processed_roads
     }
 
-    OUTPUT_JSON.parent.mkdir(parents=True, exist_ok=True)
-    with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
+    target_dir = Path(output_dir) if output_dir is not None else OUTPUT_JSON.parent
+    target_dir.mkdir(parents=True, exist_ok=True)
+    out_file = target_dir / "roads.json"
+    with open(out_file, "w", encoding="utf-8") as f:
         json.dump(output_data, f, separators=(",", ":"))
+    if target_dir != OUTPUT_JSON.parent:
+        OUTPUT_JSON.parent.mkdir(parents=True, exist_ok=True)
+        with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
+            json.dump(output_data, f, separators=(",", ":"))
 
-    file_size_kb = OUTPUT_JSON.stat().st_size / 1024.0
-    print(f"✅ Exported {len(processed_roads)} roads and {len(piers)} piers to {OUTPUT_JSON} ({file_size_kb:.1f} KB)")
+    file_size_kb = out_file.stat().st_size / 1024.0
+    print(f"✅ Exported {len(processed_roads)} roads and {len(piers)} piers to {out_file} ({file_size_kb:.1f} KB)")
     print(f"   Total Network: {stats['totalLengthKm']} km | Tier 1: {stats['tier1LengthKm']} km | Tier 2: {stats['tier2LengthKm']} km | Tier 3: {stats['tier3LengthKm']} km")
     print(f"   Bridges/Flyovers: {bridge_count} spans | Piers: {len(piers)} concrete columns")
 
