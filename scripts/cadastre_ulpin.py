@@ -508,6 +508,114 @@ class FloorPlanRegistry:
                     return plan
         return None
 
+    def get_procedural_archetype(self, building_type: str) -> tuple[str, dict]:
+        """Classify building type and return archetype configuration from archetype_generator.json."""
+        b_type = (building_type or "residential").lower()
+        if any(k in b_type for k in ["office", "commercial", "retail", "bank", "mall", "tower", "suite", "civic"]):
+            arch_key = "commercial_multi_suite"
+        else:
+            arch_key = "residential_multi_unit"
+        return arch_key, self.archetypes.get(arch_key, {})
+
+    def generate_procedural_units_for_floor(
+        self,
+        floor_idx: int,
+        footprint_area: float,
+        building_type: str,
+        z_min: float,
+        z_max: float,
+        ulpin_2d: str,
+    ) -> list[dict]:
+        """
+        Procedurally slice a floor into 2-6 realistic architectural units
+        with carpet areas, bedroom typologies, and standard unit ULPINs.
+        """
+        arch_key, arch = self.get_procedural_archetype(building_type)
+        is_residential = arch_key == "residential_multi_unit"
+        common_core = arch.get("common_core_share", 0.15 if is_residential else 0.16)
+        usable_floor_area = max(40.0, footprint_area * (1.0 - common_core))
+
+        if is_residential:
+            # Formula: min(6, max(2, round(footprint_area / 180)))
+            num_units = min(6, max(2, round(footprint_area / 180.0)))
+            unit_typologies = arch.get("unit_typologies", [
+                {"suffix": "01", "type": "residential_flat", "type_desc": "3BHK Flat", "area_share": 0.28},
+                {"suffix": "02", "type": "residential_flat", "type_desc": "2BHK Flat", "area_share": 0.22},
+                {"suffix": "03", "type": "residential_flat", "type_desc": "3BHK Flat", "area_share": 0.28},
+                {"suffix": "04", "type": "residential_flat", "type_desc": "2BHK Flat", "area_share": 0.22},
+            ])
+            facings = ["North", "East", "North-East", "West", "South-East", "South-West"]
+            prefix = arch.get("typical_unit_prefix", "Flat")
+            units = []
+            equal_share = 1.0 / num_units
+
+            for u_idx in range(num_units):
+                suffix = f"{u_idx + 1:02d}"
+                unit_id = f"{floor_idx:02d}{suffix}"
+                unit_3d_ulpin = f"{ulpin_2d}-FL{floor_idx:02d}-U{suffix}"
+
+                if u_idx < len(unit_typologies):
+                    typ = unit_typologies[u_idx]
+                    share = typ.get("area_share", equal_share)
+                else:
+                    share = equal_share
+
+                carpet_area = round(usable_floor_area * share, 1)
+                if carpet_area >= 110:
+                    bedrooms = 3
+                elif carpet_area >= 65:
+                    bedrooms = 2
+                else:
+                    bedrooms = 1
+
+                facing = facings[u_idx % len(facings)]
+                unit_name = f"{prefix} {floor_idx:02d}{suffix} ({bedrooms}BHK)"
+
+                units.append({
+                    "unitId": unit_id,
+                    "unitName": unit_name,
+                    "ulpin3d": unit_3d_ulpin,
+                    "unitType": "residential_flat",
+                    "carpetAreaM2": carpet_area,
+                    "zMin": z_min,
+                    "zMax": z_max,
+                    "bedrooms": bedrooms,
+                    "facing": facing,
+                    "status": "Registered / Procedural Archetype"
+                })
+            return units
+        else:
+            # Commercial: min(4, max(2, round(footprint_area / 350)))
+            num_units = min(4, max(2, round(footprint_area / 350.0)))
+            suffixes = ["01", "02", "03", "04"]
+            suite_letters = ["A", "B", "C", "D"]
+            facings = ["North", "East", "West", "South"]
+            units = []
+            equal_share = 1.0 / num_units
+
+            for u_idx in range(num_units):
+                suffix = suffixes[u_idx]
+                suite_letter = suite_letters[u_idx]
+                unit_id = f"{floor_idx:02d}{suffix}"
+                unit_3d_ulpin = f"{ulpin_2d}-FL{floor_idx:02d}-U{suffix}"
+                carpet_area = round(usable_floor_area * equal_share, 1)
+                facing = facings[u_idx % len(facings)]
+                unit_name = f"Corporate Suite {floor_idx:02d}{suite_letter}"
+
+                units.append({
+                    "unitId": unit_id,
+                    "unitName": unit_name,
+                    "ulpin3d": unit_3d_ulpin,
+                    "unitType": "commercial_suite",
+                    "carpetAreaM2": carpet_area,
+                    "zMin": z_min,
+                    "zMax": z_max,
+                    "bedrooms": None,
+                    "facing": facing,
+                    "status": "Registered / Procedural Archetype"
+                })
+            return units
+
 
 class FloorSlabEngine:
     """Computes exact vertical metric elevations above MSL (Mean Sea Level)."""
@@ -765,60 +873,75 @@ def generate_3d_cadastre(
                     "units": floor_units
                 })
 
-            # CASE B: Building LACKS Floor Plan (Floor-Level 3D ULPIN)
+            # CASE B: Building LACKS Floor Plan -> Procedural Architectural Archetype Decomposition
             else:
-                total_units_count += 1
-                approx_footprint_m2 = round(len(coords_rel) * 25.0, 1)
-                
-                floor_record = {
+                footprint_area = b.get("footprintArea") or b.get("area")
+                if not footprint_area and coords_rel and len(coords_rel) >= 3:
+                    try:
+                        poly = Polygon(coords_rel)
+                        footprint_area = poly.area if poly.is_valid else len(coords_rel) * 25.0
+                    except Exception:
+                        footprint_area = len(coords_rel) * 25.0
+                if not footprint_area or footprint_area <= 0:
+                    footprint_area = 240.0
+
+                floor_units = floor_plan_registry.generate_procedural_units_for_floor(
+                    floor_idx=floor_idx,
+                    footprint_area=footprint_area,
+                    building_type=b_type,
+                    z_min=z_min,
+                    z_max=z_max,
+                    ulpin_2d=ulpin_2d,
+                )
+
+                for u in floor_units:
+                    total_units_count += 1
+                    building_units_list.append(u)
+
+                    # Add 3D GeoJSON feature for unit
+                    feature_unit_geojson = {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [coords_rel]
+                        },
+                        "properties": {
+                            "ulpin_3d": u["ulpin3d"],
+                            "ulpin_2d": ulpin_2d,
+                            "building_id": building_id,
+                            "building_name": name,
+                            "floor_index": floor_idx,
+                            "floor_label": floor_label,
+                            "unit_id": u["unitId"],
+                            "unit_name": u["unitName"],
+                            "unit_type": u["unitType"],
+                            "carpet_area_m2": u["carpetAreaM2"],
+                            "z_min_msl": z_min,
+                            "z_max_msl": z_max,
+                            "survey_number": cadastre_info["survey_number"],
+                            "village_name": cadastre_info["village_name"],
+                            "mandal_name": cadastre_info.get("mandal_name", "Serilingampally"),
+                            "district_name": cadastre_info.get("district_name", "Rangareddy"),
+                            "state_name": cadastre_info.get("state_name", "Telangana"),
+                            "municipal_body": cadastre_info.get("municipal_body", "GHMC"),
+                            "tax_id": cadastre_info.get("tax_id", cadastre_info.get("ptin_ghmc", "")),
+                            "rera_id": cadastre_info["rera_id"],
+                            "khata_number": cadastre_info["khata_number"],
+                            "has_floor_plan": False,
+                            "is_procedural_archetype": True,
+                        }
+                    }
+                    features_3d_geojson.append(feature_unit_geojson)
+
+                floors_cadastre_list.append({
                     "floorIndex": floor_idx,
                     "floorLabel": floor_label,
                     "ulpin3d": floor_ulpin_id,
                     "zMin": z_min,
                     "zMax": z_max,
                     "heightM": round(z_max - z_min, 2),
-                    "units": [
-                        {
-                            "unitId": f"FL{floor_idx:02d}",
-                            "unitName": f"{floor_label} (Entire Level)",
-                            "ulpin3d": floor_ulpin_id,
-                            "unitType": f"{b_type}_floor" if b_type != "yes" else "general_floor",
-                            "carpetAreaM2": approx_footprint_m2,
-                            "zMin": z_min,
-                            "zMax": z_max,
-                            "status": "Provisional Floor Parcel"
-                        }
-                    ]
-                }
-                floors_cadastre_list.append(floor_record)
-
-                # Add 3D GeoJSON feature for floor
-                feature_floor_geojson = {
-                    "type": "Feature",
-                    "geometry": {
-                        "type": "Polygon",
-                        "coordinates": [coords_rel]
-                    },
-                    "properties": {
-                        "ulpin_3d": floor_ulpin_id,
-                        "ulpin_2d": ulpin_2d,
-                        "building_id": building_id,
-                        "building_name": name,
-                        "floor_index": floor_idx,
-                        "floor_label": floor_label,
-                        "unit_id": f"FL{floor_idx:02d}",
-                        "unit_name": f"{floor_label} (Entire Level)",
-                        "unit_type": f"{b_type}_floor",
-                        "carpet_area_m2": approx_footprint_m2,
-                        "z_min_msl": z_min,
-                        "z_max_msl": z_max,
-                        "survey_number": cadastre_info["survey_number"],
-                        "village_name": cadastre_info["village_name"],
-                        "khata_number": cadastre_info["khata_number"],
-                        "has_floor_plan": False,
-                    }
-                }
-                features_3d_geojson.append(feature_floor_geojson)
+                    "units": floor_units
+                })
 
         # Store in master lookup dictionary
         ulpins_3d_dataset[building_id] = {
@@ -887,7 +1010,8 @@ def generate_3d_cadastre(
         "totalFloorsMapped": total_floors_count,
         "totalUnitsMapped": total_units_count,
         "buildingsWithFloorPlans": buildings_with_plans_count,
-        "buildingsFloorLevelFallback": len(buildings_json) - buildings_with_plans_count,
+        "buildingsProceduralArchetypes": len(buildings_json) - buildings_with_plans_count,
+        "buildingsFloorLevelFallback": 0,
         "stateCode": f"{primary_state_code} ({primary_state})",
         "districtCode": f"{primary_district_code} ({primary_district})",
         "mandalCode": f"{primary_mandal_code} ({primary_mandal})",
@@ -907,8 +1031,8 @@ def generate_3d_cadastre(
     print(f"     • Municipal Authority:                 {cadastre_stats['municipalBody']}")
     print(f"     • Total 2D Land Parcels (Bhu-Aadhaar): {cadastre_stats['total2DParcels']:,}")
     print(f"     • Total 3D Vertical Property Units:   {cadastre_stats['total3DVerticalParcels']:,}")
-    print(f"     • Buildings with Floor Plans:          {cadastre_stats['buildingsWithFloorPlans']:,} (Flat-Level ULPINs)")
-    print(f"     • Buildings Floor-Level Fallback:      {cadastre_stats['buildingsFloorLevelFallback']:,} (Floor-Level ULPINs)")
+    print(f"     • Buildings with Custom Floor Plans:   {cadastre_stats['buildingsWithFloorPlans']:,} (Custom Drawings)")
+    print(f"     • Procedural Archetype Decompositions: {cadastre_stats['buildingsProceduralArchetypes']:,} (Unit-Level)")
     print(f"     • Total Floors Mapped:                 {cadastre_stats['totalFloorsMapped']:,}")
     print("  ════════════════════════════════════════════════════════════")
     print()
@@ -919,6 +1043,7 @@ def generate_3d_cadastre(
 if __name__ == "__main__":
     # Self-test when invoked directly
     client = GovernmentCadastreClient()
+    registry = FloorPlanRegistry()
     
     # Test 1: Mumbai (BKC)
     mumbai_lat, mumbai_lon = 19.0650, 72.8680
@@ -962,4 +1087,23 @@ if __name__ == "__main__":
     assert hyd_ulpin.startswith("3621"), f"Expected ULPIN starting with 3621, got {hyd_ulpin}"
     assert hyd_res["municipal_body"] == "GHMC", f"Expected GHMC, got {hyd_res['municipal_body']}"
 
-    print("\n✅ All National LGD & Dynamic Tax/RERA tests PASSED!")
+    # Test 3: Procedural Archetype Unit Decomposition (Issue #13)
+    test_footprint_m2 = 540.0
+    units_gen = registry.generate_procedural_units_for_floor(
+        floor_idx=2,
+        footprint_area=test_footprint_m2,
+        building_type="apartments",
+        z_min=575.4,
+        z_max=578.6,
+        ulpin_2d="27518003015A94C"
+    )
+    print(f"\nProcedural Unit Decomposition (Floor 2, 540 m² Footprint):")
+    print(f"  • Generated {len(units_gen)} units:")
+    for u in units_gen:
+        print(f"    - {u['unitId']} ({u['unitName']}): ULPIN {u['ulpin3d']} | {u['carpetAreaM2']} m² | {u.get('bedrooms')} BHK")
+    assert 2 <= len(units_gen) <= 6, f"Expected 2-6 units per floor, got {len(units_gen)}"
+    assert units_gen[0]["ulpin3d"].startswith("27518003015A94C-FL02-U01")
+    assert all(u["carpetAreaM2"] > 0 for u in units_gen), "All units must have positive carpet area"
+    assert all(u.get("bedrooms") in [1, 2, 3] for u in units_gen), "Apartments must have valid BHK counts"
+
+    print("\n✅ All National LGD, Dynamic Tax/RERA, & Procedural Archetype tests PASSED!")
